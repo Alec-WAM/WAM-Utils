@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "wam_utils:items/enderchest_boat/spruce"
+    }
+}

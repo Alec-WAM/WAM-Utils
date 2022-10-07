@@ -1,0 +1,7 @@
+{
+  "type": "wam_utils:spawner_beheading",
+  "entity": "minecraft:zombie",
+  "result": {
+    "item": "minecraft:zombie_head"
+  }
+}

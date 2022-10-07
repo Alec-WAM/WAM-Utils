@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:block",
+    "pools": [
+		{
+			"rolls": 1.0,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"conditions": [
+						{
+						  "condition": "minecraft:block_state_property",
+						  "block": "wam_utils:enderman_sign",
+						  "properties": {
+							"half": "bottom"
+						  }
+						}
+					],
+					"name": "wam_utils:enderman_sign"
+				}
+			]
+		}
+    ]
+}

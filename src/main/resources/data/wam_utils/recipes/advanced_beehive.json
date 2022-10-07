@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "#B#",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "B": {
+            "item": "minecraft:beehive"
+        }
+    },
+    "result": {
+        "item": "wam_utils:advanced_beehive",
+        "count": 1
+    }
+}

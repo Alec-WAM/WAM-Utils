@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "#F#",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "F": {
+            "item": "minecraft:furnace"
+        }
+    },
+    "result": {
+        "item": "wam_utils:furnace_generator",
+        "count": 1
+    }
+}

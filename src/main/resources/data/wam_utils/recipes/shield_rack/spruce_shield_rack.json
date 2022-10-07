@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "HSH",
+        "SHS",
+        " S "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:spruce_slab"
+        },
+        "H": {
+            "item": "minecraft:tripwire_hook"
+        }
+    },
+    "result": {
+        "item": "wam_utils:spruce_shield_rack",
+        "count": 1
+    },
+    "group": "wam_utils:shield_rack"
+}

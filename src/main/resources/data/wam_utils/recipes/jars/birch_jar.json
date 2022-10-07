@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " _ ",
+        "G G",
+        "GGG"
+    ],
+    "key": {
+        "_": {
+            "item": "minecraft:birch_slab"
+        },
+        "G": {
+            "tag": "forge:glass_panes/colorless"
+        }
+    },
+    "result": {
+        "item": "wam_utils:birch_jar",
+        "count": 4
+    },
+    "group": "wam_utils:jar"
+}

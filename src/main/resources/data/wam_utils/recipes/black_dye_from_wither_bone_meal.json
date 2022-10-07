@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:crafting_shapeless",
+	"group": "black_dye",
+    "ingredients": [
+        {
+            "item": "wam_utils:wither_bone_meal"
+        }
+    ],
+    "result": {
+        "item": "minecraft:black_dye",
+        "count": 1
+    }
+}

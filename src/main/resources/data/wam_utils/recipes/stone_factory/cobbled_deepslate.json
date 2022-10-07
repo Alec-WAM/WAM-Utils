@@ -1,0 +1,9 @@
+{
+  "type": "wam_utils:stone_factory",
+  "water": 100,
+  "lava": 100,
+  "craftingTime": 80,
+  "result": {
+    "item": "minecraft:cobbled_deepslate"
+  }
+}

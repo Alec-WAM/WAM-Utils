@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "SSS",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "S": {
+            "tag": "minecraft:small_flowers"
+        }
+    },
+    "result": {
+        "item": "wam_utils:flower_simulator",
+        "count": 1
+    }
+}

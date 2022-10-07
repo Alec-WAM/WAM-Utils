@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " _ ",
+        "G G",
+        "GGG"
+    ],
+    "key": {
+        "_": {
+            "item": "minecraft:spruce_slab"
+        },
+        "G": {
+            "tag": "forge:glass_panes/colorless"
+        }
+    },
+    "result": {
+        "item": "wam_utils:spruce_jar",
+        "count": 4
+    },
+    "group": "wam_utils:jar"
+}

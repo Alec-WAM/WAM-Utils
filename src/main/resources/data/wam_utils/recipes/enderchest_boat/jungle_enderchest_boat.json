@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#",
+        "J"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:ender_chest"
+        },
+        "J": {
+            "item": "minecraft:jungle_boat"
+        }
+    },
+    "result": {
+        "item": "wam_utils:jungle_enderchest_boat",
+        "count": 1
+    },
+    "group": "wam_utils:enderchest_boat"
+}

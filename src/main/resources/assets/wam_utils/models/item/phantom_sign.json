@@ -1,0 +1,8 @@
+{
+	"parent": "wam_utils:item/mob_sign",
+	"textures": {
+		"front": "wam_utils:blocks/phantom_sign",
+		"back": "wam_utils:blocks/sign_back",
+		"particle": "wam_utils:blocks/phantom_sign"
+	}
+}

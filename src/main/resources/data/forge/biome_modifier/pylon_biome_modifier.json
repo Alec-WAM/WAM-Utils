@@ -1,0 +1,9 @@
+{
+  "type": "wam_utils:pylon_biome_modifier",
+  "end_biomes": ["end_highlands", "end_midlands", "small_end_islands", "end_barrens"],
+  "end_features": ["wam_utils:ender_pylon"],
+  "overworld_biomes": "#minecraft:is_overworld",
+  "overworld_features": ["wam_utils:earth_pylon", "wam_utils:evil_pylon"],
+  "ocean_biomes": "#minecraft:is_ocean",
+  "ocean_features": ["wam_utils:water_pylon"]
+}

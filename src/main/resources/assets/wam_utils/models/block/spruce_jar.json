@@ -1,0 +1,6 @@
+{
+  "parent": "wam_utils:block/jar",
+  "textures": {
+    "cork": "minecraft:block/spruce_planks"
+  }
+}

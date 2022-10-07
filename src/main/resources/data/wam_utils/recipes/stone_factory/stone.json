@@ -1,0 +1,9 @@
+{
+  "type": "wam_utils:stone_factory",
+  "water": 100,
+  "lava": 200,
+  "craftingTime": 100,
+  "result": {
+    "item": "minecraft:stone"
+  }
+}

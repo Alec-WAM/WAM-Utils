@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#H#",
+        "SAS",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "S": {
+            "tag": "minecraft:saplings"
+        },
+        "H": {
+            "item": "minecraft:hopper"
+        },
+        "A": {
+            "item": "minecraft:diamond_axe"
+        }
+    },
+    "result": {
+        "item": "wam_utils:auto_lumberjack",
+        "count": 1
+    }
+}

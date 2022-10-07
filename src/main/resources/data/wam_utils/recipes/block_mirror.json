@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#W#",
+        "W W",
+        "#W#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:ender_eye"
+        },
+        "W": {
+            "item": "wam_utils:iron_plate"
+        }
+    },
+    "result": {
+        "item": "wam_utils:block_mirror",
+        "count": 1
+    }
+}

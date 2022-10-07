@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "#I#",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "I": {
+            "item": "minecraft:iron_bars"
+        }
+    },
+    "result": {
+        "item": "wam_utils:item_grate",
+        "count": 4
+    }
+}

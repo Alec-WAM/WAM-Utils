@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "WCW",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "W": {
+            "item": "wam_utils:tank"
+        },
+        "C": {
+            "tag": "forge:cobblestone"
+        }
+    },
+    "result": {
+        "item": "wam_utils:stone_factory",
+        "count": 1
+    }
+}

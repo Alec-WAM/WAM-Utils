@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "minecraft:signs"
+        },
+        {
+            "item": "minecraft:phantom_membrane"
+        },
+        {
+            "item": "minecraft:phantom_membrane"
+        }
+    ],
+    "result": {
+        "item": "wam_utils:phantom_sign",
+        "count": 1
+    },
+    "group": "wam_utils:mob_signs"
+}

@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "/S/",
+        "SFS",
+        "/S/"
+    ],
+    "key": {
+        "/": {
+            "tag": "forge:rods/wooden"
+        },
+        "S": {
+            "tag": "forge:string"
+        },
+        "F": {
+            "item": "minecraft:fishing_rod"
+        }
+    },
+    "result": {
+        "item": "wam_utils:fishingnet",
+        "count": 1
+    }
+}

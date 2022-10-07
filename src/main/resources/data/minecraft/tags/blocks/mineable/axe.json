@@ -1,0 +1,29 @@
+{
+    "replace": false,
+    "values": [
+        "wam_utils:fishingnet",
+        "wam_utils:oak_enchantment_bookshelf",
+        "wam_utils:spruce_enchantment_bookshelf",
+        "wam_utils:birch_enchantment_bookshelf",
+        "wam_utils:acacia_enchantment_bookshelf",
+        "wam_utils:jungle_enchantment_bookshelf",
+        "wam_utils:dark_oak_enchantment_bookshelf",	
+        "wam_utils:crimson_enchantment_bookshelf",	
+        "wam_utils:warped_enchantment_bookshelf",	
+        "wam_utils:mangrove_enchantment_bookshelf",	
+        "wam_utils:oak_shield_rack",
+        "wam_utils:spruce_shield_rack",
+        "wam_utils:birch_shield_rack",
+        "wam_utils:acacia_shield_rack",
+        "wam_utils:jungle_shield_rack",
+        "wam_utils:dark_oak_shield_rack",	
+        "wam_utils:crimson_shield_rack",	
+        "wam_utils:warped_shield_rack",	
+        "wam_utils:mangrove_shield_rack",	
+        "wam_utils:wandering_trader_sign",	
+        "wam_utils:pillager_sign",	
+        "wam_utils:enderman_sign",	
+        "wam_utils:phantom_sign",	
+        "wam_utils:advanced_beehive"
+    ]
+}

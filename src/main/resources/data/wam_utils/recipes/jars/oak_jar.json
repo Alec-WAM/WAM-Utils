@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " _ ",
+        "G G",
+        "GGG"
+    ],
+    "key": {
+        "_": {
+            "item": "minecraft:oak_slab"
+        },
+        "G": {
+            "tag": "forge:glass_panes/colorless"
+        }
+    },
+    "result": {
+        "item": "wam_utils:oak_jar",
+        "count": 4
+    },
+    "group": "wam_utils:jar"
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#",
+        "D"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:ender_chest"
+        },
+        "D": {
+            "item": "minecraft:dark_oak_boat"
+        }
+    },
+    "result": {
+        "item": "wam_utils:dark_oak_enderchest_boat",
+        "count": 1
+    },
+    "group": "wam_utils:enderchest_boat"
+}

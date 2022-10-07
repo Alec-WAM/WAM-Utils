@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "wam_utils:blocks/advanced_beehive/end",
+    "front": "wam_utils:blocks/advanced_beehive/front_honey",
+    "particle": "wam_utils:blocks/advanced_beehive/side",
+    "side": "wam_utils:blocks/advanced_beehive/side",
+    "top": "wam_utils:blocks/advanced_beehive/end"
+  }
+}

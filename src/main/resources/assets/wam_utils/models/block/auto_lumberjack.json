@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "wam_utils:blocks/machine_side",
+    "east": "wam_utils:blocks/machine_side",
+    "north": "wam_utils:blocks/auto_lumberjack",
+    "particle": "wam_utils:blocks/auto_lumberjack",
+    "south": "wam_utils:blocks/machine_io",
+    "up": "wam_utils:blocks/machine_io",
+    "west": "wam_utils:blocks/machine_side"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "tower=none": {
+      "model": "wam_utils:block/tank_normal"
+    },
+	"tower=bottom": {
+      "model": "wam_utils:block/tank_bottom"
+    },
+	"tower=middle": {
+      "model": "wam_utils:block/tank_middle"
+    },
+	"tower=top": {
+      "model": "wam_utils:block/tank_top"
+    }
+  }
+}

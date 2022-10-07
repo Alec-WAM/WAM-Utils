@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "WWW",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "W": {
+            "tag": "forge:raw_meat"
+        }
+    },
+    "result": {
+        "item": "wam_utils:auto_breeder",
+        "count": 1
+    }
+}

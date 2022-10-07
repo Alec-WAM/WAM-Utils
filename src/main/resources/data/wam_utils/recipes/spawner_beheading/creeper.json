@@ -1,0 +1,7 @@
+{
+  "type": "wam_utils:spawner_beheading",
+  "entity": "minecraft:creeper",
+  "result": {
+    "item": "minecraft:creeper_head"
+  }
+}

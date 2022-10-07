@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "WWW",
+        "BSB",
+        "WWW"
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:shears"
+        },
+        "W": {
+            "item": "wam_utils:iron_plate"
+        },
+        "B": {
+            "item": "minecraft:bucket"
+        }
+    },
+    "result": {
+        "item": "wam_utils:auto_animal_farmer",
+        "count": 1
+    }
+}

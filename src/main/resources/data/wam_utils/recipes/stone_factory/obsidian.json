@@ -1,0 +1,9 @@
+{
+  "type": "wam_utils:stone_factory",
+  "water": 100,
+  "lava": 1000,
+  "craftingTime": 200,
+  "result": {
+    "item": "minecraft:obsidian"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "wam_utils:block/mob_sign_top",
+  "textures": {
+    "front": "wam_utils:blocks/pillager_sign",
+    "particle": "wam_utils:blocks/pillager_sign"
+  }
+}

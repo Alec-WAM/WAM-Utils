@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#",
+        "S"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:ender_chest"
+        },
+        "S": {
+            "item": "minecraft:spruce_boat"
+        }
+    },
+    "result": {
+        "item": "wam_utils:spruce_enderchest_boat",
+        "count": 1
+    },
+    "group": "wam_utils:enderchest_boat"
+}

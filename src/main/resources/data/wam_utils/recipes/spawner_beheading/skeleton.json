@@ -1,0 +1,7 @@
+{
+  "type": "wam_utils:spawner_beheading",
+  "entity": "minecraft:skeleton",
+  "result": {
+    "item": "minecraft:skeleton_skull"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "wam_utils:block/auto_lumberjack",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "wam_utils:block/auto_lumberjack"
+    },
+    "facing=south": {
+      "model": "wam_utils:block/auto_lumberjack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "wam_utils:block/auto_lumberjack",
+      "y": 270
+    }
+  }
+}

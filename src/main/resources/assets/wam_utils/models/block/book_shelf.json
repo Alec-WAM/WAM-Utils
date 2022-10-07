@@ -1,0 +1,130 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"planks": "minecraft:block/oak_planks",
+		"particle": "minecraft:block/oak_planks"
+	},
+	"elements": [
+		{
+			"name": "Back",
+			"from": [0, 0, 15],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#planks"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#planks"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#planks"},
+				"west": {"uv": [15, 0, 16, 16], "texture": "#planks"},
+				"up": {"uv": [0, 0, 16, 1], "texture": "#planks"},
+				"down": {"uv": [0, 15, 16, 16], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "Bottom",
+			"from": [0, 0, 12],
+			"to": [16, 1, 15],
+			"faces": {
+				"north": {"uv": [0, 15, 16, 16], "texture": "#planks"},
+				"east": {"uv": [1, 15, 4, 16], "texture": "#planks"},
+				"west": {"uv": [12, 15, 15, 16], "texture": "#planks"},
+				"up": {"uv": [0, 0, 16, 3], "texture": "#planks"},
+				"down": {"uv": [0, 12, 16, 15], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [0, 15, 12],
+			"to": [16, 16, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 1], "texture": "#planks"},
+				"east": {"uv": [1, 0, 4, 1], "texture": "#planks"},
+				"west": {"uv": [12, 0, 15, 1], "texture": "#planks"},
+				"up": {"uv": [0, 0, 16, 3], "texture": "#planks"},
+				"down": {"uv": [0, 12, 16, 15], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "ShelfTop",
+			"from": [1, 10, 12],
+			"to": [15, 11, 15],
+			"faces": {
+				"north": {"uv": [1, 5, 15, 6], "texture": "#planks"},
+				"up": {"uv": [1, 0, 15, 3], "texture": "#planks"},
+				"down": {"uv": [1, 12, 15, 15], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "ShelfBottom",
+			"from": [1, 5, 12],
+			"to": [15, 6, 15],
+			"faces": {
+				"north": {"uv": [1, 10, 15, 11], "texture": "#planks"},
+				"up": {"uv": [1, 0, 15, 3], "texture": "#planks"},
+				"down": {"uv": [1, 12, 15, 15], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "Right",
+			"from": [0, 1, 12],
+			"to": [1, 15, 15],
+			"faces": {
+				"north": {"uv": [15, 1, 16, 15], "texture": "#planks"},
+				"east": {"uv": [0, 1, 3, 15], "texture": "#planks"},
+				"west": {"uv": [13, 1, 16, 15], "texture": "#planks"}
+			}
+		},
+		{
+			"name": "Left",
+			"from": [15, 1, 12],
+			"to": [16, 15, 15],
+			"faces": {
+				"north": {"uv": [0, 1, 1, 15], "texture": "#planks"},
+				"east": {"uv": [0, 1, 3, 15], "texture": "#planks"},
+				"west": {"uv": [13, 1, 16, 15], "texture": "#planks"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 135, 0],
+			"translation": [-2.5, 0, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 135, 0],
+			"translation": [-3, 0.25, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 100, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 99, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [-2.25, -1.25, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"translation": [0, 0, -11]
+		},
+		"fixed": {
+			"translation": [0, 0, -4],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
+	"groups": [
+		0,
+		{
+			"name": "Front",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [1, 2, 3, 4, 5]
+		}
+	]
+}

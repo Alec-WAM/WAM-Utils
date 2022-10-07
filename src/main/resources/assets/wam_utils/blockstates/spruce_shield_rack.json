@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "wam_utils:block/spruce_shield_rack",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "wam_utils:block/spruce_shield_rack"
+    },
+    "facing=south": {
+      "model": "wam_utils:block/spruce_shield_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "wam_utils:block/spruce_shield_rack",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "minecraft:block/glass",
+		"glass": "minecraft:block/glass",
+		"cork": "minecraft:block/oak_planks"
+	},
+	"elements": [
+		{
+			"name": "Cork",
+			"from": [5, 13, 5],
+			"to": [11, 15, 11],
+			"faces": {
+				"north": {"uv": [5, 0, 11, 2], "texture": "#cork"},
+				"east": {"uv": [5, 0, 11, 2], "texture": "#cork"},
+				"south": {"uv": [5, 0, 11, 2], "texture": "#cork"},
+				"west": {"uv": [5, 0, 11, 2], "texture": "#cork"},
+				"up": {"uv": [0, 0, 6, 6], "texture": "#cork"},
+				"down": {"uv": [0, 0, 6, 6], "texture": "#cork"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [3, 13, 3],
+			"to": [13, 13, 13],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		},
+		{
+			"name": "Bottom",
+			"from": [3, 0, 3],
+			"to": [13, 0.002, 13],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		},
+		{
+			"name": "North",
+			"from": [3, 0, 3],
+			"to": [13, 13, 3],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		},
+		{
+			"name": "South",
+			"from": [3, 0, 13],
+			"to": [13, 13, 13],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		},
+		{
+			"name": "East",
+			"from": [13, 0, 3],
+			"to": [13, 13, 13],
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		},
+		{
+			"name": "West",
+			"from": [3, 0, 3],
+			"to": [3, 13, 13],
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#glass"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#glass"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"translation": [0, 5, 0],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
+	"groups": [
+		0,
+		{
+			"name": "Glass",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [1, 2, 3, 4, 5, 6]
+		}
+	]
+}

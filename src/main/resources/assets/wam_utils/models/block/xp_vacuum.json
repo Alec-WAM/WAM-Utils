@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "wam_utils:blocks/xp_vacuum"
+    }
+}

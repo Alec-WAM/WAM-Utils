@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "G G",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "G": {
+            "tag": "forge:glass_panes/colorless"
+        }
+    },
+    "result": {
+        "item": "wam_utils:empty_entity_pod",
+        "count": 1
+    }
+}

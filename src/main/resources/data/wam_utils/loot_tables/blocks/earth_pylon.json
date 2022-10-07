@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:block",
+    "pools": [
+		{
+			"rolls": 1.0,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"conditions": [
+						{
+						  "condition": "minecraft:block_state_property",
+						  "block": "wam_utils:earth_pylon",
+						  "properties": {
+							"pylon_level": "top"
+						  }
+						}
+					],
+					"name": "wam_utils:earth_core"
+				}
+			]
+		}
+    ]
+}

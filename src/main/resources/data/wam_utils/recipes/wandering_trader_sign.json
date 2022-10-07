@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+			"item": "minecraft:milk_bucket"
+		},
+		{
+			"item": "minecraft:lead"
+		},
+        {
+            "tag": "minecraft:signs"
+        },
+        {
+            "tag": "forge:gems/emerald"
+        }
+    ],
+    "result": {
+        "item": "wam_utils:wandering_trader_sign",
+        "count": 1
+    },
+    "group": "wam_utils:mob_signs"
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "wam_utils:block/shield_rack",
+  "textures": {
+    "planks": "minecraft:block/birch_planks",
+	"particle": "minecraft:block/birch_planks"
+  }
+}

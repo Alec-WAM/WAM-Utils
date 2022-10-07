@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "wam_utils:blocks/machine_side",
+    "side": "wam_utils:blocks/enchantment_indexer"
+  }
+}

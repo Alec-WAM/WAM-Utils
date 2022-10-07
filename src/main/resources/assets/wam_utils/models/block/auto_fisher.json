@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "wam_utils:blocks/machine_side",
+    "east": "wam_utils:blocks/auto_fisher",
+    "north": "wam_utils:blocks/auto_fisher",
+    "particle": "wam_utils:blocks/auto_fisher",
+    "south": "wam_utils:blocks/auto_fisher",
+    "up": "wam_utils:blocks/machine_side",
+    "west": "wam_utils:blocks/auto_fisher"
+  }
+}

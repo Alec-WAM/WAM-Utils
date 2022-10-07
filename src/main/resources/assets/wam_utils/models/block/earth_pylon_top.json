@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "wam_utils:blocks/pylon/earth_pylon_top_bottom",
+    "side": "wam_utils:blocks/pylon/earth_pylon_top"
+  }
+}

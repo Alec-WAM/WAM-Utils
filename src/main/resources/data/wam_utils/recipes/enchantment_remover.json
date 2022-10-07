@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "EGE",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "wam_utils:iron_plate"
+        },
+        "E": {
+            "item": "minecraft:enchanted_book"
+        },
+        "G": {
+            "item": "minecraft:grindstone"
+        }
+    },
+    "result": {
+        "item": "wam_utils:enchantment_remover",
+        "count": 1
+    }
+}

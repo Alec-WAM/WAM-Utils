@@ -1,0 +1,203 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "wam_utils:blocks/entity_pod",
+		"1": "minecraft:block/glass",
+		"particle": "wam_utils:blocks/entity_pod"
+	},
+	"elements": [
+		{
+			"name": "NWPole",
+			"from": [0, 1, 0],
+			"to": [1, 31, 1],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 1, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "NEPole",
+			"from": [15, 1, 0],
+			"to": [16, 31, 1],
+			"faces": {
+				"north": {"uv": [0, 0, 1, 16], "texture": "#0"},
+				"east": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "SEPole",
+			"from": [15, 1, 15],
+			"to": [16, 31, 16],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#0"},
+				"south": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"west": {"uv": [15, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "SWPole",
+			"from": [0, 1, 15],
+			"to": [1, 31, 16],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 1, 16], "texture": "#0"},
+				"west": {"uv": [15, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "NorthPaneBottom",
+			"from": [1, 1, 0.5],
+			"to": [15, 16, 0.5],
+			"faces": {
+				"north": {"uv": [0, 1, 16, 16], "texture": "#1"},
+				"south": {"uv": [0, 1, 16, 16], "texture": "#1", "cullface": "south"}
+			}
+		},
+		{
+			"name": "WestPaneBottom",
+			"from": [0.5, 1, 1],
+			"to": [0.5, 16, 15],
+			"faces": {
+				"east": {"uv": [0, 1, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 1, 16, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "EastPaneBottom",
+			"from": [15.5, 1, 1],
+			"to": [15.5, 16, 15],
+			"faces": {
+				"east": {"uv": [0, 1, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 1, 16, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "SouthPaneBottom",
+			"from": [1, 1, 15.5],
+			"to": [15, 16, 15.5],
+			"faces": {
+				"north": {"uv": [0, 1, 16, 16], "texture": "#1"},
+				"south": {"uv": [0, 1, 16, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "NorthPaneTop",
+			"from": [1, 16, 0.5],
+			"to": [15, 31, 0.5],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 15], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 15], "texture": "#1"}
+			}
+		},
+		{
+			"name": "WestPaneTop",
+			"from": [0.5, 16, 1],
+			"to": [0.5, 31, 15],
+			"faces": {
+				"east": {"uv": [0, 0, 16, 15], "texture": "#1"},
+				"west": {"uv": [0, 0, 16, 15], "texture": "#1"}
+			}
+		},
+		{
+			"name": "EastPaneTop",
+			"from": [15.5, 16, 1],
+			"to": [15.5, 31, 15],
+			"faces": {
+				"east": {"uv": [0, 0, 16, 15], "texture": "#1"},
+				"west": {"uv": [0, 0, 16, 15], "texture": "#1"}
+			}
+		},
+		{
+			"name": "SouthPaneTop",
+			"from": [1, 16, 15.5],
+			"to": [15, 31, 15.5],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 15], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 15], "texture": "#1"}
+			}
+		},
+		{
+			"name": "Base",
+			"from": [0, 0, 0],
+			"to": [16, 1, 16],
+			"faces": {
+				"north": {"uv": [0, 15, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 15, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 15, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 15, 16, 16], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [0, 31, 0],
+			"to": [16, 32, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 1], "texture": "#0"},
+				"east": {"uv": [0, 0, 16, 1], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 1], "texture": "#0"},
+				"west": {"uv": [0, 0, 16, 1], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 90, 55],
+			"translation": [0, 4, 0.5],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, 90, 55],
+			"translation": [0, 4, 0.5],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 90, 16],
+			"translation": [0, 4, 1.75],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 90, 14],
+			"translation": [0, 4, 1.75],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, -3, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"fixed": {
+			"translation": [0, -4, 0],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
+	"groups": [
+		{
+			"name": "Poles",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		},
+		{
+			"name": "Glass",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [4, 5, 6, 7, 8, 9, 10, 11]
+		},
+		12,
+		13
+	]
+}

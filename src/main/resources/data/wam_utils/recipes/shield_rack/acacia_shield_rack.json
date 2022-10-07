@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "HSH",
+        "SHS",
+        " S "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:acacia_slab"
+        },
+        "H": {
+            "item": "minecraft:tripwire_hook"
+        }
+    },
+    "result": {
+        "item": "wam_utils:acacia_shield_rack",
+        "count": 1
+    },
+    "group": "wam_utils:shield_rack"
+}

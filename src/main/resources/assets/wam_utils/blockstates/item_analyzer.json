@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wam_utils:block/item_analyzer"
+    }
+  }
+}

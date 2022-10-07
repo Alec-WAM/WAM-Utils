@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "pylon_level=bottom": {
+      "model": "wam_utils:block/earth_pylon_bottom"
+    },
+    "pylon_level=middle": {
+      "model": "wam_utils:block/earth_pylon_middle"
+    },
+    "pylon_level=top": {
+      "model": "wam_utils:block/earth_pylon_top"
+    }
+  }
+}

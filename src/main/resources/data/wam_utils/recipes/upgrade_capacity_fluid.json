@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "wam_utils:iron_plate"
+        },
+        {
+            "item": "minecraft:bucket"
+        }
+    ],
+    "result": {
+        "item": "wam_utils:upgrade_capacity_fluid",
+        "count": 1
+    },
+    "group": "wam_utils:upgrades"
+}

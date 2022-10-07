@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "wam_utils:iron_plate"
+        },
+        {
+            "item": "minecraft:wither_skeleton_skull"
+        }
+    ],
+    "result": {
+        "item": "wam_utils:upgrade_beheading",
+        "count": 1
+    },
+    "group": "wam_utils:upgrades"
+}

@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "___",
+        " B ",
+        "___"
+    ],
+    "key": {
+        "_": {
+            "item": "minecraft:mangrove_slab"
+        },
+        "B": {
+            "item": "minecraft:book"
+        }
+    },
+    "result": {
+        "item": "wam_utils:mangrove_enchantment_bookshelf",
+        "count": 1
+    },
+    "group": "wam_utils:enchantment_bookshelf"
+}

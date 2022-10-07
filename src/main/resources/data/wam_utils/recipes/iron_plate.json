@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ii",
+        "ii"
+    ],
+    "key": {
+        "i": {
+            "tag": "forge:ingots/iron"
+        }
+    },
+    "result": {
+        "item": "wam_utils:iron_plate",
+        "count": 4
+    }
+}

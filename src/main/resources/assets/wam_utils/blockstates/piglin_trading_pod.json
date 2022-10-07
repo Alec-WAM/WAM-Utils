@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=bottom": {
+      "model": "wam_utils:block/entity_pod_bottom"
+    },
+    "half=top": {
+      "model": "wam_utils:block/entity_pod_top"
+    }
+  }
+}

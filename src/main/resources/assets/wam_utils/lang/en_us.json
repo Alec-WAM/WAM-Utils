@@ -1,0 +1,196 @@
+{
+    #Creative Tabs
+	"itemGroup.wam_utils.items": "WAM Utils Items",
+
+	#Items
+    "item.wam_utils.iron_plate": "Iron Plate",
+	
+    "item.wam_utils.upgrade_speed": "Speed Upgrade",
+    "item.wam_utils.upgrade_damage": "Damage Upgrade",
+    "item.wam_utils.upgrade_boss": "Boss Upgrade",
+    "item.wam_utils.upgrade_player": "Player Simulation Upgrade",
+    "item.wam_utils.upgrade_beheading": "Beheading Upgrade",
+    "item.wam_utils.upgrade_capacity_energy": "Energy Capacity Upgrade",
+    "item.wam_utils.upgrade_capacity_fluid": "Fluid Capacity Upgrade",
+    "item.wam_utils.upgrade_range": "Range Upgrade",
+	
+    "item.wam_utils.empty_entity_pod": "Empty Entity Pod",
+	
+    "item.wam_utils.earth_core": "Earth Core",
+	"item.wam_utils.water_core": "Water Core",
+	"item.wam_utils.evil_core": "Evil Core",	
+	"item.wam_utils.ender_core": "Ender Core",	
+	
+	"item.wam_utils.acacia_enderchest_boat": "Acacia Boat with Ender Chest",
+	"item.wam_utils.birch_enderchest_boat": "Birch Boat with Ender Chest",
+	"item.wam_utils.dark_oak_enderchest_boat": "Dark Oak Boat with Ender Chest",
+	"item.wam_utils.jungle_enderchest_boat": "Jungle Boat with Ender Chest",
+	"item.wam_utils.mangrove_enderchest_boat": "Mangrove Boat with Ender Chest",
+	"item.wam_utils.oak_enderchest_boat": "Oak Boat with Ender Chest",
+	"item.wam_utils.spruce_enderchest_boat": "Spruce Boat with Ender Chest",
+	
+	"item.wam_utils.wither_bone": "Wither Bone",
+	"item.wam_utils.wither_bone_meal": "Wither Bone Meal",
+	
+	"item.wam_utils.single_enchantment": "Enchantment Scroll",
+	
+	"item.wam_utils.xp_bucket": "Bucket of XP",
+	
+	#Blocks
+	"block.wam_utils.advanced_spawner": "Advanced Spawner",
+	"block.wam_utils.furnace_generator": "Furnace Generator",
+	"block.wam_utils.auto_animal_farmer": "Auto Animal Farmer",
+	"block.wam_utils.auto_fisher": "Auto Fisher",
+	"block.wam_utils.auto_breeder": "Auto Animal Breeder",
+	"block.wam_utils.auto_butcher": "Auto Butcher",
+	"block.wam_utils.auto_farmer": "Auto Crop Farmer",
+	"block.wam_utils.auto_lumberjack": "Auto Lumberjack",
+	"block.wam_utils.auto_compactor": "Auto Compactor",
+	"block.wam_utils.quarry": "Quarry",
+	
+	"block.wam_utils.earth_pylon": "Earth Pylon",
+	"block.wam_utils.water_pylon": "Water Pylon",
+	"block.wam_utils.evil_pylon": "Evil Pylon",
+	"block.wam_utils.ender_pylon": "Ender Pylon",
+	
+	"block.wam_utils.fishingnet": "Fishing Net",
+	"block.wam_utils.mob_statue": "Mob Statue",
+	"block.wam_utils.piglin_trading_pod": "Piglin Trading Pod",
+	"block.wam_utils.witch_trading_pod": "Witch Trading Pod",
+	"block.wam_utils.tank": "Fluid Tank",
+	"block.wam_utils.item_analyzer": "Item Analyzer",
+	"block.wam_utils.block_mirror": "Block Mirror",
+	
+	"block.wam_utils.acacia_jar": "Acacia Jar",
+	"block.wam_utils.birch_jar": "Birch Jar",
+	"block.wam_utils.crimson_jar": "Crimson Jar",
+	"block.wam_utils.dark_oak_jar": "Dark Oak Jar",
+	"block.wam_utils.jungle_jar": "Jungle Jar",
+	"block.wam_utils.mangrove_jar": "Mangrove Jar",
+	"block.wam_utils.oak_jar": "Oak Jar",
+	"block.wam_utils.spruce_jar": "Spruce Jar",
+	"block.wam_utils.warped_jar": "Warped Jar",
+	
+	"block.wam_utils.acacia_enchantment_bookshelf": "Acacia Enchantment Bookshelf",
+	"block.wam_utils.birch_enchantment_bookshelf": "Birch Enchantment Bookshelf",
+	"block.wam_utils.crimson_enchantment_bookshelf": "Crimson Enchantment Bookshelf",
+	"block.wam_utils.dark_oak_enchantment_bookshelf": "Dark Oak Enchantment Bookshelf",
+	"block.wam_utils.jungle_enchantment_bookshelf": "Jungle Enchantment Bookshelf",
+	"block.wam_utils.mangrove_enchantment_bookshelf": "Mangrove Enchantment Bookshelf",
+	"block.wam_utils.oak_enchantment_bookshelf": "Oak Enchantment Bookshelf",
+	"block.wam_utils.spruce_enchantment_bookshelf": "Spruce Enchantment Bookshelf",
+	"block.wam_utils.warped_enchantment_bookshelf": "Warped Enchantment Bookshelf",
+	"block.wam_utils.enchantment_indexer": "Enchantment Indexer",
+	"block.wam_utils.enchantment_remover": "Enchantment Splitter",	
+	
+	"block.wam_utils.acacia_shield_rack": "Acacia Shield Rack",
+	"block.wam_utils.birch_shield_rack": "Birch Shield Rack",
+	"block.wam_utils.crimson_shield_rack": "Crimson Shield Rack",
+	"block.wam_utils.dark_oak_shield_rack": "Dark Oak Shield Rack",
+	"block.wam_utils.jungle_shield_rack": "Jungle Shield Rack",
+	"block.wam_utils.mangrove_shield_rack": "Mangrove Shield Rack",
+	"block.wam_utils.oak_shield_rack": "Oak Shield Rack",
+	"block.wam_utils.spruce_shield_rack": "Spruce Shield Rack",
+	"block.wam_utils.warped_shield_rack": "Warped Shield Rack",
+	
+	"block.wam_utils.wandering_trader_sign": "Wandering Trader Banishment Sign",	
+	"block.wam_utils.pillager_sign": "Pillager Patrol Banishment Sign",
+	"block.wam_utils.enderman_sign": "Ender Teleport Prevention Sign",
+	"block.wam_utils.phantom_sign": "Phantom Guard Sign",
+	
+	"block.wam_utils.advanced_beehive": "Reinforced Beehive",
+	
+	"block.wam_utils.xp_vacuum": "XP Vacuum",
+	"block.wam_utils.item_grate": "Item Grate",
+	"block.wam_utils.stone_factory": "Stone Factory",
+	"block.wam_utils.flower_simulator": "Flower Simulator",
+	
+	#Entities
+	"entity.wam_utils.enderchest_boat": "Boat with Ender Chest",	
+	
+	#Fluid
+	"fluid_type.minecraft.milk": "Milk",
+	"fluid_type.wam_utils.xp": "Liquid XP",	
+	"block.wam_utils.xp_fluid": "Liquid XP",
+	
+	#Gui
+	"gui.wam_utils.apply": "Apply",
+	"gui.wam_utils.furnace_generator.fuelEmpty": "Empty",
+	"gui.wam_utils.energy.cost": "Cost %s/t",
+	"gui.wam_utils.public": "Public",
+	"gui.wam_utils.private": "Private",
+	
+	"gui.wam_utils.warning.energy": "Not Enough Energy",
+	"gui.wam_utils.warning.inventory_full": "Inventory Full",
+	"gui.wam_utils.warning.auto_fisher.water": "Needs Water",
+	
+	"gui.wam_utils.auto_breeder.babies": "Feed Babies",
+	"gui.wam_utils.auto_breeder.maxAnimals": "Max Animals",
+	
+	"gui.wam_utils.auto_butcher.minAnimals": "Max Animals",
+	
+	"gui.wam_utils.auto_farmer.plant": "Plant",
+	"gui.wam_utils.auto_farmer.harvest": "Harvest",
+	"gui.wam_utils.auto_farmer.grow": "Grow",
+	"gui.wam_utils.auto_farmer.seed_right_click": "Right Click to Remove",
+	"gui.wam_utils.auto_farmer.restock_seeds": "Restock Seeds",
+	"gui.wam_utils.auto_farmer.pull_seeds": "Pull in Seeds",
+	"gui.wam_utils.auto_farmer.push_output": "Push Output Items",
+	
+	"gui.wam_utils.auto_lumberjack.setting.mega_tree": "Plant Mega Trees",
+	"gui.wam_utils.auto_lumberjack.setting.restock_seeds": "Restock Saplings",
+	"gui.wam_utils.auto_lumberjack.setting.pull_seeds": "Pull in Saplings",
+	"gui.wam_utils.auto_lumberjack.setting.push_output": "Push Output Items",
+	"gui.wam_utils.auto_lumberjack.setting.play_block_sounds": "Play Block Sounds",
+	"gui.wam_utils.auto_lumberjack.setting.show_particles": "Show Block Particles",
+	
+	"gui.wam_utils.quarry.void_items": "Void Items",
+	"gui.wam_utils.quarry.done_mining": "Done Mining",
+	"gui.wam_utils.quarry.mining_at": "Mining At:",
+	
+	"gui.wam_utils.advanced_portal.rgb": "RGB",
+	"gui.wam_utils.advanced_portal.nether": "Nether",
+	"gui.wam_utils.advanced_portal.end": "End",
+	"gui.wam_utils.advanced_portal.connect": "Connect",
+	
+	#Tooltips
+	"gui.wam_utils.jar.honey": "Honey",
+	"gui.wam_utils.jar.shulker": "Shulker Lamp",
+	"gui.wam_utils.jar.lightning": "Lightning in a Bottle",
+	
+	"gui.wam_utils.advanced_beehive.honey": "Honey: %s%%",
+	"gui.wam_utils.advanced_beehive.bees": "Bees: %s",
+	
+	"gui.wam_utils.tooltip.empty": "Empty",
+	"gui.wam_utils.tooltip.burn.energyValue": "Energy Value: %s",
+	
+	"gui.wam_utils.tooltip.redstonemode.on": "Redstone ON",
+	"gui.wam_utils.tooltip.redstonemode.off": "Redstone OFF",
+	"gui.wam_utils.tooltip.redstonemode.ignore": "Redstone IGNORED",
+	"gui.wam_utils.tooltip.redstonemode.disabled": "Disabled",
+	
+	"gui.wam_utils.tooltip.bonemealmode.off": "Bonemeal DISABLED",
+	"gui.wam_utils.tooltip.bonemealmode.normal": "Bonemeal NORMAL",
+	"gui.wam_utils.tooltip.bonemealmode.advanced": "Bonemeal ADVANCED",
+	"gui.wam_utils.tooltip.bonemealmode.advanced.tooltip": "Speed up the growth of non-bonemealable blocks",
+	
+	"gui.wam_utils.tooltip.compactingmode.two_by_two": "2x2 Crafting",
+	"gui.wam_utils.tooltip.compactingmode.three_by_three": "3x3 Crafting",
+	"gui.wam_utils.tooltip.compactingmode.repair": "Tool Repair",
+	
+	"gui.wam_utils.tooltip.enchantment_category.all.tooltip": "All Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.armor.tooltip": "Armor Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.armor_feet.tooltip": "Boot Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.armor_legs.tooltip": "Legging Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.armor_chest.tooltip": "Chestplate Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.armor_head.tooltip": "Helmet Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.wearable.tooltip": "Wearable Item Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.weapon.tooltip": "Weapon Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.bow.tooltip": "Bow Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.crossbow.tooltip": "Crossbow Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.digger.tooltip": "Digging Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.fishing_rod.tooltip": "Fishing Rod Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.trident.tooltip": "Trident Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.breakable.tooltip": "Breakable Item Enchantments",
+	"gui.wam_utils.tooltip.enchantment_category.curse.tooltip": "Curse Enchantments"
+}

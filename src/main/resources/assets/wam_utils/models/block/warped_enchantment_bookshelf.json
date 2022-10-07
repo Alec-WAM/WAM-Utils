@@ -1,0 +1,7 @@
+{
+  "parent": "wam_utils:block/book_shelf",
+  "textures": {
+    "planks": "minecraft:block/warped_planks",
+	"particle": "minecraft:block/warped_planks"
+  }
+}
