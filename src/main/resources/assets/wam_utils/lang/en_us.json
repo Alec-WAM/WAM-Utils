@@ -29,6 +29,8 @@
 	"item.wam_utils.oak_enderchest_boat": "Oak Boat with Ender Chest",
 	"item.wam_utils.spruce_enderchest_boat": "Spruce Boat with Ender Chest",
 	
+	"item.wam_utils.enderchest_minecart": "Minecart with Ender Chest",
+	
 	"item.wam_utils.wither_bone": "Wither Bone",
 	"item.wam_utils.wither_bone_meal": "Wither Bone Meal",
 	
@@ -107,6 +109,7 @@
 	
 	#Entities
 	"entity.wam_utils.enderchest_boat": "Boat with Ender Chest",	
+	"entity.wam_utils.enderchest_minecart": "Minecart with Ender Chest",	
 	
 	#Fluid
 	"fluid_type.minecraft.milk": "Milk",

@@ -17,6 +17,7 @@
 		"wam_utils:quarry",
 		"wam_utils:stone_factory",
 		"wam_utils:xp_vacuum",
+		"wam_utils:block_mirror",
 		"wam_utils:mob_statue",
 		"wam_utils:piglin_trading_pod",
 		"wam_utils:witch_trading_pod",

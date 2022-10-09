@@ -7,12 +7,9 @@ import javax.annotation.Nullable;
 
 import alec_wam.wam_utils.init.EntityInit;
 import alec_wam.wam_utils.init.ItemInit;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -32,10 +29,8 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class EnderChestBoat extends Boat implements HasCustomInventoryScreen, MenuProvider {
@@ -124,6 +119,7 @@ public class EnderChestBoat extends Boat implements HasCustomInventoryScreen, Me
 		}
 	}
 
+	@Override
 	public void openCustomInventoryScreen(Player p_219906_) {
 		p_219906_.openMenu(new SimpleMenuProvider((p_53124_, p_53125_, p_53126_) -> {
             return this.createMenu(p_53124_, p_53125_, p_219906_);
@@ -179,14 +175,12 @@ public class EnderChestBoat extends Boat implements HasCustomInventoryScreen, Me
 		return CONTAINER_TITLE;
 	}
 	
-	public class EnderChestContainerWrapper extends SimpleContainer {
-		private Player player;
+	public static class EnderChestContainerWrapper extends SimpleContainer {
 		private PlayerEnderChestContainer enderChest;
-		private EnderChestBoat boat;
-		public EnderChestContainerWrapper(Player player, EnderChestBoat boat) {
+		private Entity entity;
+		public EnderChestContainerWrapper(Player player, Entity entity) {
 			super(27);
-			this.player = player;
-			this.boat = boat;
+			this.entity = entity;
 			this.enderChest = player.getEnderChestInventory();
 		}
 		
@@ -247,7 +241,7 @@ public class EnderChestBoat extends Boat implements HasCustomInventoryScreen, Me
 		
 		@Override
 		public boolean stillValid(Player p_19167_) {
-			return boat.isChestVehicleStillValid(p_19167_);
+			return !entity.isRemoved() && entity.position().closerThan(p_19167_.position(), 8.0D);
 		}
 		
 		@Override

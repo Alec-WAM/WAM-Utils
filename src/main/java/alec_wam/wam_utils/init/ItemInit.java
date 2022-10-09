@@ -17,7 +17,10 @@ import alec_wam.wam_utils.blocks.pylon.PylonCreateItem;
 import alec_wam.wam_utils.blocks.tank.TankItem;
 import alec_wam.wam_utils.entities.chest_boats.CustomBoatItem;
 import alec_wam.wam_utils.entities.chest_boats.EnderChestBoat;
+import alec_wam.wam_utils.entities.minecarts.CustomMinecartItem;
+import alec_wam.wam_utils.entities.minecarts.EnderChestMinecart;
 import alec_wam.wam_utils.items.WitherBonemealItem;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -189,6 +192,16 @@ public class ItemInit {
 		@Override
 		public Boat createBoatEntity(Level level, HitResult hitresult, double x, double y, double z) {
 			return new EnderChestBoat(level, x, y, z);
+		}
+
+	});
+	
+	//MINECARTS
+	public static final RegistryObject<Item> ENDERCHEST_MINECART = ITEMS.register("enderchest_minecart", () -> new CustomMinecartItem((new Item.Properties()).stacksTo(1).tab(CreativeModeTab.TAB_TRANSPORTATION)) {
+
+		@Override
+		public AbstractMinecart createMinecartEntity(Level level, double x, double y, double z) {
+			return new EnderChestMinecart(level, x, y, z);
 		}
 
 	});

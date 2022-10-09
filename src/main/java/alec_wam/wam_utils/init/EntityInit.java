@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import alec_wam.wam_utils.WAMUtilsMod;
 import alec_wam.wam_utils.entities.chest_boats.EnderChestBoat;
+import alec_wam.wam_utils.entities.minecarts.EnderChestMinecart;
 import alec_wam.wam_utils.utils.BlockUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +21,7 @@ public class EntityInit {
             DeferredRegister.create(ForgeRegistries.POI_TYPES, WAMUtilsMod.MODID);
 	
 	public static final RegistryObject<EntityType<EnderChestBoat>> ENDER_CHEST_BOAT = register("enderchest_boat", () -> EntityType.Builder.<EnderChestBoat>of(EnderChestBoat::new, MobCategory.MISC).sized(1.375F, 0.5625F).clientTrackingRange(10));
+	public static final RegistryObject<EntityType<EnderChestMinecart>> ENDER_CHEST_MINECART = register("enderchest_minecart", () -> EntityType.Builder.<EnderChestMinecart>of(EnderChestMinecart::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8));
 	
 	public static final RegistryObject<PoiType> WANDERING_TRADER_SIGN_POI = POI.register("wandering_trader_sign", () -> new PoiType(BlockUtils.getAllBlockStates(BlockInit.WANDERING_TRADER_SIGN_BLOCK.get()), 0, 1));
 	public static final RegistryObject<PoiType> PILLAGER_SIGN_POI = POI.register("pillager_sign", () -> new PoiType(BlockUtils.getAllBlockStates(BlockInit.PILLAGER_SIGN_BLOCK.get()), 0, 1));

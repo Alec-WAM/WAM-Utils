@@ -1,5 +1,7 @@
 package alec_wam.wam_utils.init;
 
+import java.util.function.Supplier;
+
 import alec_wam.wam_utils.WAMUtilsMod;
 import alec_wam.wam_utils.blocks.advanced_beehive.AdvancedBeehiveScreen;
 import alec_wam.wam_utils.blocks.advanced_portal.AdvancedPortalHostBERenderer;
@@ -47,10 +49,16 @@ import alec_wam.wam_utils.blocks.xp_vacuum.XPVacuumScreen;
 import alec_wam.wam_utils.client.GuiUtils;
 import alec_wam.wam_utils.entities.chest_boats.EnderChestBoatRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.MinecartModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -64,6 +72,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = WAMUtilsMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientInit {
 
+	public static final ModelLayerLocation ENDERCHEST_MINECART = new ModelLayerLocation(new ResourceLocation(WAMUtilsMod.MODID, "enderchest_minecart"), "main");
+    
     @SuppressWarnings("removal")
 	public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
@@ -112,6 +122,10 @@ public class ClientInit {
             EnchantmentBookshelfBERenderer.register(); 
             
             EnderChestBoatRenderer.register();
+
+            EntityRenderers.register(EntityInit.ENDER_CHEST_MINECART.get(), (context) -> {
+                return new MinecartRenderer<>(context, ENDERCHEST_MINECART);
+            });
             
             ItemBlockRenderTypes.setRenderLayer(BlockInit.ADVANCED_SPAWNER_BLOCK.get(), RenderType.cutoutMipped());            
             ItemBlockRenderTypes.setRenderLayer(BlockInit.FISHINGNET_BLOCK.get(), RenderType.cutoutMipped());          
@@ -177,6 +191,7 @@ public class ClientInit {
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
     	event.registerLayerDefinition(EnchantedBookModel.BOOK_LAYER, EnchantedBookModel::createBodyLayer);
     	event.registerLayerDefinition(ScrollModel.LAYER_LOCATION, ScrollModel::createBodyLayer);
+    	event.registerLayerDefinition(ENDERCHEST_MINECART, MinecartModel::createBodyLayer);
     }
     
     @SuppressWarnings("deprecation")
