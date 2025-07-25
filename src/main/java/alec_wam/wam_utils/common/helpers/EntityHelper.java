@@ -244,7 +244,7 @@ public class EntityHelper {
 
 		// Convert to same reference
 		float angleDifference = Math.abs(Mth.wrapDegrees((float) angleToTarget - entityYaw));
-		System.out.println( angleToTarget + " / " + angleDifference);
+		// System.out.println( angleToTarget + " / " + angleDifference);
 		return angleDifference <= maxDegrees;
 	}
 }

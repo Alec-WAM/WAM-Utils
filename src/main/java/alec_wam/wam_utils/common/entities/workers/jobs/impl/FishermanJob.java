@@ -128,7 +128,8 @@ public class FishermanJob extends MultiBlockPosWorkerJob {
 		
 		Level level = worker.level();
 		if(level instanceof ServerLevel serverlevel){
-			if(this.getWorkingPos() == null){
+			ItemStack handItem = worker.getMainHandItem();
+			if(this.getWorkingPos() == null || handItem.isEmpty() || !IS_FISHING_ROD.test(handItem)){
 				return;
 			}
 

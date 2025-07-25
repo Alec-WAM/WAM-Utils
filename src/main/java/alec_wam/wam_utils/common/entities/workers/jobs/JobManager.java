@@ -20,6 +20,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.impl.ButcherAnimalsJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.CollectItemsJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.ConcreteJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.FishermanJob;
+import alec_wam.wam_utils.common.entities.workers.jobs.impl.FlowerHarvestJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.HarvestCropJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.ShearAnimalsJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.TreeChopJob;
@@ -55,8 +56,8 @@ public class JobManager {
 	/**
 	 * 
 	 * Ideas
-	 * - Fishing
-	 * - Breaking
+	 * - Automatic Smelting
+	 * - XP Collector
 	 *
 	 */
 	public static enum JobType implements StringRepresentable {		
@@ -65,6 +66,7 @@ public class JobManager {
 //		DEFEND_RANGED(RangeAttackJob.class);
 		CROP(HarvestCropJob.class, HarvestCropJob::createJob),
 		TREE(TreeChopJob.class, TreeChopJob::createJob),
+		FLOWERS(FlowerHarvestJob.class, FlowerHarvestJob::createJob),
 		SHEAR(ShearAnimalsJob.class, ShearAnimalsJob::createJob),
 		BREED(BreedAnimalsJob.class, BreedAnimalsJob::createJob),
 		BUTCHER(ButcherAnimalsJob.class, ButcherAnimalsJob::createJob),

@@ -109,6 +109,7 @@ public class ConcreteJob extends BreakBlockWorkerJob {
 
 	@Override
 	public boolean canInteractWithBlock(Level level, BlockPos pos) {
+		// TODO Use the new onNoValidBlocksFound method to handle all the placing then all the mining
 		BlockState state = level.getBlockState(pos);
 		FluidState fluidState = level.getFluidState(pos);
 		

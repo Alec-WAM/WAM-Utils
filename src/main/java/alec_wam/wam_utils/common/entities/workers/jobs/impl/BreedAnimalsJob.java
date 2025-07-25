@@ -26,6 +26,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
+// TODO Handle chicken eggs
+
 public class BreedAnimalsJob extends AreaWorkerJob {
     public static final int MAX_ANIMALS = 8; // Maximum number of animals of same type allowed to live in an area
 	private int idleTimer = 0;

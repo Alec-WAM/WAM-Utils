@@ -20,6 +20,7 @@ public abstract class MultiBlockPosWorkerJob extends AreaWorkerJob {
 	private BlockPos workingPos;
 	private BlockPos validPathPos;
 	private int blockScanIndex = 0;
+	private int blockScanStartIndex = -1; // Reset to -1 when a valid block is found or reset
 	protected int scanDelay = 0;
 	public int idleTimer = 0;
 	public MultiBlockPosWorkerJob(WorkerEntity worker, ResourceKey<Level> dimension, List<BlockPos> blockPosList) {
@@ -113,23 +114,39 @@ public abstract class MultiBlockPosWorkerJob extends AreaWorkerJob {
 					this.onSetWorkPos();
 					blockScanIndex++;
 					blockScanIndex %= blockPosList.size();
+					blockScanStartIndex = -1; // reset loop tracking
 				}
 				else {
+					if (blockScanStartIndex == -1) {
+						blockScanStartIndex = blockScanIndex;
+					}
 					this.scanDelay = scanSpeed();
 					blockScanIndex++;
 					blockScanIndex %= blockPosList.size();
+
+					if (blockScanIndex == blockScanStartIndex) {
+						blockScanStartIndex = -1;
+						this.onNoValidBlocksFound(); // 🟡 Called only after full loop
+					}
 				}
 			}
 			else {
 				//Clear if invalid
 				//TODO Make this random check not every tick
 				if(!canInteractWithBlock(level, this.workingPos)) {
-					this.finishWorking();
+					this.invalidateWorkingPos();
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Called after full loop and none of the blocks were valid
+	*/
+	public void onNoValidBlocksFound() {
+		
+	}
+
 	public void onSetWorkPos() {
 		if(this.validPathPos !=null) {
 			this.validPathPos = null;
