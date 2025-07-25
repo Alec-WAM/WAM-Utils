@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 
 public class RenderHelper {
@@ -378,4 +379,20 @@ public class RenderHelper {
         };
     }
     
+    public static void stringVertex(
+        float x, float y, float z, VertexConsumer consumer, PoseStack.Pose pose, float stringFraction, float nextStringFraction
+    ) {
+        float f = x * stringFraction;
+        float f1 = y * (stringFraction * stringFraction + stringFraction) * 0.5F + 0.25F;
+        float f2 = z * stringFraction;
+        float f3 = x * nextStringFraction - f;
+        float f4 = y * (nextStringFraction * nextStringFraction + nextStringFraction) * 0.5F + 0.25F - f1;
+        float f5 = z * nextStringFraction - f2;
+        float f6 = Mth.sqrt(f3 * f3 + f4 * f4 + f5 * f5);
+        f3 /= f6;
+        f4 /= f6;
+        f5 /= f6;
+        consumer.addVertex(pose, f, f1, f2).setColor(-16777216).setNormal(pose, f3, f4, f5);
+    }
+
 }

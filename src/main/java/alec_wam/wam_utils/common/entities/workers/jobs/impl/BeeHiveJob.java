@@ -9,6 +9,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.MultiBlockPosWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -155,36 +156,37 @@ public class BeeHiveJob extends MultiBlockPosWorkerJob {
 			
 			if (this.isCloseToBlockPos()) {
 				BlockPos pos = getWorkingPos();
-				if(canInteractWithBlock(level, pos)) {
-					boolean harvested = false;
-					if(IS_SHEARS.test(handItem)) {
-						level.playSound(null, worker.getX(), worker.getY(), worker.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
-			            worker.putInInventory(new ItemStack(Items.HONEYCOMB, 3));
-			            handItem.hurtAndBreak(1, worker, EquipmentSlot.MAINHAND);
-			            harvested = true;
-			            level.gameEvent(worker, GameEvent.SHEAR, pos);
-					}
-					else if(IS_GLASS_BOTTLE.test(handItem)) {
-						handItem.shrink(1);
-						level.playSound(null, worker.getX(), worker.getY(), worker.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-			            if (handItem.isEmpty()) {
-			               worker.holdInMainHand(new ItemStack(Items.HONEY_BOTTLE));
-			            } else {
-			               worker.putInInventory(new ItemStack(Items.HONEY_BOTTLE));
-			            }
-
-			            harvested = true;
-			            level.gameEvent(worker, GameEvent.FLUID_PICKUP, pos);
-					}
-					
-					if(harvested) {
-						//TODO Anger Bees
-						BlockState state = level.getBlockState(pos);
-						if(state.hasProperty(BeehiveBlock.HONEY_LEVEL)) {
-							level.setBlock(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, Integer.valueOf(0)), 3);
+				if(EntityHelper.isLookingAtHorizontally(worker, pos, 20)){
+					if(canInteractWithBlock(level, pos)) {
+						boolean harvested = false;
+						if(IS_SHEARS.test(handItem)) {
+							level.playSound(null, worker.getX(), worker.getY(), worker.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
+							worker.putInInventory(new ItemStack(Items.HONEYCOMB, 3));
+							handItem.hurtAndBreak(1, worker, EquipmentSlot.MAINHAND);
+							harvested = true;
+							level.gameEvent(worker, GameEvent.SHEAR, pos);
 						}
-						this.harvestType = -1;
-						this.finishWorking();
+						else if(IS_GLASS_BOTTLE.test(handItem)) {
+							handItem.shrink(1);
+							level.playSound(null, worker.getX(), worker.getY(), worker.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+							if (handItem.isEmpty()) {
+							worker.holdInMainHand(new ItemStack(Items.HONEY_BOTTLE));
+							} else {
+							worker.putInInventory(new ItemStack(Items.HONEY_BOTTLE));
+							}
+
+							harvested = true;
+							level.gameEvent(worker, GameEvent.FLUID_PICKUP, pos);
+						}
+						
+						if(harvested) {
+							BlockState state = level.getBlockState(pos);
+							if(state.hasProperty(BeehiveBlock.HONEY_LEVEL)) {
+								level.setBlock(pos, state.setValue(BeehiveBlock.HONEY_LEVEL, Integer.valueOf(0)), 3);
+							}
+							this.harvestType = -1;
+							this.finishWorking();
+						}
 					}
 				}
 			}

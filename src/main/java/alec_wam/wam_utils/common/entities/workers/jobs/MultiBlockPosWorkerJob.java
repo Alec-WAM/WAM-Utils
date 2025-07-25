@@ -20,7 +20,7 @@ public abstract class MultiBlockPosWorkerJob extends AreaWorkerJob {
 	private BlockPos workingPos;
 	private BlockPos validPathPos;
 	private int blockScanIndex = 0;
-	private int scanDelay = 0;
+	protected int scanDelay = 0;
 	public int idleTimer = 0;
 	public MultiBlockPosWorkerJob(WorkerEntity worker, ResourceKey<Level> dimension, List<BlockPos> blockPosList) {
 		super(worker, dimension, blockPosList);

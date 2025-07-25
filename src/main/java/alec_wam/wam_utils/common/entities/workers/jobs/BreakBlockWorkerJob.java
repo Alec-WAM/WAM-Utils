@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -97,24 +98,26 @@ public abstract class BreakBlockWorkerJob extends MultiBlockPosWorkerJob {
 			}
 			lookAtBlock();
 			
-			float breakSpeed = getBreakSpeed(stateToBreak, blockHardness);
-			destroyProgress += Mth.clamp((int) ((breakSpeed / blockHardness)), 1, 10 - destroyProgress);
-			if(destroyProgress % 4 == 0) {
-				level.playSound(null, worker.blockPosition(), stateToBreak.getSoundType(level, breakingPos, worker)
-					.getHitSound(), SoundSource.BLOCKS, .25f, 1);
-			}
+			if(EntityHelper.isLookingAtHorizontally(worker, this.getWorkingPos(), 20)){
+				float breakSpeed = getBreakSpeed(stateToBreak, blockHardness);
+				destroyProgress += Mth.clamp((int) ((breakSpeed / blockHardness)), 1, 10 - destroyProgress);
+				if(destroyProgress % 4 == 0) {
+					level.playSound(null, worker.blockPosition(), stateToBreak.getSoundType(level, breakingPos, worker)
+						.getHitSound(), SoundSource.BLOCKS, .25f, 1);
+				}
 
-			if (destroyProgress >= 10) {
-				onBlockBroken(breakingPos, stateToBreak);
-				destroyProgress = 0;
-				ticksUntilNextProgress = 0;
-				level.destroyBlockProgress(breakerId, breakingPos, -1);
-				return;
-			}
+				if (destroyProgress >= 10) {
+					onBlockBroken(breakingPos, stateToBreak);
+					destroyProgress = 0;
+					ticksUntilNextProgress = 0;
+					level.destroyBlockProgress(breakerId, breakingPos, -1);
+					return;
+				}
 
-			ticksUntilNextProgress = (int) ((blockHardness / breakSpeed) / 11);
-			level.destroyBlockProgress(breakerId, breakingPos, (int) destroyProgress);
-			worker.swing(InteractionHand.MAIN_HAND);
+				ticksUntilNextProgress = (int) ((blockHardness / breakSpeed) / 11);
+				level.destroyBlockProgress(breakerId, breakingPos, (int) destroyProgress);
+				worker.swing(InteractionHand.MAIN_HAND);
+			}
 		}
 	}
 	

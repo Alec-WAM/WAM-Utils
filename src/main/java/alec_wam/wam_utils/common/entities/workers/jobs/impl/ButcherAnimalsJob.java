@@ -181,7 +181,7 @@ public class ButcherAnimalsJob extends AreaWorkerJob {
                         worker.getNavigation().moveTo(path, 1.0D);
                     }
                 }
-            } else {
+            } else if(EntityHelper.isLookingAtHorizontally(worker, this.killTarget, 20)){
                 swingSword(this.killTarget);
             }
         }

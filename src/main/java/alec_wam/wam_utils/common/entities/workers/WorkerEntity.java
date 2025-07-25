@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.joml.Vector3f;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -27,6 +28,7 @@ import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import alec_wam.wam_utils.common.items.WorkerStaffItem;
+import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.resources.PlayerSkin;
@@ -35,6 +37,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -90,6 +93,7 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -156,6 +160,13 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 	private int toolScanDelay = 0;
 	private int foodScanDelay = 0;
 	private int armorScanDelay = 0;
+
+	//Fishing Logic
+	private boolean isFishing;
+	private Vec3 bobberPosition;
+	private Vec3 targetBobberPosition;
+	private boolean bobberLanded;
+	private int bobberThrowTicks;
 	
 	private final SimpleContainer inventory = new SimpleContainer(9);	
 	
@@ -261,7 +272,14 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
         
         this.inventoryInteractDelay = valueInput.getIntOr("InventoryInteractDelay", 0);        
         this.externalInventorySettings = valueInput.read(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC).orElse(null);
-    }
+    
+		ValueInput childFishingData = valueInput.childOrEmpty("FishingData");
+		this.isFishing = childFishingData.getBooleanOr("isFishing", false);
+		this.bobberPosition = childFishingData.read("bobberPosition", Vec3.CODEC).orElse(null);
+		this.targetBobberPosition = childFishingData.read("targetBobberPosition", Vec3.CODEC).orElse(null);
+		this.bobberLanded = childFishingData.getBooleanOr("bobberLanded", false);
+		this.bobberThrowTicks = childFishingData.getIntOr("bobberThrowTicks", 0);
+	}
 	
 	@Override
 	public void addAdditionalSaveData(ValueOutput valueOutput) {
@@ -281,7 +299,14 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
         valueOutput.putInt("InventoryInteractDelay", this.inventoryInteractDelay);
         
         valueOutput.storeNullable(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC, externalInventorySettings);
-    }
+    
+		ValueOutput childFishing = valueOutput.child("FishingData");
+		childFishing.putBoolean("isFishing", this.isFishing);
+		childFishing.storeNullable("bobberPosition", Vec3.CODEC, bobberPosition);
+		childFishing.storeNullable("targetBobberPosition", Vec3.CODEC, targetBobberPosition);
+		childFishing.putBoolean("bobberLanded", this.bobberLanded);
+		childFishing.putInt("bobberThrowTicks", this.bobberThrowTicks);
+	}
 	
 	public SyncWorkerJobPayload buildSyncJobPayload() {
 		Optional<CompoundTag> jobData = Optional.empty();
@@ -376,6 +401,20 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				}
 			}
 			
+			if(stack.is(Items.FISHING_ROD)){
+				BlockPos targetPos = new BlockPos(23, 55, 70);
+				Vec3 fishingPos = BlockHelper.getCenterOf(targetPos);
+				if(!isClient) {
+					if(this.isFishing){
+						this.stopFishing();
+					}
+					else {
+						this.startFishing(fishingPos);
+					}
+				}
+				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			}
+
 			if(ItemHelper.isTool(stack) || ItemHelper.isAxe(stack)) {
 				if(!isClient) {
 					if(!this.getMainHandItem().isEmpty()) {
@@ -517,6 +556,54 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
         this.walkDistO = this.walkDist;
         this.deltaMovementOnPreviousTick = this.getDeltaMovement();
         super.tick();
+		
+		//Handle Fishing Logic both sides
+		if(this.isFishing && this.targetBobberPosition !=null){
+			if(!this.bobberLanded){
+				bobberThrowTicks++;
+
+				float progress = bobberThrowTicks / 20.0F; // 20 ticks to complete throw
+				if (progress >= 1.0F) {
+					progress = 1.0F;
+					this.bobberLanded = true;
+				}
+
+				// Arc interpolation (parabola)
+				Vec3 fishingRodOrigin = getFishingRodOrigin();
+				double x = Mth.lerp(progress, fishingRodOrigin.x, this.targetBobberPosition.x);
+				double z = Mth.lerp(progress, fishingRodOrigin.z, this.targetBobberPosition.z);
+				double y = Mth.lerp(progress, fishingRodOrigin.y, this.targetBobberPosition.y) + Math.sin(progress * Math.PI) * 2.0;
+
+				this.bobberPosition = new Vec3(x, y, z);
+			} else {
+				this.bobberPosition = this.targetBobberPosition;
+
+				BlockState blockstate1 = level().getBlockState(BlockPos.containing(this.bobberPosition));
+				if (blockstate1.is(Blocks.WATER)) {
+					if(this.getRandom().nextFloat() < 0.1F){
+						float f2 = Mth.floor(this.getY());
+						float width = 0.25F * 0.5F;
+						Vec3 vec3 = Vec3.ZERO;
+						double x = this.bobberPosition.x;
+						double z = this.bobberPosition.z;
+						float particleAmount = 5.0F;
+						for (int i = 0; i < 1.0F + width * particleAmount; i++) {
+							double d0 = (this.random.nextDouble() * 2.0 - 1.0) * width;
+							double d1 = (this.random.nextDouble() * 2.0 - 1.0) * width;
+							this.level()
+								.addParticle(ParticleTypes.BUBBLE, x + d0, f2, z + d1, vec3.x, vec3.y - this.random.nextDouble() * 0.2F, vec3.z);
+						}
+
+						for (int j = 0; j < 1.0F + width * particleAmount; j++) {
+							double d2 = (this.random.nextDouble() * 2.0 - 1.0) * width;
+							double d3 = (this.random.nextDouble() * 2.0 - 1.0) * width;
+							this.level().addParticle(ParticleTypes.SPLASH, x + d2, f2, z + d3, vec3.x, vec3.y, vec3.z);
+						}
+					}
+				}
+			}
+		}
+		
 		if (!level().isClientSide) {
 	         if(this.jobDirty) {
 				SyncWorkerJobPayload payload = this.buildSyncJobPayload();
@@ -524,8 +611,18 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 	        	this.jobDirty = false;
 	         }
 		}
-    }	
+    }
 	
+	public Vec3 getFishingRodOrigin(){
+        float f1 = getYRot();
+        float f2 = Mth.cos(-f1 * (float) (Math.PI / 180.0) - (float) Math.PI);
+        float f3 = Mth.sin(-f1 * (float) (Math.PI / 180.0) - (float) Math.PI);
+        double d0 = getX() - f3 * 0.3;
+        double d1 = getEyeY();
+        double d2 = getZ() - f2 * 0.3;
+		return new Vec3(d0, d1, d2);
+	}
+
 	@Override
 	public void aiStep() {
 		super.aiStep();		
@@ -560,8 +657,52 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 //		if(this.isEating) {
 //			this.eatFood();
 //		}
-	}
+	}	
 	
+	public void startFishing(Vec3 targetPosition){
+		this.isFishing = true;
+		this.bobberLanded = false;
+		this.bobberThrowTicks = 0;
+		this.bobberPosition = this.getFishingRodOrigin();
+		this.targetBobberPosition = targetPosition;
+		if(!this.level().isClientSide){
+			SyncWorkerFishingPayload payload = new SyncWorkerFishingPayload(
+				this.getId(), 
+				true, 
+				Optional.of(new Vector3f((float)targetPosition.x, (float)targetPosition.y, (float)targetPosition.z))
+			);
+			PacketDistributor.sendToPlayersTrackingEntity(this, payload);
+		}
+	}
+
+	public void stopFishing(){
+		this.isFishing = false;
+		this.bobberLanded = false;
+		this.bobberThrowTicks = 0;
+		this.bobberPosition = this.getFishingRodOrigin();
+		this.targetBobberPosition = null;
+		if(!this.level().isClientSide){
+			SyncWorkerFishingPayload payload = new SyncWorkerFishingPayload(
+				this.getId(), 
+				false, 
+				Optional.empty()
+			);
+			PacketDistributor.sendToPlayersTrackingEntity(this, payload);
+		}
+	}
+
+	public boolean isFishing(){
+		return this.isFishing;
+	}
+
+	public boolean hasBobberLanded() {
+		return this.bobberLanded;
+	}
+
+	public Vec3 currentBobberPosition(){
+		return this.bobberPosition;
+	}
+
 	public boolean tryToStartFallFlying() {
 
 		if(this.canGlide()) {

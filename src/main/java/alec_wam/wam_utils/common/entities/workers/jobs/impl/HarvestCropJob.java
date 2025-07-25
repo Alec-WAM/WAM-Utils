@@ -10,6 +10,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.MultiBlockPosWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import alec_wam.wam_utils.common.helpers.TreeCutter;
 import alec_wam.wam_utils.common.helpers.TreeCutter.Tree;
@@ -91,7 +92,7 @@ public class HarvestCropJob extends MultiBlockPosWorkerJob {
 			if(worker.swapToBestTool(this.getWorkingPos(), false)) {
 				return;
 			}
-			if (this.isCloseToBlockPos()) {
+			if (this.isCloseToBlockPos() && EntityHelper.isLookingAtHorizontally(worker, this.getWorkingPos(), 20)) {
 				BlockPos pos = getWorkingPos();
 				BlockState state = world.getBlockState(pos);
 				boolean notCropButCanHarvest = false;

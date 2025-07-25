@@ -45,6 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemHelper {
@@ -388,8 +389,12 @@ public class ItemHelper {
 		return stack.isCorrectToolForDrops(state);
 	}
 	
+	public static boolean canPerformAny(ItemStack stack, Set<ItemAbility> abilities){
+		return abilities.stream().anyMatch(stack::canPerformAction);
+	}
+
 	public static boolean isShears(ItemStack stack) {
-		return stack.getItem() instanceof ShearsItem || ItemAbilities.DEFAULT_SHEARS_ACTIONS.stream().anyMatch(stack::canPerformAction);
+		return stack.getItem() instanceof ShearsItem || canPerformAny(stack, ItemAbilities.DEFAULT_SHEARS_ACTIONS);
 	}
 	
 	public static boolean isShearEfficientBlock(BlockState state) {
@@ -401,7 +406,7 @@ public class ItemHelper {
 	}
 	
 	public static boolean isAxe(ItemStack stack) {
-		return stack.getItem() instanceof AxeItem || ItemAbilities.DEFAULT_AXE_ACTIONS.stream().anyMatch(stack::canPerformAction) || stack.is(ItemTags.AXES);
+		return stack.getItem() instanceof AxeItem || canPerformAny(stack, ItemAbilities.DEFAULT_AXE_ACTIONS) || stack.is(ItemTags.AXES);
 	}
 	
 	public static boolean isMeleeWeapon(ItemStack stack) {

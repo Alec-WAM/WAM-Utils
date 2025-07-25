@@ -26,6 +26,10 @@ public class ModPayloadInit {
 			SyncWorkerJobPayload.TYPE,
     		SyncWorkerJobPayload.STREAM_CODEC
 		);
+		registrar.playToClient(
+			SyncWorkerFishingPayload.TYPE,
+    		SyncWorkerFishingPayload.STREAM_CODEC
+		);
 	    // registrar.playToClient(
     	// 	SyncWorkerJobPayload.TYPE,
     	// 	SyncWorkerJobPayload.STREAM_CODEC,

@@ -10,6 +10,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -177,11 +178,13 @@ public class ConcreteJob extends BreakBlockWorkerJob {
 				return;
 			}
 			
-			if (this.isCloseToBlockPos()) {				
-				if(BlockHelper.placeBlock(worker.level(), pos, handItem, worker, InteractionHand.MAIN_HAND, Direction.UP, true, true)) {
-					worker.swing(InteractionHand.MAIN_HAND);
+			if (this.isCloseToBlockPos()) {
+				if(EntityHelper.isLookingAtHorizontally(worker, pos, 20)){				
+					if(BlockHelper.placeBlock(worker.level(), pos, handItem, worker, InteractionHand.MAIN_HAND, Direction.UP, true, true)) {
+						worker.swing(InteractionHand.MAIN_HAND);
+					}
+					this.finishWorking();
 				}
-				this.finishWorking();
 			}
 		}
 	}

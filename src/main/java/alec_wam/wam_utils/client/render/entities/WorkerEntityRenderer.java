@@ -1,31 +1,28 @@
 package alec_wam.wam_utils.client.render.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import alec_wam.wam_utils.client.ModClientInit;
 import alec_wam.wam_utils.client.model.WorkerModel;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ArrowLayer;
-import net.minecraft.client.renderer.entity.layers.BeeStingerLayer;
-import net.minecraft.client.renderer.entity.layers.CapeLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
-import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -39,7 +36,10 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, PlayerRenderState, PlayerModel> {
+public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, WorkerRenderState, WorkerModel> {
+    
+    private static final ResourceLocation FISHING_BOBBER_TEXTURE_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/fishing_hook.png");
+    private static final RenderType FISHING_BOBBER_RENDER_TYPE = RenderType.entityCutout(FISHING_BOBBER_TEXTURE_LOCATION);
     
     public WorkerEntityRenderer(EntityRendererProvider.Context context, boolean useSlimModel) {
         super(context, new WorkerModel(context.bakeLayer(useSlimModel ? ModClientInit.WORKER_SLIM_MODEL : ModClientInit.WORKER_MODEL), useSlimModel), 0.25F);
@@ -52,14 +52,14 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
             )
         );
         this.addLayer(new PlayerItemInHandLayer<>(this));
-        this.addLayer(new ArrowLayer<>(this, context));
+        // TODO Fix some of these layers
+        //this.addLayer(new ArrowLayer<>(this, context));
 //        this.addLayer(new Deadmau5EarsLayer(this, context.getModelSet()));
-        this.addLayer(new CapeLayer(this, context.getModelSet(), context.getEquipmentAssets()));
+        // this.addLayer(new CapeLayer(this, context.getModelSet(), context.getEquipmentAssets()));
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
         this.addLayer(new WingsLayer<>(this, context.getModelSet(), context.getEquipmentRenderer()));
-        this.addLayer(new ParrotOnShoulderLayer(this, context.getModelSet()));
-        this.addLayer(new SpinAttackEffectLayer(this, context.getModelSet()));
-        this.addLayer(new BeeStingerLayer<>(this, context));
+        // this.addLayer(new SpinAttackEffectLayer(this, context.getModelSet()));
+        // this.addLayer(new BeeStingerLayer<>(this, context));
     }
 	   
 	public static void register() {
@@ -67,7 +67,7 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
 	}
 
 	@Override
-    public Vec3 getRenderOffset(PlayerRenderState p_360756_) {
+    public Vec3 getRenderOffset(WorkerRenderState p_360756_) {
         Vec3 vec3 = super.getRenderOffset(p_360756_);
         return p_360756_.isCrouching ? vec3.add(0.0, p_360756_.scale * -2.0F / 16.0, 0.0) : vec3;
     }
@@ -131,42 +131,42 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
     }
 
 	@Override
-	public PlayerRenderState createRenderState() {
-		return new PlayerRenderState();
+	public WorkerRenderState createRenderState() {
+		return new WorkerRenderState();
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PlayerRenderState renderState) {
+	public ResourceLocation getTextureLocation(WorkerRenderState renderState) {
 		return renderState.skin.texture();
 	}
 	
 	@Override
-	protected void renderNameTag(PlayerRenderState p_363185_, Component p_117809_, PoseStack p_117810_, MultiBufferSource p_117811_, int p_117812_) {
+	protected void renderNameTag(WorkerRenderState p_363185_, Component p_117809_, PoseStack p_117810_, MultiBufferSource p_117811_, int p_117812_) {
 		
 	}
 
 	@Override
-    public void extractRenderState(WorkerEntity p_361478_, PlayerRenderState p_360583_, float p_364121_) {
-        super.extractRenderState(p_361478_, p_360583_, p_364121_);
-        HumanoidMobRenderer.extractHumanoidRenderState(p_361478_, p_360583_, p_364121_, this.itemModelResolver);
-        p_360583_.isBaby = true;
-        p_360583_.leftArmPose = getArmPose(p_361478_, HumanoidArm.LEFT);
-        p_360583_.rightArmPose = getArmPose(p_361478_, HumanoidArm.RIGHT);
-        p_360583_.skin = p_361478_.getSkin();
-        p_360583_.arrowCount = p_361478_.getArrowCount();
-        p_360583_.stingerCount = p_361478_.getStingerCount();
-        p_360583_.useItemRemainingTicks = p_361478_.getUseItemRemainingTicks();
-        p_360583_.swinging = p_361478_.swinging;
-        p_360583_.isSpectator = p_361478_.isSpectator();
-        p_360583_.showHat = p_361478_.isModelPartShown(PlayerModelPart.HAT);
-        p_360583_.showJacket = p_361478_.isModelPartShown(PlayerModelPart.JACKET);
-        p_360583_.showLeftPants = p_361478_.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
-        p_360583_.showRightPants = p_361478_.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
-        p_360583_.showLeftSleeve = p_361478_.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
-        p_360583_.showRightSleeve = p_361478_.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
-        p_360583_.showCape = p_361478_.isModelPartShown(PlayerModelPart.CAPE);
-        extractFlightData(p_361478_, p_360583_, p_364121_);
-        extractCapeState(p_361478_, p_360583_, p_364121_);
+    public void extractRenderState(WorkerEntity worker, WorkerRenderState renderState, float partialTick) {
+        super.extractRenderState(worker, renderState, partialTick);
+        HumanoidMobRenderer.extractHumanoidRenderState(worker, renderState, partialTick, this.itemModelResolver);
+        renderState.isBaby = true;
+        renderState.leftArmPose = getArmPose(worker, HumanoidArm.LEFT);
+        renderState.rightArmPose = getArmPose(worker, HumanoidArm.RIGHT);
+        renderState.skin = worker.getSkin();
+        renderState.arrowCount = worker.getArrowCount();
+        renderState.stingerCount = worker.getStingerCount();
+        renderState.useItemRemainingTicks = worker.getUseItemRemainingTicks();
+        renderState.swinging = worker.swinging;
+        renderState.isSpectator = worker.isSpectator();
+        renderState.showHat = worker.isModelPartShown(PlayerModelPart.HAT);
+        renderState.showJacket = worker.isModelPartShown(PlayerModelPart.JACKET);
+        renderState.showLeftPants = worker.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
+        renderState.showRightPants = worker.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
+        renderState.showLeftSleeve = worker.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
+        renderState.showRightSleeve = worker.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
+        renderState.showCape = worker.isModelPartShown(PlayerModelPart.CAPE);
+        extractFlightData(worker, renderState, partialTick);
+        extractCapeState(worker, renderState, partialTick);
 //        if (p_360583_.distanceToCameraSq < 100.0) {
 //            Scoreboard scoreboard = p_361478_.getScoreboard();
 //            Objective objective = scoreboard.getDisplayObjective(DisplaySlot.BELOW_NAME);
@@ -178,28 +178,41 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
 //                p_360583_.scoreText = null;
 //            }
 //        } else {
-            p_360583_.scoreText = null;
+            renderState.scoreText = null;
 //        }
 
-        p_360583_.parrotOnLeftShoulder = null;
-        p_360583_.parrotOnRightShoulder = null;
-        p_360583_.id = p_361478_.getId();
-        if(p_361478_.hasCustomName()) {
-        	p_360583_.name = p_361478_.getName().getString();
+        renderState.parrotOnLeftShoulder = null;
+        renderState.parrotOnRightShoulder = null;
+        renderState.id = worker.getId();
+        if(worker.hasCustomName()) {
+        	renderState.name = worker.getName().getString();
         }
         else {
-        	p_360583_.name = null;
+        	renderState.name = null;
         }
-        p_360583_.heldOnHead.clear();
-        if (p_360583_.isUsingItem) {
-            ItemStack itemstack = p_361478_.getItemInHand(p_360583_.useItemHand);
+        renderState.heldOnHead.clear();
+        if (renderState.isUsingItem) {
+            ItemStack itemstack = worker.getItemInHand(renderState.useItemHand);
             if (itemstack.is(Items.SPYGLASS)) {
-                this.itemModelResolver.updateForLiving(p_360583_.heldOnHead, itemstack, ItemDisplayContext.HEAD, p_361478_);
+                this.itemModelResolver.updateForLiving(renderState.heldOnHead, itemstack, ItemDisplayContext.HEAD, worker);
             }
+        }
+
+        renderState.isFishing = worker.isFishing();
+        renderState.bobberPosition = worker.currentBobberPosition();
+        renderState.fishingRodLocation = EntityHelper.getEntityThirdPersonHandPos(worker, worker.getMainArm(), 0.5F, partialTick);
+
+        if(worker.isFishing()){
+            Vec3 vec3 = renderState.fishingRodLocation;
+            Vec3 vec31 = renderState.bobberPosition.add(0.0, 0.25, 0.0);
+            renderState.fishingLineOriginOffset = vec3.subtract(vec31);
+        }
+        else {
+            renderState.fishingLineOriginOffset = Vec3.ZERO;
         }
     }
 
-    private static void extractFlightData(WorkerEntity worker, PlayerRenderState renderState, float partialTick) {
+    private static void extractFlightData(WorkerEntity worker, WorkerRenderState renderState, float partialTick) {
         renderState.fallFlyingTimeInTicks = worker.getFallFlyingTicks() + partialTick;
         Vec3 vec3 = worker.getViewVector(partialTick);
         Vec3 vec31 = worker.getDeltaMovementLerped(partialTick);
@@ -214,7 +227,7 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
         }
     }
 
-    private static void extractCapeState(WorkerEntity worker, PlayerRenderState renderState, float partialTick) {
+    private static void extractCapeState(WorkerEntity worker, WorkerRenderState renderState, float partialTick) {
 //        double d0 = Mth.lerp((double)partialTick, worker.xCloakO, worker.xCloak) - Mth.lerp((double)partialTick, worker.xo, worker.getX());
 //        double d1 = Mth.lerp((double)partialTick, worker.yCloakO, worker.yCloak) - Mth.lerp((double)partialTick, worker.yo, worker.getY());
 //        double d2 = Mth.lerp((double)partialTick, worker.zCloakO, worker.zCloak) - Mth.lerp((double)partialTick, worker.zo, worker.getZ());
@@ -234,7 +247,7 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
     }
 
     @Override
-    protected void setupRotations(PlayerRenderState p_363355_, PoseStack p_117803_, float p_117804_, float p_117805_) {
+    protected void setupRotations(WorkerRenderState p_363355_, PoseStack p_117803_, float p_117804_, float p_117805_) {
         float f = p_363355_.swimAmount;
         float f1 = p_363355_.xRot;
         if (p_363355_.isFallFlying) {
@@ -258,6 +271,53 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Pla
         } else {
             super.setupRotations(p_363355_, p_117803_, p_117804_, p_117805_);
         }
+    }
+
+    @Override
+    public void render(WorkerRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        super.render(renderState, poseStack, bufferSource, packedLight);
+
+        if(renderState.isFishing){
+            Vec3 bobber = renderState.bobberPosition.subtract(renderState.x, renderState.y, renderState.z);
+
+            poseStack.pushPose();
+            poseStack.pushPose();
+            poseStack.translate(bobber);
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+            PoseStack.Pose posestack$pose = poseStack.last();
+            VertexConsumer vertexconsumer = bufferSource.getBuffer(FISHING_BOBBER_RENDER_TYPE);
+            bobberVertex(vertexconsumer, posestack$pose, packedLight, 0.0F, 0, 0, 1);
+            bobberVertex(vertexconsumer, posestack$pose, packedLight, 1.0F, 0, 1, 1);
+            bobberVertex(vertexconsumer, posestack$pose, packedLight, 1.0F, 1, 1, 0);
+            bobberVertex(vertexconsumer, posestack$pose, packedLight, 0.0F, 1, 0, 0);
+            poseStack.popPose();
+            
+            poseStack.translate(bobber.subtract(0.0, 0.15, 0.0));
+            
+            float f = (float)renderState.fishingLineOriginOffset.x;
+            float f1 = (float)renderState.fishingLineOriginOffset.y;
+            float f2 = (float)renderState.fishingLineOriginOffset.z;
+            VertexConsumer vertexconsumer1 = bufferSource.getBuffer(RenderType.lineStrip());
+            PoseStack.Pose posestack$pose1 = poseStack.last();
+            int segments = 16;
+
+            for (int j = 0; j <= segments; j++) {
+                RenderHelper.stringVertex(f, f1, f2, vertexconsumer1, posestack$pose1, (float)j / segments, (float)(j + 1) / segments);
+            }
+
+            poseStack.popPose();
+        
+        }
+    }
+
+    private static void bobberVertex(VertexConsumer consumer, PoseStack.Pose pose, int packedLight, float x, int y, int u, int v) {
+        consumer.addVertex(pose, x - 0.5F, y - 0.5F, 0.0F)
+            .setColor(-1)
+            .setUv(u, v)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(packedLight)
+            .setNormal(pose, 0.0F, 1.0F, 0.0F);
     }
 
 }

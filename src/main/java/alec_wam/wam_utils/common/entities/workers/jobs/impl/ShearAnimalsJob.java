@@ -9,6 +9,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.AreaWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
+import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -158,7 +159,7 @@ public class ShearAnimalsJob extends AreaWorkerJob {
 					}
 				}
 			}
-			else {
+			else if(EntityHelper.isLookingAtHorizontally(worker, this.shearEntity, 20)){
 				shearAnimal(shearable, pos);
 			}
 		}

@@ -8,6 +8,7 @@ import alec_wam.wam_utils.client.render.entities.RenderHelper;
 import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.network.ClientPayloadHandler;
+import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -67,6 +68,10 @@ public class ModClientInit {
         event.register(
             SyncWorkerJobPayload.TYPE,
             ClientPayloadHandler::handleSyncWorkerJobOnMain
+        );
+        event.register(
+            SyncWorkerFishingPayload.TYPE,
+            ClientPayloadHandler::handleSyncWorkerFishingOnMain
         );
     }
 	

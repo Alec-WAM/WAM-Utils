@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -207,5 +208,43 @@ public class EntityHelper {
 			}
         }
 		return flag;
+	}
+
+	public static Vec3 getEntityThirdPersonHandPos(LivingEntity entity, HumanoidArm arm, float scale, float partialTick){
+		int i = arm == HumanoidArm.RIGHT ? 1 : -1;
+		float f = Mth.lerp(partialTick, entity.yBodyRotO, entity.yBodyRot) * (float) (Math.PI / 180.0);
+		double d0 = Mth.sin(f);
+		double d1 = Mth.cos(f);
+		double d2 = i * 0.35 * scale;
+		double d3 = 0.8 * scale;
+		float f2 = entity.isCrouching() ? -0.1875F : 0.0F;
+		return entity.getEyePosition(partialTick).add(-d1 * d2 - d0 * d3, f2 - 0.45 * scale, -d0 * d2 + d1 * d3);
+	}
+
+	public static boolean isLookingAtHorizontally(LivingEntity entity, BlockPos pos, double maxDegrees){
+		return isLookingAtHorizontally(entity, Vec3.atCenterOf(pos), maxDegrees);
+	}
+
+	public static boolean isLookingAtHorizontally(LivingEntity entity, Entity targetEntity, double maxDegrees){
+		Vec3 targetEntityPos = targetEntity.position();
+		return isLookingAtHorizontally(entity, targetEntityPos, maxDegrees);
+	}
+
+	public static boolean isLookingAtHorizontally(LivingEntity entity, Vec3 target, double maxDegrees) {
+		Vec3 entityPos = entity.position();
+		// Horizontal delta only
+		double dx = target.x - entityPos.x;
+		double dz = target.z - entityPos.z;
+
+		// Angle from entity to target in world space
+		double angleToTarget = Math.toDegrees(Math.atan2(dz, dx)) - 90.0;
+
+		// Entity yaw is in -180 to 180, atan2 gives -180 to 180
+		float entityYaw = entity.yBodyRot;
+
+		// Convert to same reference
+		float angleDifference = Math.abs(Mth.wrapDegrees((float) angleToTarget - entityYaw));
+		System.out.println( angleToTarget + " / " + angleDifference);
+		return angleDifference <= maxDegrees;
 	}
 }

@@ -209,7 +209,7 @@ public class BreedAnimalsJob extends AreaWorkerJob {
 					}
 				}
 			}
-			else {
+			else if(EntityHelper.isLookingAtHorizontally(worker, breedEntity, 20)){
 				setBreedingTargetInLove();
 			}
 		}

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientPayloadHandler {
@@ -37,6 +38,23 @@ public class ClientPayloadHandler {
 	            	else {
 	            		worker.setJob(null);
 	            	}
+	            }
+	    	}			
+        });
+    }
+
+	public static void handleSyncWorkerFishingOnMain(final SyncWorkerFishingPayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			Level level = Minecraft.getInstance().level;
+	    	if (level != null) {
+	    		Entity entity = level.getEntity(data.entityId());
+	            if (entity !=null && entity instanceof WorkerEntity worker) {
+	            	if(data.isFishing() && data.fishingTargetLocation().isPresent()){
+						worker.startFishing(new Vec3(data.fishingTargetLocation().get()));
+					}
+					else {
+						worker.stopFishing();
+					}
 	            }
 	    	}			
         });
