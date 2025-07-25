@@ -6,21 +6,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import org.jetbrains.annotations.UnknownNullability;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.BaseBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -32,41 +30,50 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class ConveyorSplitterBE extends BaseBE {
 
-	public static class ItemFilter implements INBTSerializable<CompoundTag> {
+	public static class ItemFilter {
 
 		public static enum FilterType {
 			ITEM, TAG;
 		}
-		
+
+		public static final Codec<ItemFilter> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+				Codec.STRING.fieldOf("type").forGetter((ItemFilter filter) -> filter.type.name()),
+				ItemStack.CODEC.optionalFieldOf("itemstack").forGetter((ItemFilter filter) -> filter.stack),
+				Codec.STRING.optionalFieldOf("itemtag").forGetter((ItemFilter filter) -> filter.itemTag)
+			).apply(instance, ItemFilter::new)
+		);
+
 		public FilterType type;
-		public ItemStack stack;
-		public String itemTag;
-		
-		public ItemFilter() {}
-		
-		public ItemFilter setItemStack(ItemStack stack) {
-			this.type = FilterType.ITEM;
+		public Optional<ItemStack> stack;
+		public Optional<String> itemTag;
+
+		public ItemFilter(String type, Optional<ItemStack> stack, Optional<String> itemTag) {
+			this.type = FilterType.valueOf(type);
 			this.stack = stack;
-			return this;
+			this.itemTag = itemTag;
 		}
-		
-		public ItemFilter setItemTag(String tag) {
-			this.type = FilterType.TAG;
-			this.itemTag = tag;
-			return this;
+
+		public static ItemFilter itemStackFilter(ItemStack stack) {
+			return new ItemFilter(FilterType.ITEM.name(), Optional.of(stack), Optional.empty());
+		}
+
+		public static ItemFilter itemTagFilter(String tag) {
+			return new ItemFilter(FilterType.TAG.name(), Optional.empty(), Optional.of(tag));
 		}
 		
 		public boolean itemMatches(ItemStack stack) {
 			if(type == FilterType.ITEM) {
 				//TODO Make this able to be "fuzzy" instead of exact
-				return ItemStack.isSameItemSameComponents(this.stack, stack);
+				return this.stack.isEmpty() ? false : ItemStack.isSameItemSameComponents(this.stack.get(), stack);
 			}
 			else if(type == FilterType.TAG) {
 				return stack.getTags().anyMatch(this::tagMatches);
@@ -75,114 +82,85 @@ public class ConveyorSplitterBE extends BaseBE {
 		}
 		
 		private boolean tagMatches(TagKey<Item> tagKey) {
-			if(this.itemTag == null) {
+			if(this.itemTag.isEmpty()) {
 				return false;
 			}
 			String otherTag = tagKey.location().toString().toLowerCase(Locale.ROOT);
-			return this.itemTag.equalsIgnoreCase(otherTag);
-		}
-		
-		@Override
-		public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
-			CompoundTag tag = new CompoundTag();
-			if(this.type !=null) {
-				tag.putByte("type", (byte)this.type.ordinal());
-				if(type == FilterType.ITEM) {
-					tag.put("itemstack", this.stack.save(provider));
-				}
-				else if(type == FilterType.TAG) {
-					tag.putString("itemtag", this.itemTag);
-				}
-			}
-			return tag;
-		}
-
-		@Override
-		public void deserializeNBT(Provider provider, CompoundTag tag) {
-	        if(tag.contains("type")) {
-	        	this.type = FilterType.values()[tag.getByteOr("type", (byte)0)];
-	        	
-	        	if(this.type == FilterType.ITEM) {
-	        		this.stack = ItemStack.parse(provider, tag.getCompoundOrEmpty("itemstack")).orElse(ItemStack.EMPTY);
-	        	}
-	        	else if(this.type == FilterType.TAG) {
-	        		this.itemTag = tag.getStringOr("itemtag", itemTag);
-	        	}
-	        }
+			return this.itemTag.get().equalsIgnoreCase(otherTag);
 		}
 		
 	}
 	
-	public static class ItemFilterList implements INBTSerializable<CompoundTag> {
+	// public static class ItemFilterList implements INBTSerializable<CompoundTag> {
 
-		private List<ItemFilter> filters;
+	// 	private List<ItemFilter> filters;
 		
-		public ItemFilterList() {
-			this.filters = new ArrayList<>();
-		}
+	// 	public ItemFilterList() {
+	// 		this.filters = new ArrayList<>();
+	// 	}
 		
-		public ItemFilterList(List<ItemFilter> filters) {
-			this.filters = filters;
-		}
+	// 	public ItemFilterList(List<ItemFilter> filters) {
+	// 		this.filters = filters;
+	// 	}
 		
-		public boolean itemMatches(ItemStack stack) {
-			return this.filters.stream().anyMatch(filter -> filter.itemMatches(stack));
-		}
+	// 	public boolean itemMatches(ItemStack stack) {
+	// 		return this.filters.stream().anyMatch(filter -> filter.itemMatches(stack));
+	// 	}
 		
-		public ItemFilter addTagFilter(String string) {
-			ItemFilter tagFilter = new ItemFilter().setItemTag(string);
-			this.addFilter(tagFilter);
-			return tagFilter;
-		}
+	// 	public ItemFilter addTagFilter(String string) {
+	// 		ItemFilter tagFilter = new ItemFilter().setItemTag(string);
+	// 		this.addFilter(tagFilter);
+	// 		return tagFilter;
+	// 	}
 		
-		public ItemFilter addItemStackFilter(ItemStack stack) {
-			ItemFilter tagFilter = new ItemFilter().setItemStack(stack);
-			this.addFilter(tagFilter);
-			return tagFilter;
-		}
+	// 	public ItemFilter addItemStackFilter(ItemStack stack) {
+	// 		ItemFilter tagFilter = new ItemFilter().setItemStack(stack);
+	// 		this.addFilter(tagFilter);
+	// 		return tagFilter;
+	// 	}
 		
-		public void addFilter(ItemFilter filter) {
-			this.filters.add(filter);
-		}
+	// 	public void addFilter(ItemFilter filter) {
+	// 		this.filters.add(filter);
+	// 	}
 		
-		public void removeFilter(int index) {
-			this.filters.remove(index);
-		}
+	// 	public void removeFilter(int index) {
+	// 		this.filters.remove(index);
+	// 	}
 		
-		@Override
-		public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
-			CompoundTag tag = new CompoundTag();
-			if(this.filters !=null) {
-				ListTag filterTagList = new ListTag();
-				for(ItemFilter filter : this.filters) {
-					filterTagList.add(filter.serializeNBT(provider));
-				}
-				tag.put("filters", filterTagList);
-			}
-			return tag;
-		}
+	// 	@Override
+	// 	public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
+	// 		CompoundTag tag = new CompoundTag();
+	// 		if(this.filters !=null) {
+	// 			ListTag filterTagList = new ListTag();
+	// 			for(ItemFilter filter : this.filters) {
+	// 				filterTagList.add(filter.serializeNBT(provider));
+	// 			}
+	// 			tag.put("filters", filterTagList);
+	// 		}
+	// 		return tag;
+	// 	}
 
-		@Override
-		public void deserializeNBT(Provider provider, CompoundTag tag) {
-			if(this.filters !=null) {
-				this.filters.clear();
-			}
-			else {
-				this.filters = new ArrayList<>();
-			}
+	// 	@Override
+	// 	public void deserializeNBT(Provider provider, CompoundTag tag) {
+	// 		if(this.filters !=null) {
+	// 			this.filters.clear();
+	// 		}
+	// 		else {
+	// 			this.filters = new ArrayList<>();
+	// 		}
 			
-			if(tag.contains("filters")) {
-				ListTag filterTagList = tag.getListOrEmpty("filters");
-				for(int i = 0; i < filterTagList.size(); i++) {
-					CompoundTag filterTag = filterTagList.getCompoundOrEmpty(i);
-					ItemFilter filter = new ItemFilter();
-					filter.deserializeNBT(provider, filterTag);
-					this.filters.add(filter);
-				}
-			}
-		}
+	// 		if(tag.contains("filters")) {
+	// 			ListTag filterTagList = tag.getListOrEmpty("filters");
+	// 			for(int i = 0; i < filterTagList.size(); i++) {
+	// 				CompoundTag filterTag = filterTagList.getCompoundOrEmpty(i);
+	// 				ItemFilter filter = new ItemFilter();
+	// 				filter.deserializeNBT(provider, filterTag);
+	// 				this.filters.add(filter);
+	// 			}
+	// 		}
+	// 	}
 		
-	}
+	// }
 	
 	public static class ItemSplitterEntry {
 		private List<Direction> validDirections;
@@ -239,39 +217,45 @@ public class ConveyorSplitterBE extends BaseBE {
 	}	
 	
 	@Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
         if(!itemFilters.isEmpty()) {
-        	ListTag tagList = new ListTag();
-        	for(Entry<Direction, ItemFilter> entry : this.itemFilters.entrySet()) {
-        		CompoundTag filterTag = new CompoundTag();
-        		filterTag.putString("direction", entry.getKey().getName());
-        		filterTag.put("filter", entry.getValue().serializeNBT(provider));
-        		tagList.add(filterTag);
-        	}
-        	tag.put("filters", tagList);
+			ValueOutput.ValueOutputList listValue = valueOutput.childrenList("filters");
+			for(Entry<Direction, ItemFilter> entry : this.itemFilters.entrySet()) {
+				ValueOutput childOutput = listValue.addChild();
+				childOutput.putString("direction", entry.getKey().getName());
+				childOutput.store("filter", ItemFilter.CODEC, entry.getValue());
+			}
         }
     }
     
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+    public void loadAdditional(ValueInput valueInput) {
     	this.itemFilters.clear();
-    	if(tag.contains("filters")) {
-    		ListTag tagList = tag.getListOrEmpty("filters");
-    		for(int i = 0; i < tagList.size(); i++) {
-    			CompoundTag filterTag = tagList.getCompoundOrEmpty(i);
-    			if(!filterTag.isEmpty()) {
-    				Direction dir = Direction.byName(filterTag.getStringOr("direction", "north"));
-    				ItemFilter filter = new ItemFilter();
-    				filter.deserializeNBT(provider, filterTag.getCompoundOrEmpty("filter"));
-    				if(filter.type !=null) {
-    					this.itemFilters.put(dir, filter);
-    				}
-    			}
-    		}
-    	}
-    	
-    	super.loadAdditional(tag, provider);
+		ValueInput.ValueInputList listValue = valueInput.childrenListOrEmpty("filters");
+		for(ValueInput childInput : listValue) {
+			Direction dir = Direction.byName(childInput.getStringOr("direction", "north"));
+			ItemFilter filter = childInput.read("filter", ItemFilter.CODEC).orElse(null);
+			if(filter !=null) {
+				this.itemFilters.put(dir, filter);
+			}
+		}
+    	// if(tag.contains("filters")) {
+    	// 	ListTag tagList = tag.getListOrEmpty("filters");
+    	// 	for(int i = 0; i < tagList.size(); i++) {
+    	// 		CompoundTag filterTag = tagList.getCompoundOrEmpty(i);
+    	// 		if(!filterTag.isEmpty()) {
+    	// 			Direction dir = Direction.byName(filterTag.getStringOr("direction", "north"));
+    	// 			ItemFilter filter = new ItemFilter();
+    	// 			filter.deserializeNBT(provider, filterTag.getCompoundOrEmpty("filter"));
+    	// 			if(filter.type !=null) {
+    	// 				this.itemFilters.put(dir, filter);
+    	// 			}
+    	// 		}
+    	// 	}
+    	// }
+
+    	super.loadAdditional(valueInput);
     }
 	
 	//TODO Change this to an ItemHandler that only accepts allowed items
@@ -309,8 +293,8 @@ public class ConveyorSplitterBE extends BaseBE {
 					message = Component.literal(dir.getName() + ": No Filter");
 				}
 				else {
-					String valueStr = filter.type == ItemFilter.FilterType.ITEM ? filter.stack.getDisplayName().getString() : filter.itemTag;
-					message = Component.literal(dir.getName() + "(" + filter.type.name() + "): " + valueStr);				
+					String valueStr = filter.type == ItemFilter.FilterType.ITEM ? (filter.stack.isPresent() ? filter.stack.get().getDisplayName().getString() : "Empty") : filter.itemTag.orElse("No Tag");
+					message = Component.literal(dir.getName() + "(" + filter.type.name() + "): " + valueStr);
 				}
 				player.displayClientMessage(message, true);
 	        	return InteractionResult.SUCCESS_SERVER;
@@ -326,7 +310,7 @@ public class ConveyorSplitterBE extends BaseBE {
 				else if(stack.is(Items.NAME_TAG)) {
 					Component component = stack.get(DataComponents.CUSTOM_NAME);
 			        if (component != null) {
-			        	ItemFilter filter = new ItemFilter().setItemTag(component.getString().toLowerCase());
+			        	ItemFilter filter = ItemFilter.itemTagFilter(component.getString().toLowerCase());
 			        	this.itemFilters.put(dir, filter);
 						this.clearRouteCache();
 			        	this.markDirtyClient();
@@ -335,7 +319,7 @@ public class ConveyorSplitterBE extends BaseBE {
 				}
 				else {
 					ItemStack copyStack = stack.copyWithCount(1);
-					ItemFilter filter = new ItemFilter().setItemStack(copyStack);
+					ItemFilter filter = ItemFilter.itemStackFilter(copyStack);
 		        	this.itemFilters.put(dir, filter);
 					this.clearRouteCache();
 		        	this.markDirtyClient();

@@ -21,11 +21,8 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandler;
 
-@OnlyIn(Dist.CLIENT)
 public class ConveyorBeltBERenderer implements BlockEntityRenderer<ConveyorBeltBE> {
 	
 	private final ItemModelResolver itemModelResolver;

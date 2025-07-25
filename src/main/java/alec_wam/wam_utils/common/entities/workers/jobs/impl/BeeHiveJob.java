@@ -11,7 +11,6 @@ import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class BeeHiveJob extends MultiBlockPosWorkerJob {
 	private static final Predicate<ItemStack> IS_SHEARS = (stack) -> {
@@ -43,15 +44,15 @@ public class BeeHiveJob extends MultiBlockPosWorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-		tag.putByte("HarvestType", this.harvestType);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+		valueOutput.putByte("HarvestType", this.harvestType);
 	}
 	
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-		this.harvestType = tag.getByteOr("HarvestType", (byte)-1);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+		this.harvestType = valueInput.getByteOr("HarvestType", (byte)-1);
 	}
 
 	public static BeeHiveJob createJob(WorkerEntity worker, ItemStack stack, Player player) {

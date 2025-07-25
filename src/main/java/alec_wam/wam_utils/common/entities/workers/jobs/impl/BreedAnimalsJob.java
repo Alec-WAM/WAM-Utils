@@ -14,7 +14,6 @@ import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +22,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public class BreedAnimalsJob extends AreaWorkerJob {
@@ -49,17 +50,17 @@ public class BreedAnimalsJob extends AreaWorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-		tag.putInt("IdleTimer", this.idleTimer);
-		tag.putInt("ScanDelay", this.scanDelay);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+		valueOutput.putInt("IdleTimer", this.idleTimer);
+		valueOutput.putInt("ScanDelay", this.scanDelay);
 	}
 	
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-		this.idleTimer = tag.getIntOr("IdleTimer", 0);
-		this.scanDelay = tag.getIntOr("ScanDelay", 0);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+		this.idleTimer = valueInput.getIntOr("IdleTimer", 0);
+		this.scanDelay = valueInput.getIntOr("ScanDelay", 0);
 	}
 	
 	@Override

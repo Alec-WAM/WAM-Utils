@@ -7,10 +7,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class DefaultWorkerSkin {
     private static final PlayerSkin[] DEFAULT_SKINS = new PlayerSkin[]{
         create("textures/entity/player/slim/alex.png", PlayerSkin.Model.SLIM),

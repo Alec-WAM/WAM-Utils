@@ -2,7 +2,8 @@ package alec_wam.wam_utils.common.blocks.conveyor;
 
 import java.util.List;
 
-import org.jetbrains.annotations.UnknownNullability;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.BaseBE;
@@ -11,9 +12,6 @@ import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock.BeltSlope;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.EntitySelector;
@@ -24,8 +22,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -35,8 +34,18 @@ public class ConveyorBeltBE extends BaseBE {
 	public static final int SLOT_SIZE = 1;	
 	public static float BELT_SPEED = 0.08F;
 	
-	public class MovingItem implements INBTSerializable<CompoundTag> {
+	public static class MovingItem {
 	    public enum Phase { MOVING_IN, MOVING_OUT }
+
+		public static final Codec<MovingItem> CODEC = RecordCodecBuilder.create(instance -> // Given an instance
+			instance.group( // Define the fields within the instance
+				Direction.CODEC.fieldOf("from").forGetter((MovingItem item) -> item.from),
+				Direction.CODEC.fieldOf("to").forGetter((MovingItem item) -> item.to),
+				Codec.STRING.fieldOf("phaseStr").forGetter((MovingItem item) -> item.phase.name()),
+				Codec.FLOAT.fieldOf("progress").forGetter((MovingItem item) -> item.progress),
+				Codec.FLOAT.fieldOf("prevProgress").forGetter((MovingItem item) -> item.prevProgress)
+			).apply(instance, MovingItem::new) // Define how to create the object
+		);
 
 	    public Direction from;
 	    public Direction to;
@@ -56,27 +65,17 @@ public class ConveyorBeltBE extends BaseBE {
 	        this.prevProgress = 0f;
 	    }
 
+		public MovingItem(Direction from, Direction to, String phaseStr, float progress, float prevProgress) {
+	        this.from = from;
+	        this.to = to;
+	        this.phase = phaseStr != null ? Phase.valueOf(phaseStr) : Phase.MOVING_IN;
+	        this.progress = progress;
+	        this.prevProgress = prevProgress;
+	    }
+
 	    public boolean isFinished() {
 	        return phase == Phase.MOVING_OUT && progress >= 1f;
 	    }
-
-		@Override
-		public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
-			CompoundTag tag = new CompoundTag();
-			tag.putInt("from", from.ordinal());
-			tag.putInt("to", to.ordinal());
-			tag.putFloat("progress", progress);
-			tag.putInt("phase", phase.ordinal());
-			return tag;
-		}
-
-		@Override
-		public void deserializeNBT(Provider provider, CompoundTag tag) {
-	        this.from = Direction.values()[tag.getIntOr("from", 0)];
-	        this.to = Direction.values()[tag.getIntOr("to", 0)];
-	        this.progress = tag.getFloatOr("progress", 0.0F);
-	        this.phase = Phase.values()[tag.getIntOr("phase", 0)];
-		}
 	}
 	
 	
@@ -164,25 +163,17 @@ public class ConveyorBeltBE extends BaseBE {
     }
     
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        if(this.movingItem != null) {
-        	tag.put("moveItem", this.movingItem.serializeNBT(provider));
-        }
-        tag.putBoolean("redstonePowered", isRedstonePowered);
+    public void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
+		valueOutput.storeNullable("moveItem", MovingItem.CODEC, this.movingItem);
+        valueOutput.putBoolean("redstonePowered", isRedstonePowered);
     }
     
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-    	if(tag.contains("moveItem")) {
-    		this.movingItem = new MovingItem();
-    		this.movingItem.deserializeNBT(provider, tag.getCompoundOrEmpty("moveItem"));
-    	}
-    	else {
-    		this.movingItem = null;
-    	}
-    	this.isRedstonePowered = tag.getBooleanOr("redstonePowered", false);
-    	super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput valueInput) {
+		this.movingItem = valueInput.read("moveItem", MovingItem.CODEC).orElse(null);
+    	this.isRedstonePowered = valueInput.getBooleanOr("redstonePowered", false);
+    	super.loadAdditional(valueInput);
     }
     
     public Direction getFacing() {

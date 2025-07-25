@@ -38,10 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, PlayerRenderState, PlayerModel> {
     
     public WorkerEntityRenderer(EntityRendererProvider.Context context, boolean useSlimModel) {

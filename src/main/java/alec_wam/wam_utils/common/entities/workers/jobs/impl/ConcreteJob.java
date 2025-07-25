@@ -1,11 +1,9 @@
 package alec_wam.wam_utils.common.entities.workers.jobs.impl;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.BreakBlockWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
@@ -13,12 +11,9 @@ import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.SelectionType;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.WorkerBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -30,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.Tags;
 
@@ -58,15 +55,15 @@ public class ConcreteJob extends BreakBlockWorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-        tag.putInt("ItemScanDelay", this.itemScanDelay);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+        valueOutput.putInt("ItemScanDelay", this.itemScanDelay);
 	}
 	
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-        this.itemScanDelay = tag.getIntOr("ItemScanDelay", 0);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+        this.itemScanDelay = valueInput.getIntOr("ItemScanDelay", 0);
 	}
 
 	public static ConcreteJob createJob(WorkerEntity worker, ItemStack stack, Player player) {

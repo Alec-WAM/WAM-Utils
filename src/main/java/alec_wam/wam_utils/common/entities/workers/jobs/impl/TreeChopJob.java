@@ -17,7 +17,6 @@ import alec_wam.wam_utils.common.helpers.TreeCutter;
 import alec_wam.wam_utils.common.helpers.TreeCutter.Tree;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -30,6 +29,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TreeChopJob extends BreakBlockWorkerJob {
 
@@ -57,15 +58,15 @@ public class TreeChopJob extends BreakBlockWorkerJob {
 	}	
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-		tag.putBoolean("MissingSaplingItems", this.missingSaplingItems);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+		valueOutput.putBoolean("MissingSaplingItems", this.missingSaplingItems);
 	}
 
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-		this.missingSaplingItems = tag.getBooleanOr("MissingSaplingItems", false);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+		this.missingSaplingItems = valueInput.getBooleanOr("MissingSaplingItems", false);
 	}
 
 	@Override

@@ -7,8 +7,9 @@ import javax.annotation.Nullable;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity.ExternalInventoryStatus;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public abstract class WorkerJob {
@@ -19,15 +20,11 @@ public abstract class WorkerJob {
 		this.worker = worker;
 	}
 	
-	public void saveToTag(CompoundTag tag) {
+	public void save(ValueOutput valueOutput) {
 		
 	}
 	
-	/**
-	 * Load additional data that is not part of the constructor
-	 * @param tag
-	 */
-	public void loadAdditionalData(CompoundTag tag) {
+	public void load(ValueInput valueInput) {
 		
 	}
 	

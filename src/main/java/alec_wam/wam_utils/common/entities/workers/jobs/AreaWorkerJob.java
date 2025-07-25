@@ -8,11 +8,10 @@ import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public abstract class AreaWorkerJob extends WorkerJob {
@@ -48,15 +47,14 @@ public abstract class AreaWorkerJob extends WorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
+	public void save(ValueOutput valueOutput) {
 		if(dimension !=null) {
-			tag.storeNullable(NBT_DIMENSION, ResourceKey.codec(Registries.DIMENSION), dimension);
+			valueOutput.storeNullable(NBT_DIMENSION, ResourceKey.codec(Registries.DIMENSION), dimension);
 		}
 		if(!this.blockPosList.isEmpty()) {
-			Tag tagList = BlockHelper.saveBlockPosList(blockPosList);
-			tag.put(NBT_BLOCK_LIST, tagList);
+			BlockHelper.saveBlockPosList(valueOutput, NBT_BLOCK_LIST, blockPosList);
 		}
-		tag.putBoolean(NBT_CONNECTED, connected);
+		valueOutput.putBoolean(NBT_CONNECTED, connected);
 	}
 	
 	public boolean isConnected() {

@@ -7,7 +7,10 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
@@ -30,12 +33,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class JobManager {
+
+	private static final Logger LOGGER = LogUtils.getLogger();
 
 	@FunctionalInterface
 	public interface WorkerJobFactory {
@@ -85,14 +94,6 @@ public class JobManager {
 		public JobType getNextType() {
 			return JobType.values()[(this.ordinal() + 1) % JobType.values().length];
 		}
-		
-		public void saveToTag(String key, CompoundTag tag) {
-			tag.putString(key, name());
-		}
-		
-		public static JobType loadFromTag(String key, CompoundTag tag) {
-			return valueOf(tag.getStringOr(key, ""));
-		}
 
 		@Override
 		public String getSerializedName() {
@@ -137,21 +138,36 @@ public class JobManager {
     }
 	
 	public static CompoundTag saveToTag(WorkerJob job) {
-		CompoundTag tag = new CompoundTag();
-		job.getJobType().saveToTag("JobType", tag);
-		CompoundTag jobData = new CompoundTag();
-		job.saveToTag(jobData);
-		tag.put("JobData", jobData);
-		return tag;
+		if(job == null || job.worker == null || job.worker.level() == null){
+			return new CompoundTag();
+		}
+		try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(
+            JobManager.problemPath(job), LOGGER
+        )) {
+            TagValueOutput output = TagValueOutput.createWithContext(problemreporter$scopedcollector, job.worker.level().registryAccess());
+            saveToOutput(output, job);
+			return output.buildResult();
+        } catch (Exception exception) {
+            LOGGER.error("Failed to save Worker Job to CompoundTag", (Throwable)exception);
+        }
+        return new CompoundTag();
+	}
+
+	
+
+	public static void saveToOutput(ValueOutput valueOutput, WorkerJob job){
+		valueOutput.store("JobType", JobType.CODEC, job.getJobType());
+		ValueOutput jobChild = valueOutput.child("JobData");
+		job.save(jobChild);
 	}
 	
-	public static WorkerJob loadFromTag(WorkerEntity worker, CompoundTag tag) {
-		JobType type = JobType.loadFromTag("JobType", tag);
+	public static WorkerJob load(WorkerEntity worker, ValueInput valueInput) {
+		JobType type = valueInput.read("JobType", JobType.CODEC).orElse(null);
 		if(type == null) {
 			System.err.println("Unable to load JobType from tag, returning null job");
 			return null;
 		}
-		CompoundTag jobData = tag.getCompoundOrEmpty("JobData");
+		ValueInput jobData = valueInput.childOrEmpty("JobData");
 		WorkerJob job = null;
 		if(isSubclassOf(type.getJobClass(), AreaWorkerJob.class)) {
 			Optional<ResourceKey<Level>> dimension = jobData.read(AreaWorkerJob.NBT_DIMENSION, ResourceKey.codec(Registries.DIMENSION));
@@ -202,7 +218,7 @@ public class JobManager {
 		}
 		
 		if(job !=null) {
-			job.loadAdditionalData(jobData);
+			job.load(jobData);
 		}
 		return job;
 	}
@@ -224,6 +240,17 @@ public class JobManager {
 	        // try the next level up the hierarchy.
 	        return isSubclassOf(clazz, superClass);
 	    }
-	}
+	}	
+
+	public static ProblemReporter.PathElement problemPath(WorkerJob job) {
+        return new WorkerJobElement(job);
+    }
+
+    record WorkerJobElement(WorkerJob job) implements ProblemReporter.PathElement {
+        @Override
+        public String get() {
+            return "WorkerJob@" + job.getJobType().getSerializedName();
+        }
+    }
 	
 }

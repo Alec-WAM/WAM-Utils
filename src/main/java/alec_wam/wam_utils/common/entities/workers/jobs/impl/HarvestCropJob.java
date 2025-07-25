@@ -1,11 +1,9 @@
 package alec_wam.wam_utils.common.entities.workers.jobs.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
@@ -15,8 +13,6 @@ import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import alec_wam.wam_utils.common.helpers.TreeCutter;
 import alec_wam.wam_utils.common.helpers.TreeCutter.Tree;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.SelectionType;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.WorkerBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;

@@ -5,13 +5,14 @@ import java.util.List;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public abstract class MultiBlockPosWorkerJob extends AreaWorkerJob {
@@ -30,21 +31,21 @@ public abstract class MultiBlockPosWorkerJob extends AreaWorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-		tag.storeNullable("WorkingPos", BlockPos.CODEC, workingPos);
-		tag.putInt("BlockScanIndex", this.blockScanIndex);
-		tag.putInt("ScanDelay", this.scanDelay);
-		tag.putInt("IdleTimer", this.idleTimer);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+		valueOutput.storeNullable("WorkingPos", BlockPos.CODEC, workingPos);
+		valueOutput.putInt("BlockScanIndex", this.blockScanIndex);
+		valueOutput.putInt("ScanDelay", this.scanDelay);
+		valueOutput.putInt("IdleTimer", this.idleTimer);
 	}
 	
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-		this.workingPos = tag.read("WorkingPos", BlockPos.CODEC).orElse(null);
-		this.blockScanIndex = tag.getIntOr("BlockScanIndex", 0);
-		this.scanDelay = tag.getIntOr("ScanDelay", 0);
-		this.idleTimer = tag.getIntOr("IdleTimer", 0);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+		this.workingPos = valueInput.read("WorkingPos", BlockPos.CODEC).orElse(null);
+		this.blockScanIndex = valueInput.getIntOr("BlockScanIndex", 0);
+		this.scanDelay = valueInput.getIntOr("ScanDelay", 0);
+		this.idleTimer = valueInput.getIntOr("IdleTimer", 0);
 	}
 	
 	public abstract boolean canInteractWithBlock(Level level, BlockPos pos);

@@ -17,9 +17,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -62,6 +59,9 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -398,16 +398,17 @@ public class BlockHelper {
 		return state.getBlock() instanceof SugarCaneBlock || state.getBlock() instanceof CactusBlock;
 	}
 	
-	public static Tag saveBlockPosList(List<BlockPos> list) {
-		return BlockPos.CODEC.listOf().encodeStart(NbtOps.INSTANCE, list).getOrThrow();
+	public static void saveBlockPosList(ValueOutput valueOutput, String key, List<BlockPos> list) {
+		TypedOutputList<BlockPos> outputList = valueOutput.list(key, BlockPos.CODEC);
+		list.forEach(outputList::add);
+		// return BlockPos.CODEC.listOf().encodeStart(NbtOps.INSTANCE, list).getOrThrow();
 	}
-	
-	public static List<BlockPos> loadBlockPosList(CompoundTag tag, String listTagName){
+
+	public static List<BlockPos> loadBlockPosList(ValueInput valueInput, String key){
 		List<BlockPos> list = new LinkedList<BlockPos>();
-		if(tag.contains(listTagName)) {
-			Tag tagList = tag.get(listTagName);
-			return BlockPos.CODEC.listOf().parse(NbtOps.INSTANCE, tagList).getOrThrow();
-		}
+		valueInput.listOrEmpty(key, BlockPos.CODEC).forEach(pos -> {
+			list.add(pos);
+		});
 		return list;
 	}
 	

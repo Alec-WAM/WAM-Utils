@@ -36,7 +36,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -94,6 +93,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -231,16 +232,20 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundTag tag) 
+	public void readAdditionalSaveData(ValueInput valueInput) 
 	{
-	    super.readAdditionalSaveData(tag);
+	    super.readAdditionalSaveData(valueInput);
 		
-		if (tag.contains(NBT_JOB)) {
-			WorkerJob job = JobManager.loadFromTag(this, tag.getCompoundOrEmpty(NBT_JOB));
+		Optional<ValueInput> jobValueInput = valueInput.child(NBT_JOB);
+		if (jobValueInput.isPresent()) {
+			WorkerJob job = JobManager.load(this, jobValueInput.get());
 			this.setJob(job);
 		}
+		else {
+			this.setJob(null);
+		}
 
-		EntityReference<LivingEntity> entityreference = EntityReference.readWithOldOwnerConversion(tag, "Owner", this.level());
+		EntityReference<LivingEntity> entityreference = EntityReference.readWithOldOwnerConversion(valueInput, "Owner", this.level());
         if (entityreference != null) {
             try {
                 this.entityData.set(DATA_OWNERUUID_ID, Optional.of(entityreference));
@@ -252,32 +257,30 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
             this.entityData.set(DATA_OWNERUUID_ID, Optional.empty());
         }
 
-        this.readInventoryFromTag(tag, this.registryAccess());
+        this.readInventoryFromTag(valueInput);
         
-        this.inventoryInteractDelay = tag.getIntOr("InventoryInteractDelay", 0);
-        
-        this.externalInventorySettings = tag.read(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC).orElse(null);
+        this.inventoryInteractDelay = valueInput.getIntOr("InventoryInteractDelay", 0);        
+        this.externalInventorySettings = valueInput.read(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC).orElse(null);
     }
 	
 	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
+	public void addAdditionalSaveData(ValueOutput valueOutput) {
+		super.addAdditionalSaveData(valueOutput);
 		if(this.job !=null) {
-        	tag.put(NBT_JOB, JobManager.saveToTag(job));
+			ValueOutput jobValueOutput = valueOutput.child(NBT_JOB);
+			JobManager.saveToOutput(jobValueOutput, job);
         }
 
 		EntityReference<LivingEntity> entityreference = this.getOwnerReference();
         if (entityreference != null) {
-            entityreference.store(tag, "Owner");
+            entityreference.store(valueOutput, "Owner");
         }
 
-        this.writeInventoryToTag(tag, this.registryAccess());
+        this.writeInventoryToTag(valueOutput);
         
-        tag.putInt("InventoryInteractDelay", this.inventoryInteractDelay);
+        valueOutput.putInt("InventoryInteractDelay", this.inventoryInteractDelay);
         
-        if(this.externalInventorySettings !=null) {
-        	tag.put(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC.encodeStart(NbtOps.INSTANCE, externalInventorySettings).getOrThrow());
-        }
+        valueOutput.storeNullable(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC, externalInventorySettings);
     }
 	
 	public SyncWorkerJobPayload buildSyncJobPayload() {

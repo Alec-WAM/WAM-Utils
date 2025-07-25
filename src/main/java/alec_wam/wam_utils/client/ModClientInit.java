@@ -7,6 +7,8 @@ import alec_wam.wam_utils.client.render.blockentities.ShieldRackBERenderer;
 import alec_wam.wam_utils.client.render.entities.RenderHelper;
 import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
 import alec_wam.wam_utils.common.ModInit;
+import alec_wam.wam_utils.network.ClientPayloadHandler;
+import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -19,8 +21,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
-@EventBusSubscriber(modid = WAMUtils.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = WAMUtils.MODID, value = Dist.CLIENT)
 public class ModClientInit {
 
 	public static final ModelLayerLocation WORKER_MODEL = new ModelLayerLocation(WAMUtils.prefix("worker"), "worker");
@@ -56,6 +59,15 @@ public class ModClientInit {
         if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             RenderHelper.captureDummySprite(event.getAtlas());
         }
+    }
+
+    
+    @SubscribeEvent
+    public static void registerClientPayloads(RegisterClientPayloadHandlersEvent event) {
+        event.register(
+            SyncWorkerJobPayload.TYPE,
+            ClientPayloadHandler::handleSyncWorkerJobOnMain
+        );
     }
 	
 }

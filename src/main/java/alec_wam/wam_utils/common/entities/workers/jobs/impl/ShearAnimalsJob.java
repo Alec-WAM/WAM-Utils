@@ -1,21 +1,16 @@
 package alec_wam.wam_utils.common.entities.workers.jobs.impl;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.AreaWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.SelectionType;
-import alec_wam.wam_utils.common.items.WorkerStaffItem.WorkerBlockSettings;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -26,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.IShearable;
 
@@ -55,17 +52,17 @@ public class ShearAnimalsJob extends AreaWorkerJob {
 	}
 	
 	@Override
-	public void saveToTag(CompoundTag tag) {
-		super.saveToTag(tag);
-		tag.putInt("IdleTimer", this.idleTimer);
-		tag.putInt("ScanDelay", this.scanDelay);
+	public void save(ValueOutput valueOutput) {
+		super.save(valueOutput);
+		valueOutput.putInt("IdleTimer", this.idleTimer);
+		valueOutput.putInt("ScanDelay", this.scanDelay);
 	}
 	
 	@Override
-	public void loadAdditionalData(CompoundTag tag) {
-		super.loadAdditionalData(tag);
-		this.idleTimer = tag.getIntOr("IdleTimer", 0);
-		this.scanDelay = tag.getIntOr("ScanDelay", 0);
+	public void load(ValueInput valueInput) {
+		super.load(valueInput);
+		this.idleTimer = valueInput.getIntOr("IdleTimer", 0);
+		this.scanDelay = valueInput.getIntOr("ScanDelay", 0);
 	}
 	
 	@Override
