@@ -1,0 +1,319 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - Client",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 0
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--launchTarget",
+        "neoforgeclientdev",
+        "--version",
+        "21.5.75",
+        "--assetIndex",
+        "asset-index",
+        "--assetsDir",
+        "C:\\Users\\alec_\\.gradle\\caches\\minecraft\\assets",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-Dneoforge.enabledGameTestNamespaces\u003dwamutils",
+        "-Dneoforge.enableGameTest\u003dtrue",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathClient\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\client",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - ClientData",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 1
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--mod",
+        "wamutils",
+        "--all",
+        "--output",
+        "D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\src\\generated\\resources",
+        "--existing",
+        "D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\src\\main\\resources",
+        "--launchTarget",
+        "neoforgeclientdatadev",
+        "--assetIndex",
+        "asset-index",
+        "--assetsDir",
+        "C:\\Users\\alec_\\.gradle\\caches\\minecraft\\assets",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathClientData\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\clientData",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - GameTestServer",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 2
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--launchTarget",
+        "neoforgegametestserverdev",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-Dneoforge.enabledGameTestNamespaces\u003dwamutils",
+        "-Dneoforge.enableGameTest\u003dtrue",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathGameTestServer\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\gameTestServer",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - Junit",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 3
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--launchTarget",
+        "neoforgejunitdev",
+        "--version",
+        "21.5.75",
+        "--assetIndex",
+        "asset-index",
+        "--assetsDir",
+        "C:\\Users\\alec_\\.gradle\\caches\\minecraft\\assets",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathJunit\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\junit",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - Server",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 4
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--nogui",
+        "--launchTarget",
+        "neoforgeserverdev",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-Dneoforge.enabledGameTestNamespaces\u003dwamutils",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathServer\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\server",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge 1.21.5 - ServerData",
+      "presentation": {
+        "group": "NG - NeoForge 1.21.5",
+        "order": 5
+      },
+      "projectName": "NeoForge 1.21.5",
+      "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
+      "args": [
+        "--launchTarget",
+        "neoforgeserverdatadev",
+        "--fml.fmlVersion",
+        "7.0.10",
+        "--fml.mcVersion",
+        "1.21.5",
+        "--fml.neoForgeVersion",
+        "21.5.75",
+        "--fml.neoFormVersion",
+        "20250325.162830"
+      ],
+      "vmArgs": [
+        "-p",
+        "C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\bootstraplauncher\\2.0.2\\1a2d076cbc33b0520cbacd591224427b2a20047d\\bootstraplauncher-2.0.2.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\cpw.mods\\securejarhandler\\3.0.8\\c0ef95cecd8699a0449053ac7d9c160748d902cd\\securejarhandler-3.0.8.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-commons\\9.7\\e86dda4696d3c185fcc95d8d311904e7ce38a53f\\asm-commons-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-util\\9.7\\c0655519f24d92af2202cb681cd7c1569df6ead6\\asm-util-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-analysis\\9.7\\e4a258b7eb96107106c0599f0061cfc1832fe07a\\asm-analysis-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm-tree\\9.7\\e446a17b175bfb733b87c5c2560ccb4e57d69f1a\\asm-tree-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\org.ow2.asm\\asm\\9.7\\73d7b3086e14beb604ced229c302feff6449723\\asm-9.7.jar;C:\\Users\\alec_\\.gradle\\caches\\modules-2\\files-2.1\\net.neoforged\\JarJarFileSystems\\0.4.1\\78f59f89defcd032ed788b151ca6a0d40ace796a\\JarJarFileSystems-0.4.1.jar",
+        "--add-modules",
+        "ALL-MODULE-PATH",
+        "--add-opens",
+        "java.base/java.util.jar\u003dcpw.mods.securejarhandler",
+        "--add-opens",
+        "java.base/java.lang.invoke\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "java.base/sun.security.util\u003dcpw.mods.securejarhandler",
+        "--add-exports",
+        "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
+        "-Dforge.logging.markers\u003dREGISTRIES",
+        "-Dforge.logging.console.level\u003ddebug",
+        "-DlegacyClassPath.file\u003dD:\\Coding\\Forge Modding\\NeoForge 1.21.5\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.5-20250325.162830\\steps\\writeMinecraftClasspathServerData\\classpath.txt",
+        "-DignoreList\u003dmixinextras-neoforge-0.4.1.jar,client-extra,neoforge-",
+        "-Djava.net.preferIPv6Addresses\u003dsystem"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\serverData",
+      "env": {
+        "MOD_CLASSES": "NeoForge 1.21.5%%D:\\Coding\\Forge Modding\\NeoForge 1.21.5\\bin\\main"
+      },
+      "shortenCommandLine": "argfile"
+    }
+  ]
+}

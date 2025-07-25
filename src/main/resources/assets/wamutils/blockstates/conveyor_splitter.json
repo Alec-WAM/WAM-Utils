@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wamutils:block/conveyor_splitter"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "wamutils:block/birch_shieldrack",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "wamutils:block/birch_shieldrack"
+    },
+    "facing=south": {
+      "model": "wamutils:block/birch_shieldrack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "wamutils:block/birch_shieldrack",
+      "y": 270
+    }
+  }
+}

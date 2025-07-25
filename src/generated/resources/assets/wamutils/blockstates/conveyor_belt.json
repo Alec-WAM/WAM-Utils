@@ -1,0 +1,184 @@
+{
+  "variants": {
+    "facing=east,left=false,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=east,left=false,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt",
+      "y": 90
+    },
+    "facing=east,left=false,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=east,left=false,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=east,left=false,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_right",
+      "y": 90
+    },
+    "facing=east,left=false,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=east,left=true,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=east,left=true,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_left",
+      "y": 90
+    },
+    "facing=east,left=true,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=east,left=true,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=east,left=true,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_both",
+      "y": 90
+    },
+    "facing=east,left=true,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=north,left=false,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=north,left=false,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt"
+    },
+    "facing=north,left=false,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=north,left=false,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=north,left=false,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_right"
+    },
+    "facing=north,left=false,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=north,left=true,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=north,left=true,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_left"
+    },
+    "facing=north,left=true,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=north,left=true,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=north,left=true,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_both"
+    },
+    "facing=north,left=true,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=south,left=false,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=south,left=false,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt",
+      "y": 180
+    },
+    "facing=south,left=false,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=south,left=false,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=south,left=false,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_right",
+      "y": 180
+    },
+    "facing=south,left=false,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=south,left=true,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=south,left=true,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_left",
+      "y": 180
+    },
+    "facing=south,left=true,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=south,left=true,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled"
+    },
+    "facing=south,left=true,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_both",
+      "y": 180
+    },
+    "facing=south,left=true,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 180
+    },
+    "facing=west,left=false,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=west,left=false,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt",
+      "y": 270
+    },
+    "facing=west,left=false,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=west,left=false,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=west,left=false,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_right",
+      "y": 270
+    },
+    "facing=west,left=false,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=west,left=true,right=false,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=west,left=true,right=false,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_left",
+      "y": 270
+    },
+    "facing=west,left=true,right=false,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    },
+    "facing=west,left=true,right=true,slope=down": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 90
+    },
+    "facing=west,left=true,right=true,slope=flat": {
+      "model": "wamutils:block/conveyor_belt_n_both",
+      "y": 270
+    },
+    "facing=west,left=true,right=true,slope=up": {
+      "model": "wamutils:block/conveyor_belt_angled",
+      "y": 270
+    }
+  }
+}

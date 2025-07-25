@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "wamutils:block/conveyor_splitter_top_bottom",
+    "side": "wamutils:block/conveyor_splitter_side"
+  }
+}

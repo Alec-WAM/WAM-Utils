@@ -1,0 +1,27 @@
+{
+    "variants": {
+      "facing=down": {
+        "model": "wamutils:block/item_grate",
+        "x": 270
+      },
+      "facing=east": {
+        "model": "wamutils:block/item_grate",
+        "y": 270
+      },
+      "facing=north": {
+        "model": "wamutils:block/item_grate",
+        "y": 180
+      },
+      "facing=south": {
+        "model": "wamutils:block/item_grate"
+      },
+      "facing=up": {
+        "model": "wamutils:block/item_grate",
+        "x": 90
+      },
+      "facing=west": {
+        "model": "wamutils:block/item_grate",
+        "y": 90
+      }
+    }
+  }
