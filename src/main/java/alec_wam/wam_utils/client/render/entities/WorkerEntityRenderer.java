@@ -11,18 +11,18 @@ import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -36,34 +36,43 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, WorkerRenderState, WorkerModel> {
+public class WorkerEntityRenderer extends MobRenderer<WorkerEntity, WorkerRenderState, WorkerModel> {
     
     private static final ResourceLocation FISHING_BOBBER_TEXTURE_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/fishing_hook.png");
     private static final RenderType FISHING_BOBBER_RENDER_TYPE = RenderType.entityCutout(FISHING_BOBBER_TEXTURE_LOCATION);
     
-    public WorkerEntityRenderer(EntityRendererProvider.Context context, boolean useSlimModel) {
-        super(context, new WorkerModel(context.bakeLayer(useSlimModel ? ModClientInit.WORKER_SLIM_MODEL : ModClientInit.WORKER_MODEL), useSlimModel), 0.25F);
+    private final WorkerModel normalModel;
+    private final WorkerModel slimModel;
+
+    public WorkerEntityRenderer(EntityRendererProvider.Context context, WorkerModel normalModel, WorkerModel slimModel) {
+        super(context, normalModel, 0.25F);
+        this.normalModel = normalModel;
+        this.slimModel = slimModel;
         this.addLayer(
             new HumanoidArmorLayer<>(
                 this,
-                new HumanoidArmorModel<>(context.bakeLayer(useSlimModel ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)),
-                new HumanoidArmorModel<>(context.bakeLayer(useSlimModel ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
+                new HumanoidArmorModel<>(context.bakeLayer(ModClientInit.WORKER_MODEL_INNER_ARMOR)),
+                new HumanoidArmorModel<>(context.bakeLayer(ModClientInit.WORKER_MODEL_OUTER_ARMOR)),
                 context.getEquipmentRenderer()
             )
         );
-        this.addLayer(new PlayerItemInHandLayer<>(this));
+        this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), CustomHeadLayer.Transforms.DEFAULT));
+        this.addLayer(new WingsLayer<>(this, context.getModelSet(), context.getEquipmentRenderer()));
+        this.addLayer(new ItemInHandLayer<>(this));
         // TODO Fix some of these layers
         //this.addLayer(new ArrowLayer<>(this, context));
 //        this.addLayer(new Deadmau5EarsLayer(this, context.getModelSet()));
         // this.addLayer(new CapeLayer(this, context.getModelSet(), context.getEquipmentAssets()));
-        this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
-        this.addLayer(new WingsLayer<>(this, context.getModelSet(), context.getEquipmentRenderer()));
         // this.addLayer(new SpinAttackEffectLayer(this, context.getModelSet()));
         // this.addLayer(new BeeStingerLayer<>(this, context));
     }
 	   
 	public static void register() {
-		EntityRenderers.register(ModInit.WORKER_ENTITY.get(), (context) -> new WorkerEntityRenderer(context, false));
+		EntityRenderers.register(ModInit.WORKER_ENTITY.get(), (context) -> {
+            WorkerModel normalModel = new WorkerModel(context.bakeLayer(ModClientInit.WORKER_MODEL), false);
+            WorkerModel slimModel = new WorkerModel(context.bakeLayer(ModClientInit.WORKER_SLIM_MODEL), true);
+            return new WorkerEntityRenderer(context, normalModel, slimModel);
+        });
 	}
 
 	@Override
@@ -71,6 +80,21 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Wor
         Vec3 vec3 = super.getRenderOffset(p_360756_);
         return p_360756_.isCrouching ? vec3.add(0.0, p_360756_.scale * -2.0F / 16.0, 0.0) : vec3;
     }
+
+	@Override
+	public WorkerRenderState createRenderState() {
+		return new WorkerRenderState();
+	}
+
+	@Override
+	public ResourceLocation getTextureLocation(WorkerRenderState renderState) {
+		return renderState.skin.texture();
+	}
+	
+	@Override
+	protected void renderNameTag(WorkerRenderState p_363185_, Component p_117809_, PoseStack p_117810_, MultiBufferSource p_117811_, int p_117812_) {
+		
+	}
 
     private static HumanoidModel.ArmPose getArmPose(WorkerEntity worker, HumanoidArm arm) {
         ItemStack itemstack = worker.getItemInHand(InteractionHand.MAIN_HAND);
@@ -131,27 +155,15 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Wor
     }
 
 	@Override
-	public WorkerRenderState createRenderState() {
-		return new WorkerRenderState();
-	}
-
-	@Override
-	public ResourceLocation getTextureLocation(WorkerRenderState renderState) {
-		return renderState.skin.texture();
-	}
-	
-	@Override
-	protected void renderNameTag(WorkerRenderState p_363185_, Component p_117809_, PoseStack p_117810_, MultiBufferSource p_117811_, int p_117812_) {
-		
-	}
-
-	@Override
     public void extractRenderState(WorkerEntity worker, WorkerRenderState renderState, float partialTick) {
         super.extractRenderState(worker, renderState, partialTick);
+        
         HumanoidMobRenderer.extractHumanoidRenderState(worker, renderState, partialTick, this.itemModelResolver);
-        renderState.isBaby = true;
         renderState.leftArmPose = getArmPose(worker, HumanoidArm.LEFT);
         renderState.rightArmPose = getArmPose(worker, HumanoidArm.RIGHT);
+        
+        renderState.isBaby = true;
+        renderState.ageScale = 0.5F;
         renderState.skin = worker.getSkin();
         renderState.arrowCount = worker.getArrowCount();
         renderState.stingerCount = worker.getStingerCount();
@@ -275,6 +287,7 @@ public class WorkerEntityRenderer extends LivingEntityRenderer<WorkerEntity, Wor
 
     @Override
     public void render(WorkerRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        this.model = (renderState.skin == null || renderState.skin.model() == PlayerSkin.Model.WIDE) ? this.normalModel : this.slimModel;
         super.render(renderState, poseStack, bufferSource, packedLight);
 
         if(renderState.isFishing){

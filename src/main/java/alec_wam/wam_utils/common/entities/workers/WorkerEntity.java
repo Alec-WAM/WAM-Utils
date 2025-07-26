@@ -24,6 +24,7 @@ import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
+import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryMenu;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
@@ -36,9 +37,9 @@ import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -56,6 +57,7 @@ import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityReference;
@@ -65,7 +67,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -84,14 +85,15 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -105,7 +107,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public class WorkerEntity extends PathfinderMob implements InventoryCarrier, OwnableEntity {
+public class WorkerEntity extends PathfinderMob implements InventoryCarrier, OwnableEntity, MenuProvider {
 	private static final Logger LOGGER = Logger.getLogger(WorkerEntity.class.getName());
 
 	public static enum ExternalInventoryStatus implements StringRepresentable {
@@ -369,15 +371,6 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				return InteractionResult.PASS;
 			}
 			
-			if(stack.is(Items.STICK)) {
-				final boolean oldCrouch = this.isCrouching();
-				this.setPose(oldCrouch ? Pose.STANDING : Pose.CROUCHING);
-				if(this.getOwner() == null){
-					this.setOwner(player);
-				}
-				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
-			}
-			
 			if(stack.is(Items.HOPPER)) {
 //				this.startUnloadingInventory(true);
 				
@@ -390,42 +383,31 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 			}
 			
-			if(stack.has(DataComponents.EQUIPPABLE)) {
-				Equippable equipable = stack.get(DataComponents.EQUIPPABLE);
-				if(stack.canEquip(equipable.slot(), this)) {
-					if(!isClient) {
-						this.equipItemIfPossible((ServerLevel)this.level(), stack);
-					}
-					
-					return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
-				}
-			}
-			
-			if(stack.is(Items.FISHING_ROD)){
-				BlockPos targetPos = new BlockPos(23, 55, 70);
-				Vec3 fishingPos = BlockHelper.getCenterOf(targetPos);
-				if(!isClient) {
-					if(this.isFishing){
-						this.stopFishing();
-					}
-					else {
-						this.startFishing(fishingPos);
-					}
-				}
-				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
-			}
+			// if(stack.is(Items.FISHING_ROD)){
+			// 	BlockPos targetPos = new BlockPos(23, 55, 70);
+			// 	Vec3 fishingPos = BlockHelper.getCenterOf(targetPos);
+			// 	if(!isClient) {
+			// 		if(this.isFishing){
+			// 			this.stopFishing();
+			// 		}
+			// 		else {
+			// 			this.startFishing(fishingPos);
+			// 		}
+			// 	}
+			// 	return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			// }
 
-			if(ItemHelper.isTool(stack) || ItemHelper.isAxe(stack)) {
-				if(!isClient) {
-					if(!this.getMainHandItem().isEmpty()) {
-						EntityHelper.throwItemsTowardEntity(this, player, hand, Collections.singletonList(getMainHandItem()));
-						this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-					}
-					this.setItemInHand(InteractionHand.MAIN_HAND, stack);
-				}
+			// if(ItemHelper.isTool(stack) || ItemHelper.isAxe(stack)) {
+			// 	if(!isClient) {
+			// 		if(!this.getMainHandItem().isEmpty()) {
+			// 			EntityHelper.throwItemsTowardEntity(this, player, hand, Collections.singletonList(getMainHandItem()));
+			// 			this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			// 		}
+			// 		this.setItemInHand(InteractionHand.MAIN_HAND, stack);
+			// 	}
 				
-				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
-			}
+			// 	return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			// }
 			
 //			if(stack.is(Items.SADDLE)) {
 //				double range = 3.0F;
@@ -442,13 +424,13 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 //				}
 //			}
 			
-			if(stack.is(Items.REDSTONE)) {
-				if(!isClient) {
-					getBrain().setMemory(MemoryModuleType.LOOK_TARGET, Optional.empty());
-					getBrain().setMemory(MemoryModuleType.WALK_TARGET, Optional.empty());
-				}
-				return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER; 
-			}
+			// if(stack.is(Items.REDSTONE)) {
+			// 	if(!isClient) {
+			// 		getBrain().setMemory(MemoryModuleType.LOOK_TARGET, Optional.empty());
+			// 		getBrain().setMemory(MemoryModuleType.WALK_TARGET, Optional.empty());
+			// 	}
+			// 	return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER; 
+			// }
 			
 			if(stack.is(Items.GLOWSTONE_DUST)) {
 				boolean isClientSide = this.level().isClientSide;
@@ -473,11 +455,9 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 		}
 		
 		//Open Inventory
-//		if (!this.level().isClientSide) {
-//			NetworkHooks.openScreen((ServerPlayer)player, this, packetBuffer -> {
-//                packetBuffer.writeUUID(this.getUUID());
-//            });
-//		}
+		if (!this.level().isClientSide && player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.openMenu(this);
+		}
 		return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}
 	
@@ -1586,7 +1566,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
     public PlayerSkin getSkin() {
 //        PlayerInfo playerinfo = this.getPlayerInfo();
 //        return playerinfo == null ? DefaultPlayerSkin.get(this.getUUID()) : playerinfo.getSkin();
-    	return DefaultWorkerSkin.getWide(getUUID());
+    	return DefaultWorkerSkin.get(getUUID());
     }
     
     public boolean isModelPartShown(PlayerModelPart p_36171_) {
@@ -1671,6 +1651,16 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
     public void setOwnerReference(@Nullable EntityReference<LivingEntity> owner) {
         this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(owner));
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+		return new WorkerInventoryMenu(containerId, playerInventory, this);
+	}
+
+	@Override
+	public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
+		buffer.writeInt(this.getId());
+	}
 
 	static class FloatWhenNotSwimming extends FloatGoal {
 		private final WorkerEntity minion;

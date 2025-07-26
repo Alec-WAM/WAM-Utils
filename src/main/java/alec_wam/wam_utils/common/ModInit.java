@@ -26,6 +26,7 @@ import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity.ExternalInventoryStatus;
 import alec_wam.wam_utils.common.entities.workers.WorkerInventorySettings;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
+import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryMenu;
 import alec_wam.wam_utils.common.items.MagicBonemealItem;
 import alec_wam.wam_utils.common.items.WorkerInventoryItem;
 import alec_wam.wam_utils.common.items.WorkerSpawnItem;
@@ -42,6 +43,7 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -58,6 +60,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -77,6 +80,7 @@ public class ModInit {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, MODID);
     private static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
 
     public static final Map<WoodType, BlockFamily> WOOD_BLOCK_FAMILIES = new HashMap<>();
     public static final List<String> VANILLA_WOOD_ORDER = List.of(
@@ -183,6 +187,9 @@ public class ModInit {
 		"worker_external_inventory_status", 
 		() -> EntityDataSerializer.forValueType(ExternalInventoryStatus.STREAM_CODEC)
     );
+    public static final Supplier<MenuType<WorkerInventoryMenu>> WORKER_INVENTORY_MENU_TYPE = MENU_TYPES.register("worker_inventory", () -> IMenuTypeExtension.create(WorkerInventoryMenu::new));
+
+
     public static final DeferredItem<Item> WORKER_SPAWN_ITEM = ITEMS.registerItem("worker_spawn_item", WorkerSpawnItem::new, new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> WORKER_STAFF_ITEM = ITEMS.registerItem("worker_staff", WorkerStaffItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> WORKER_INVENTORY_ITEM = ITEMS.registerItem("worker_inventory_item", WorkerInventoryItem::new, new Item.Properties().stacksTo(1));
@@ -262,6 +269,7 @@ public class ModInit {
         ATTACHMENT_TYPES.register(modEventBus);
         DATA_COMPONENTS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        MENU_TYPES.register(modEventBus);
     }
     
     public static void registerCapabilites(RegisterCapabilitiesEvent event) {

@@ -32,5 +32,6 @@
   "wamutils.message.workers.io_type.none": "No I/O",
   "wamutils.message.workers.io_type.in": "Input",
   "wamutils.message.workers.io_type.out": "Output",
-  "wamutils.message.workers.io_type.both": "Input/Output"
+  "wamutils.message.workers.io_type.both": "Input/Output",
+  "wamutils.container.worker.title": "Worker Inventory"
 }

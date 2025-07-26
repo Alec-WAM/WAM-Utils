@@ -73,7 +73,7 @@ public class FlowerHarvestJob extends MultiBlockPosWorkerJob {
 		}
 		
 		//Unload Inventory if idling for 5 seconds
-		if (this.idleTimer >= 5 * 20 && !this.hasGrownFlowers) {
+		if (this.idleTimer >= 5 * 20) {
 			if (worker.getExternalInventorySettings() != null) {
 				// Only check every whole second to prevent unneeded inventory scans
 				if ((this.idleTimer % 20 == 0) && worker.getExternalInventorySettings().hasInputFace()

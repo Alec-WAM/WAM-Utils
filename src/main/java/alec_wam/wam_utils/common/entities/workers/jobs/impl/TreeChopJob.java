@@ -154,7 +154,9 @@ public class TreeChopJob extends BreakBlockWorkerJob {
 	
 	@Override
 	public boolean needsItem(ItemStack stack) {
-		return ItemHelper.isAxe(stack) || super.needsItem(stack);
+		// TODO Make this actually call super
+		// Currently super says all tools are needed which isn't true
+		return ItemHelper.isAxe(stack);
 	}
 
 	@Override
