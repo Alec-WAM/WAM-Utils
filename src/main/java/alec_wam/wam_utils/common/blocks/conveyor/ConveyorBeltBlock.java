@@ -203,7 +203,7 @@ public class ConveyorBeltBlock extends BaseEntityBlock implements SimpleWaterlog
     protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
     	BlockEntity blockEntity = level.getBlockEntity(pos);
     	if(blockEntity !=null && blockEntity instanceof ConveyorBeltBE conveyorBelt) {
-			return ItemHandlerHelper.calcRedstoneFromInventory(conveyorBelt.getItemHandler());
+			return ItemHandlerHelper.calcRedstoneFromInventory(conveyorBelt.getItemHandler(null));
 		}
         return 0;
     }

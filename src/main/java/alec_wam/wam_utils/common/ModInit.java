@@ -19,8 +19,9 @@ import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBlock;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBE;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBlock;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBE;
-import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBE.ShieldRackInventory;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBlock;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity.ExternalInventoryStatus;
@@ -63,7 +64,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -168,7 +168,18 @@ public class ModInit {
             return new BlockEntityType<>(ShieldRackBE::new, blocks.toArray(Block[]::new));
         });
 
-    
+
+    public static final DeferredBlock<Block> ENCHANTMENT_INDEXER_BLOCK = registerBlock("enchantment_indexer", EnchantmentIndexerBlock::new, () -> BlockBehaviour.Properties.of()
+            .mapColor(MapColor.WOOD)
+            .sound(SoundType.WOOD)
+            .strength(2.5F, 3.0F)
+            .ignitedByLava());
+    public static final DeferredItem<BlockItem> ENCHANTMENT_INDEXER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("enchantment_indexer", ENCHANTMENT_INDEXER_BLOCK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnchantmentIndexerBE>> ENCHANTMENT_INDEXER_BLOCK_ENTITY =
+        BLOCK_ENTITIES.register("enchantment_indexer", () -> {
+            return new BlockEntityType<>(EnchantmentIndexerBE::new, ENCHANTMENT_INDEXER_BLOCK.get());
+        });
+
     // ENTITIES
     public static final DeferredHolder<EntityType<?>, EntityType<WorkerEntity>> WORKER_ENTITY = ENTITIES.register(
     		"worker", 
@@ -250,14 +261,14 @@ public class ModInit {
             }).build());
     
     
-    public static final Supplier<AttachmentType<ItemStackHandler>> ITEM_HANDLER_ATTACHMENT = ATTACHMENT_TYPES.register(
-            "wam_utils_item_handler", () -> AttachmentType.serializable(holder -> {                
-                if(holder instanceof ShieldRackBE shieldRackBE)
-                    return new ShieldRackInventory(shieldRackBE);
-                if (holder instanceof BaseBE baseBe)
-                    return new ItemStackHandler(baseBe.getInventorySize());
-                return new ItemStackHandler(1);
-            }).build());
+    // public static final Supplier<AttachmentType<ItemStackHandler>> ITEM_HANDLER_ATTACHMENT = ATTACHMENT_TYPES.register(
+    //         "wam_utils_item_handler", () -> AttachmentType.serializable(holder -> {                
+    //             if(holder instanceof ShieldRackBE shieldRackBE)
+    //                 return new ShieldRackInventory(shieldRackBE);
+    //             if (holder instanceof BaseBE baseBe)
+    //                 return new ItemStackHandler(baseBe.getInventorySize());
+    //             return new ItemStackHandler(1);
+    //         }).build());
     
     
     public static void register(IEventBus modEventBus) {
@@ -278,11 +289,12 @@ public class ModInit {
         blocks.add(CONVEYOR_SPLITTER_BLOCK.get());
         SHIELDRACK_BLOCKS.values().stream()
                 .map(DeferredBlock::get).forEach(block -> blocks.add(block));
+        blocks.add(ENCHANTMENT_INDEXER_BLOCK.get());
         
         event.registerBlock(Capabilities.ItemHandler.BLOCK,
                 (level, pos, state, be, side) -> {
-                    if (be instanceof BaseBE baseBe && baseBe.getInventorySize() > 0)
-                        return be.getData(ITEM_HANDLER_ATTACHMENT);
+                    if (be instanceof BaseBE baseBe)
+                        return baseBe.getItemHandler(side);
                     return null;
                 },
                 blocks.toArray(Block[]::new)

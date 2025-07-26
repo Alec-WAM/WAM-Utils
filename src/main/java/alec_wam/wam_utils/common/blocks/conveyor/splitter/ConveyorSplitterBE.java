@@ -35,6 +35,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class ConveyorSplitterBE extends BaseBE {
 
@@ -211,11 +212,19 @@ public class ConveyorSplitterBE extends BaseBE {
 	
 	public Map<Direction, ItemFilter> itemFilters = new HashMap<>();
 	public Map<ItemStackKey, ItemSplitterEntry> itemRouteCache = new HashMap<>();
+
+	private ItemStackHandler inventory = new ItemStackHandler(SLOT_SIZE);
 	
 	public ConveyorSplitterBE(BlockPos pos, BlockState blockState) {
 		super(ModInit.CONVEYOR_SPLITTER_BLOCK_ENTITY.get(), pos, blockState);
 	}	
 	
+	//TODO Change this to an ItemHandler that only accepts allowed items
+	@Override
+	public ItemStackHandler getItemHandler(@Nullable Direction side) {
+		return this.inventory;
+	}
+
 	@Override
     public void saveAdditional(ValueOutput valueOutput) {
         super.saveAdditional(valueOutput);
@@ -257,24 +266,13 @@ public class ConveyorSplitterBE extends BaseBE {
 
     	super.loadAdditional(valueInput);
     }
-	
-	//TODO Change this to an ItemHandler that only accepts allowed items
-	@Override
-	public IItemHandler getItemHandler() {
-		return getData(ModInit.ITEM_HANDLER_ATTACHMENT);
-	}
-	
-	@Override
-	public int getInventorySize() {
-		return 1;
-	}
 
 	public InteractionResult playerInteract(Player player, BlockHitResult hitResult, @Nullable ItemStack stack, @Nullable InteractionHand hand) {
 		Direction dir = hitResult.getDirection();
 		if(player.isCrouching()) {
 			System.out.println("Crouching");
 			if(stack == null || stack.isEmpty()) {
-				IItemHandler handler = this.getItemHandler();
+				IItemHandler handler = this.inventory;
 				if(handler !=null) {
 					ItemStack beltStack = handler.getStackInSlot(0);
 					if(!beltStack.isEmpty()) {

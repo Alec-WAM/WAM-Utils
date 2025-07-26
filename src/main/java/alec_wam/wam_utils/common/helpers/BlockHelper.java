@@ -53,6 +53,7 @@ import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -68,8 +69,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
+import net.neoforged.neoforge.items.ContainerOrHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 public class BlockHelper {
 	
@@ -431,12 +434,19 @@ public class BlockHelper {
 	    return new Pair<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
 	}
 	
-	public static Optional<IItemHandler> getItemHandler(Level worldIn, BlockPos pos, final Direction side)
+	public static Optional<IItemHandler> getItemHandler(Level worldIn, BlockPos pos, @Nullable Direction side)
     {
-        net.minecraft.world.level.block.state.BlockState state = worldIn.getBlockState(pos);
-
-        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        return Optional.ofNullable(worldIn.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos, state, blockEntity, side));
+        ContainerOrHandler inventory = HopperBlockEntity.getContainerOrHandlerAt(worldIn, pos, side);
+		IItemHandler invHandler = null;
+		if(inventory !=null) {
+			if(inventory.itemHandler() != null) {
+				invHandler = inventory.itemHandler();
+			}
+			else if(inventory.container() != null) {
+				invHandler = new InvWrapper(inventory.container());
+			}
+		}
+        return Optional.ofNullable(invHandler);
     }
 	
 	//Copied from VanillaInventoryHooks

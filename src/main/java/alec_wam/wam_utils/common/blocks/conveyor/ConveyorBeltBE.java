@@ -2,6 +2,8 @@ package alec_wam.wam_utils.common.blocks.conveyor;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -27,6 +29,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class ConveyorBeltBE extends BaseBE {
 	public static final AABB SUCK_AABB = Block.column(16.0, 2.0, 4.0).toAabbs().get(0);
@@ -84,20 +87,16 @@ public class ConveyorBeltBE extends BaseBE {
 	public ItemStack ghostItem = ItemStack.EMPTY;
 	private int ghostDelay = 0;
 	private boolean isRedstonePowered = false;
+	private ItemStackHandler inventory = new ItemStackHandler(SLOT_SIZE);
 
 	
 	public ConveyorBeltBE(BlockPos pos, BlockState blockState) {
 		super(ModInit.CONVEYOR_BELT_BLOCK_ENTITY.get(), pos, blockState);
 	}
-	
+
 	@Override
-	public IItemHandler getItemHandler() {
-		return getData(ModInit.ITEM_HANDLER_ATTACHMENT);
-	}
-	
-	@Override
-	public int getInventorySize() {
-		return SLOT_SIZE;
+	public ItemStackHandler getItemHandler(@Nullable Direction side) {
+		return inventory;
 	}
 
     @Override
@@ -138,7 +137,7 @@ public class ConveyorBeltBE extends BaseBE {
 	                movingItem.progress = 0f;
 	                movingItem.prevProgress = 0f;
 	            } else if (movingItem.phase == MovingItem.Phase.MOVING_OUT) {
-	            	this.ghostItem = this.getItemHandler().getStackInSlot(0).copy();
+	            	this.ghostItem = this.inventory.getStackInSlot(0).copy();
 		        	this.clientTransfer = true;
 		        	this.ghostDelay = 1;
 	            }
@@ -182,11 +181,10 @@ public class ConveyorBeltBE extends BaseBE {
 
 	public InteractionResult playerInteract(Player player) {
 		if(player.isCrouching()) {
-			IItemHandler handler = this.getItemHandler();
-			if(handler !=null) {
-				ItemStack beltStack = handler.getStackInSlot(0);
+			if(this.inventory !=null) {
+				ItemStack beltStack = this.inventory.getStackInSlot(0);
 				if(!beltStack.isEmpty()) {
-					ItemStack giveStack = handler.extractItem(0, beltStack.getCount(), false);
+					ItemStack giveStack = this.inventory.extractItem(0, beltStack.getCount(), false);
 					ItemHandlerHelper.giveItemToPlayer(player, giveStack);
 					return InteractionResult.SUCCESS_SERVER;
 				}
@@ -201,8 +199,7 @@ public class ConveyorBeltBE extends BaseBE {
     
     public void suckInItems() {
     	BlockPos pos = this.getBlockPos();
-    	IItemHandler handler = this.getItemHandler();
-    	if(handler == null || this.movingItem !=null)return;
+    	if(this.inventory == null || this.movingItem !=null)return;
     	AABB aabb = null;    	
     	BeltSlope beltSlope = this.getBlockState().getValueOrElse(ConveyorBeltBlock.SLOPE, BeltSlope.FLAT);
     	
@@ -219,7 +216,7 @@ public class ConveyorBeltBE extends BaseBE {
 //                continue;
     		ItemStack stack = itemEntity.getItem();
             if (stack.isEmpty() || !isStackValid(stack)) continue;
-            ItemStack leftover = ItemHandlerHelper.insertItemStacked(handler, stack, false);
+            ItemStack leftover = ItemHandlerHelper.insertItemStacked(this.inventory, stack, false);
             if (leftover.isEmpty()) {
                 itemEntity.remove(RemovalReason.DISCARDED);
             } else {
@@ -236,10 +233,9 @@ public class ConveyorBeltBE extends BaseBE {
     }
     
     public void moveItems() {
-    	IItemHandler handler = this.getItemHandler();
-    	if(handler == null || this.movingItem == null)return;
+    	if(this.inventory == null || this.movingItem == null)return;
     	
-    	ItemStack currentStack = handler.getStackInSlot(0);
+    	ItemStack currentStack = this.inventory.getStackInSlot(0);
     	
     	final boolean hasMoveItem = this.movingItem != null;
     	
@@ -278,10 +274,9 @@ public class ConveyorBeltBE extends BaseBE {
     }
     
     public boolean transferItemToNextLocation() {
-    	IItemHandler handler = this.getItemHandler();
-    	if(handler == null)return false;
+    	if(this.inventory == null)return false;
     	
-    	ItemStack currentStack = handler.getStackInSlot(0);
+    	ItemStack currentStack = this.inventory.getStackInSlot(0);
     	
     	Direction dir = getFacing();
     	BlockPos blockPos = getBlockPos().relative(dir);
@@ -315,24 +310,24 @@ public class ConveyorBeltBE extends BaseBE {
 	    		BlockEntity blockEntity = getLevel().getBlockEntity(currentBeltPos);    		
 	    		
 	    		if(blockEntity instanceof ConveyorBeltBE beltBE) {
-	    			final ItemStack fakeItem = handler.extractItem(0, currentStack.getCount(), true);
+	    			final ItemStack fakeItem = this.inventory.extractItem(0, currentStack.getCount(), true);
 	    			if(beltBE.canAcceptItem(fakeItem)) {
 
 	    				ItemStack remainder = beltBE.transferItemFromOtherBelt(fakeItem, dir.getOpposite());
 	    				int removeAmount = fakeItem.getCount() - remainder.getCount();
 	    				
 	    				if(removeAmount != 0) {
-	    					handler.extractItem(0, removeAmount, false);
+	    					this.inventory.extractItem(0, removeAmount, false);
 	    				}
 	    				
-	    				return handler.getStackInSlot(0).isEmpty();
+	    				return this.inventory.getStackInSlot(0).isEmpty();
 	    			}
 	    			return false;
 	    		}
     		}
     		
     		final int oldCount = currentStack.getCount();
-    		ItemStack dropStack = handler.extractItem(0, oldCount, true);    
+    		ItemStack dropStack = this.inventory.extractItem(0, oldCount, true);    
     		BlockState otherState = getLevel().getBlockState(blockPos);	
     		
     		
@@ -345,7 +340,7 @@ public class ConveyorBeltBE extends BaseBE {
 	    				dropStack = splitter.transferFromBelt(dropStack, dir.getOpposite());
 	    	    		
 	    	    		if(dropStack.getCount() != oldCount) {
-	    	    			handler.extractItem(0, oldCount - dropStack.getCount(), false);
+	    	    			this.inventory.extractItem(0, oldCount - dropStack.getCount(), false);
 	    	    		}
 	    				
 	    				return dropStack.isEmpty();
@@ -371,14 +366,14 @@ public class ConveyorBeltBE extends BaseBE {
                 );
                 itementity.setDefaultPickUpDelay();
                 level.addFreshEntity(itementity);
-                handler.extractItem(0, oldCount, false);
+                this.inventory.extractItem(0, oldCount, false);
                 return true;
     		}
     		
     		if(dropStack.getCount() != oldCount) {
-    			handler.extractItem(0, oldCount - dropStack.getCount(), false);
+    			this.inventory.extractItem(0, oldCount - dropStack.getCount(), false);
     		}
-    		return handler.getStackInSlot(0).isEmpty();
+    		return this.inventory.getStackInSlot(0).isEmpty();
     	}
     	return false;
     }
@@ -388,14 +383,14 @@ public class ConveyorBeltBE extends BaseBE {
 //    	if(this.movingItem !=null) {
 //    		return ItemStack.isSameItemSameComponents(this.getItemHandler().getStackInSlot(0), stack);
 //    	}
-    	return this.movingItem == null && this.getItemHandler().getStackInSlot(0).isEmpty();
+    	return this.movingItem == null && this.inventory.getStackInSlot(0).isEmpty();
     }
     
     public ItemStack transferItemFromOtherBelt(ItemStack stack, Direction from) {
     	ItemStack remainder = stack;
     	Direction to = getFacing();
         if (canAcceptItem(stack)) {
-        	remainder = this.getItemHandler().insertItem(0, stack, false);
+        	remainder = this.inventory.insertItem(0, stack, false);
             movingItem = new MovingItem(from, to);
             this.markDirtyClient();
         }

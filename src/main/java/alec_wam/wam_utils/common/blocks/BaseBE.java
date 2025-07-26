@@ -1,10 +1,13 @@
 package alec_wam.wam_utils.common.blocks;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -14,7 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public abstract class BaseBE extends BlockEntity {
 
@@ -24,7 +28,34 @@ public abstract class BaseBE extends BlockEntity {
 		super(type, pos, blockState);
 	}
 	
-	public void tickClient() {}
+    @Override
+    public void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
+        saveInventory(valueOutput);
+    }
+    
+    public void saveInventory(ValueOutput valueOutput) {        
+		ValueOutput inventoryChild = valueOutput.child("inventory");
+		ItemStackHandler inventory = this.getItemHandler(null);
+        if(inventory !=null){
+            inventory.serialize(inventoryChild);
+        }
+    }
+
+    @Override
+    public void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        loadInventory(valueInput);
+    }
+
+	public void loadInventory(ValueInput valueInput) {
+        ItemStackHandler inventory = this.getItemHandler(null);
+        if(inventory !=null){
+            inventory.deserialize(valueInput.childOrEmpty("inventory"));
+        }
+    }
+
+    public void tickClient() {}
 	
 	public void tickServer() {}
 	
@@ -61,10 +92,7 @@ public abstract class BaseBE extends BlockEntity {
         }
     }
 
-
-	public IItemHandler getItemHandler() {
+	public ItemStackHandler getItemHandler(@Nullable Direction side) {
 		return null;
 	}
-	
-	public abstract int getInventorySize();
 }

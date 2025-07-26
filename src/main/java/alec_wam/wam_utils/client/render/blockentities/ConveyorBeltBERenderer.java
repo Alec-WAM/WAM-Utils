@@ -37,7 +37,7 @@ public class ConveyorBeltBERenderer implements BlockEntityRenderer<ConveyorBeltB
 	@Override
 	public void render(ConveyorBeltBE blockEntity, float partialTick, PoseStack poseStack,
 			MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 cameraPos) {
-		IItemHandler handler = blockEntity.getItemHandler();        
+		IItemHandler handler = blockEntity.getItemHandler(null);        
 		if(handler !=null) {
 			poseStack.pushPose();			
 

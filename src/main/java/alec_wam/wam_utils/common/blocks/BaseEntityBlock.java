@@ -111,7 +111,7 @@ public abstract class BaseEntityBlock extends Block implements EntityBlock {
         BlockEntity blockEntity = builder.getParameter(LootContextParams.BLOCK_ENTITY);
 
         if (blockEntity instanceof BaseBE baseBE) {
-        	IItemHandler iItemHandler = baseBE.getItemHandler();
+        	IItemHandler iItemHandler = baseBE.getItemHandler(null);
         	if(iItemHandler !=null) {
 	            for (int i = 0; i < iItemHandler.getSlots(); ++i) {
 	            	drops.add(iItemHandler.getStackInSlot(i));

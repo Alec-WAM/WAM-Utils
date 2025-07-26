@@ -2,14 +2,16 @@ package alec_wam.wam_utils.common.blocks.shieldrack;
 
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.BaseBE;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class ShieldRackBE extends BaseBE {
@@ -54,47 +56,42 @@ public class ShieldRackBE extends BaseBE {
         }
     }
 
+    private ShieldRackInventory inventory;
+
     public ShieldRackBE(BlockPos pos, BlockState blockState) {
         super(ModInit.SHIELDRACK_BLOCK_ENTITY.get(), pos, blockState);
-    }
-
-	public ItemStackHandler getInventory() {
-        return getData(ModInit.ITEM_HANDLER_ATTACHMENT);
-    }
-
-	@Override
-	public IItemHandler getItemHandler() {
-		return getInventory();
-	}
-
-    @Override
-    public int getInventorySize() {
-        return INVENTORY_SIZE;
+        this.inventory = new ShieldRackInventory(this);
     }
 	
 	public ItemStack getLeftStack() {
-		return getInventory().getStackInSlot(LEFT_SLOT);
+		return this.inventory.getStackInSlot(LEFT_SLOT);
 	}
 
 	public void setLeftStack(ItemStack leftStack) {
-		getInventory().setStackInSlot(LEFT_SLOT, leftStack);
+		this.inventory.setStackInSlot(LEFT_SLOT, leftStack);
 	}
 
 	public ItemStack getRightStack() {
-		return getInventory().getStackInSlot(RIGHT_SLOT);
+		return this.inventory.getStackInSlot(RIGHT_SLOT);
 	}
 
 	public void setRightStack(ItemStack rightStack) {
-		getInventory().setStackInSlot(RIGHT_SLOT, rightStack);
+		this.inventory.setStackInSlot(RIGHT_SLOT, rightStack);
 	}
 
 	public ItemStack getShieldStack() {
-		return getInventory().getStackInSlot(SHIELD_SLOT);
+		return this.inventory.getStackInSlot(SHIELD_SLOT);
 	}
 
 	public void setShieldStack(ItemStack shieldStack) {
-		getInventory().setStackInSlot(SHIELD_SLOT, shieldStack);
+		this.inventory.setStackInSlot(SHIELD_SLOT, shieldStack);
 	}
+
+    @Override
+    public ItemStackHandler getItemHandler(@Nullable Direction side) {
+        // TODO Create sub inventories for each side
+        return this.inventory;
+    }
 	
 	// @Override
 	// public AABB getRenderBoundingBox() {
