@@ -1,0 +1,7 @@
+{
+  "values": [
+    "wamutils:conveyor_belt",
+    "wamutils:conveyor_splitter",
+    "wamutils:item_grate"
+  ]
+}

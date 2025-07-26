@@ -11,16 +11,15 @@ import alec_wam.wam_utils.common.entities.workers.jobs.MultiBlockPosWorkerJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
+import alec_wam.wam_utils.datagen.WAMUtilsBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -102,18 +101,11 @@ public class FlowerHarvestJob extends MultiBlockPosWorkerJob {
         BlockState belowState = level.getBlockState(pos.below());
 		
         if(hasGrownFlowers){
-            //TODO Make this flower blocks and grasses
-            return state.is(BlockTags.SMALL_FLOWERS) 
-                || state.is(Blocks.TALL_GRASS) 
-                || state.is(BlockTags.EDIBLE_FOR_SHEEP)
-                || state.is(Blocks.AZALEA)
-                || state.is(Blocks.FLOWERING_AZALEA)
-                || state.is(Blocks.MOSS_CARPET)
-                || state.is(Blocks.PALE_MOSS_CARPET);
+            return state.is(WAMUtilsBlockTags.WORKER_FLOWERS);
         }
         //TODO Cache if has bonemeal
         if(this.worker.checkForItem(IS_BONE_MEAL)){
-            if(belowState.is(Blocks.GRASS_BLOCK) || belowState.is(Blocks.MOSS_BLOCK) || belowState.is(Blocks.PALE_MOSS_BLOCK)){
+            if(belowState.is(WAMUtilsBlockTags.WORKER_FLOWERS_BONEMEAL)){
                 if(belowState.getBlock() instanceof BonemealableBlock bonemealableBlock){
                     return bonemealableBlock.isValidBonemealTarget(level, pos.below(), belowState);
                 }

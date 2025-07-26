@@ -168,7 +168,6 @@ public class ShearAnimalsJob extends AreaWorkerJob {
 	public void shearAnimal(IShearable shearable, BlockPos pos) {
 		Level level = worker.level();
 		ItemStack handItem = worker.getMainHandItem();
-		//TODO Use interactLivingEntity from item to allow support for other Shear Items
 		worker.swing(InteractionHand.MAIN_HAND);
 		List<ItemStack> drops = shearable.onSheared(null, handItem, level, pos);
 		drops.forEach((drop) -> {

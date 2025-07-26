@@ -1,0 +1,16 @@
+{
+  "remove": [
+    "#c:flowers/tall"
+  ],
+  "values": [
+    "#c:flowers",
+    "#minecraft:edible_for_sheep",
+    "minecraft:tall_grass",
+    "minecraft:large_fern",
+    "minecraft:azalea",
+    "minecraft:flowering_azalea",
+    "minecraft:moss_carpet",
+    "minecraft:pale_moss_carpet",
+    "minecraft:leaf_litter"
+  ]
+}
