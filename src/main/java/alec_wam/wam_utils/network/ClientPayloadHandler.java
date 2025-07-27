@@ -2,6 +2,7 @@ package alec_wam.wam_utils.network;
 
 import java.util.Optional;
 
+import alec_wam.wam_utils.common.blocks.BaseBE;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
@@ -60,4 +62,15 @@ public class ClientPayloadHandler {
         });
     }
 	
+	public static void handleBaseBEMessageOnMain(final BaseBEMessagePayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			Level level = Minecraft.getInstance().level;
+	    	if (level != null) {
+				BlockEntity	blockEntity = level.getBlockEntity(data.pos());
+				if(blockEntity != null && blockEntity instanceof BaseBE baseBE) {
+					baseBE.handleCustomMessage(data.messageType(), data.messageData(), true);
+				}
+			}
+		});
+	}
 }

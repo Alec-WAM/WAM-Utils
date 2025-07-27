@@ -35,14 +35,11 @@ public class ModPayloadInit {
     	// 	SyncWorkerJobPayload.STREAM_CODEC,
     	// 	ClientPayloadHandler::handleSyncWorkerJobOnMain
 	    // );
-//	    registrar.playBidirectional(
-//            SyncWorkerJobPayload.TYPE,
-//            SyncWorkerJobPayload.STREAM_CODEC,
-//            new DirectionalPayloadHandler<>(
-//                ClientPayloadHandler::handleSyncWorkerJobOnMain,
-//                ServerPayloadHandler::handleSyncWorkerJobOnMain
-//            )
-//        );
+	    registrar.playBidirectional(
+           BaseBEMessagePayload.TYPE,
+           BaseBEMessagePayload.STREAM_CODEC,
+		   ServerPayloadHandler::handleBaseBEMessageOnMain
+       );
 	}	
 
 	public static ProblemReporter.PathElement problemPath(CustomPacketPayload payload) {

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "wooden_slab",
+  "key": {
+    "#": "minecraft:bookshelf",
+    "W": "minecraft:dark_oak_slab"
+  },
+  "pattern": [
+    "WWW",
+    " # ",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "wamutils:dark_oak_enchantment_book_shelf"
+  }
+}

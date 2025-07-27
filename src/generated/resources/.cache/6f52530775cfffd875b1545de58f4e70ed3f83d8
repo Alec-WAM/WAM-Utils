@@ -1,6 +1,9 @@
-// 1.21.8	2025-07-25T23:17:14.960213	wamutils Block Tags
-873f40005b316d66a7b1c4b5c1f6de625351a3b4 data/minecraft/tags/block/mineable/axe.json
+// 1.21.8	2025-07-26T21:19:25.6927378	wamutils Block Tags
+576797ae39fda417ac22490f7499409de43a663e data/minecraft/tags/block/mineable/axe.json
 5642c100c1c9dc8dc6f03e7cc1a94d0514d86736 data/minecraft/tags/block/mineable/pickaxe.json
+8b19a5b4cc3268df9158c7557c2815e4fbc84eab data/wamutils/tags/block/enchantment_bookshelves.json
+877a91a2e92c2d6c5d3ac9c643f6caf049e19114 data/wamutils/tags/block/enchantment_indexer_bookshelves.json
+95741c821a4c97701baf5916d4bd0ae55ff53e31 data/wamutils/tags/block/shield_racks.json
 94f122df583eb88ef75cc786123d25303741913c data/wamutils/tags/block/tree_attachments.json
 b2e74012374d2d6ac431d18fed06676067730857 data/wamutils/tags/block/worker_flowers.json
 a661631ad6bc12aa624a8003cc8de05942e67a0d data/wamutils/tags/block/worker_flowers_bonemeal.json

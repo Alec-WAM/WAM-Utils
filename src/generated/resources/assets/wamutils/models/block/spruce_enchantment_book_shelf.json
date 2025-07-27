@@ -1,0 +1,6 @@
+{
+  "parent": "wamutils:block/enchantment_book_shelf",
+  "textures": {
+    "all": "minecraft:block/spruce_planks"
+  }
+}

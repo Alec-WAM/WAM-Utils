@@ -19,6 +19,9 @@ import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBlock;
+import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.EnchantmentBookshelfBE;
+import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.EnchantmentBookshelfBlock;
+import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfMenu;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBE;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBlock;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBE;
@@ -120,7 +123,10 @@ public class ModInit {
     public static final DeferredItem<BlockItem> ITEM_GRATE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("item_grate", ITEM_GRATE_BLOCK);
 
     public static final Map<WoodType, DeferredBlock<Block>> SHIELDRACK_BLOCKS = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<BlockItem>> SHIELDRACK_BLOCK_ITEMS = new HashMap<>();
+    public static final Map<WoodType, DeferredItem<BlockItem>> SHIELDRACK_BLOCK_ITEMS = new HashMap<>(); 
+
+    public static final Map<WoodType, DeferredBlock<Block>> ENCHANTMENT_BOOK_SHELF_BLOCKS = new HashMap<>();
+    public static final Map<WoodType, DeferredItem<BlockItem>> ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS = new HashMap<>();  
 
     static {
         WOOD_BLOCK_FAMILIES.put(WoodType.OAK, BlockFamilies.OAK_PLANKS);
@@ -156,8 +162,28 @@ public class ModInit {
                     SHIELDRACK_BLOCKS.get(wood)
                 )
             );
+
+            ENCHANTMENT_BOOK_SHELF_BLOCKS.put(
+                wood, 
+                registerBlock(
+                    wood.name().toLowerCase() + "_enchantment_book_shelf", 
+                    EnchantmentBookshelfBlock::new, 
+                    () -> BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.WOOD)
+                        .sound(wood.soundType())
+                        .strength(2.5F, 3.0F)
+                        .ignitedByLava()
+                )
+            );
+            ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.put(
+                wood, 
+                ITEMS.registerSimpleBlockItem(
+                    wood.name().toLowerCase() + "_enchantment_book_shelf", 
+                    ENCHANTMENT_BOOK_SHELF_BLOCKS.get(wood)
+                )
+            );
         });
-    }
+    } 
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShieldRackBE>> SHIELDRACK_BLOCK_ENTITY =
         BLOCK_ENTITIES.register("shieldrack", () -> {
@@ -167,6 +193,16 @@ public class ModInit {
 
             return new BlockEntityType<>(ShieldRackBE::new, blocks.toArray(Block[]::new));
         });
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnchantmentBookshelfBE>> ENCHANTMENT_BOOK_SHELF_BLOCK_ENTITY =
+        BLOCK_ENTITIES.register("enchantment_book_shelf", () -> {
+            Collection<Block> blocks = ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
+                .map(DeferredBlock::get)
+                .toList();
+
+            return new BlockEntityType<>(EnchantmentBookshelfBE::new, blocks.toArray(Block[]::new));
+        });
+    public static final Supplier<MenuType<EnchantmentBookshelfMenu>> ENCHANTMENT_BOOK_SHELF_MENU_TYPE = MENU_TYPES.register("enchantment_book_shelf", () -> IMenuTypeExtension.create(EnchantmentBookshelfMenu::new));
 
 
     public static final DeferredBlock<Block> ENCHANTMENT_INDEXER_BLOCK = registerBlock("enchantment_indexer", EnchantmentIndexerBlock::new, () -> BlockBehaviour.Properties.of()
@@ -288,6 +324,8 @@ public class ModInit {
         blocks.add(CONVEYOR_BELT_BLOCK.get());
         blocks.add(CONVEYOR_SPLITTER_BLOCK.get());
         SHIELDRACK_BLOCKS.values().stream()
+                .map(DeferredBlock::get).forEach(block -> blocks.add(block));        
+        ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
                 .map(DeferredBlock::get).forEach(block -> blocks.add(block));
         blocks.add(ENCHANTMENT_INDEXER_BLOCK.get());
         
@@ -306,6 +344,9 @@ public class ModInit {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             VANILLA_SORTED_WOOD_TYPES.forEach(woodType -> {
                 event.accept(SHIELDRACK_BLOCK_ITEMS.get(woodType));
+            });
+            VANILLA_SORTED_WOOD_TYPES.forEach(woodType -> {
+                event.accept(ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.get(woodType));
             });
         }
     }

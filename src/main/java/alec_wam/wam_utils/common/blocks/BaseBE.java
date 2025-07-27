@@ -95,4 +95,8 @@ public abstract class BaseBE extends BlockEntity {
 	public ItemStackHandler getItemHandler(@Nullable Direction side) {
 		return null;
 	}
+
+    public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
+
+    }
 }

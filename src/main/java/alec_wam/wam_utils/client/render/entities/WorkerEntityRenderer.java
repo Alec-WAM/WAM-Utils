@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 
 import alec_wam.wam_utils.client.ModClientInit;
 import alec_wam.wam_utils.client.model.WorkerModel;
+import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.helpers.EntityHelper;

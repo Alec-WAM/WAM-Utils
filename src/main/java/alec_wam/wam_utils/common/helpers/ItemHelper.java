@@ -67,6 +67,10 @@ public class ItemHelper {
 		return getEnchantmentLevel(level, stack, enchantment) >= requiredLevel;
 	}
 
+	public static Set<Holder<Enchantment>> getEnchantments(ItemStack stack){
+		return stack.getOrDefault(EnchantmentHelper.getComponentType(stack), ItemEnchantments.EMPTY).keySet();
+	}
+
 	public static final Comparator<ItemStack> SORT_STACK_SIZE = (stack1, stack2) -> {
 		return Integer.compare(stack2.getCount(), stack1.getCount());
 	};

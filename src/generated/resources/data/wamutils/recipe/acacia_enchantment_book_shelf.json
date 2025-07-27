@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "wooden_slab",
+  "key": {
+    "#": "minecraft:bookshelf",
+    "W": "minecraft:acacia_slab"
+  },
+  "pattern": [
+    "WWW",
+    " # ",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "wamutils:acacia_enchantment_book_shelf"
+  }
+}

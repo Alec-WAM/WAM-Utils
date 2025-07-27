@@ -19,6 +19,7 @@ public class WAMUtilsDatagen {
         event.createProvider(WAMUtilsBlockTags::new);
         event.createProvider(WAMUtilsModelProvider::new);
         event.createProvider(WAMUtilsRecipeProvider.Runner::new);
+        event.createProvider(WAMUtilsSpriteSourceProvider::new);
 
         event.createProvider((output, lookupProv) -> {
             return new LootTableProvider(output, Set.of(), List.of(new SubProviderEntry(

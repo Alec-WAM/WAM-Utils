@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerInventorySettings;

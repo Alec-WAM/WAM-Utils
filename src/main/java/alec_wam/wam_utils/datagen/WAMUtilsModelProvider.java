@@ -33,9 +33,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 
 	public WAMUtilsModelProvider(PackOutput output) {
 		super(output, WAMUtils.MODID);
-	}
-
-	
+	}	
 
     @SuppressWarnings("deprecation")
 	public static ResourceLocation createEmptyTexture(String name) {
@@ -44,6 +42,10 @@ public class WAMUtilsModelProvider extends ModelProvider {
 
 	public static final ModelTemplate SHEILD_RACK_MODEL = ModelTemplates.create(
         WAMUtils.MODID + ":shield_rack", TextureSlot.ALL
+    );
+
+	public static final ModelTemplate ENCHANTMENT_BOOK_SHELF_MODEL = ModelTemplates.create(
+        WAMUtils.MODID + ":enchantment_book_shelf", TextureSlot.ALL
     );
 
 	public static final ResourceLocation CONVEYOR_BELT_MODEL = createEmptyTexture(
@@ -66,6 +68,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 	protected Stream<? extends Holder<Block>> getKnownBlocks() {
 		List<DeferredBlock<?>> blocks = new ArrayList<>();
 		blocks.addAll(ModInit.SHIELDRACK_BLOCKS.values());
+		blocks.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values());
 		blocks.add(ModInit.CONVEYOR_BELT_BLOCK);
 		return blocks.stream()
 				.map(DeferredBlock::get)
@@ -76,6 +79,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 	protected Stream<? extends Holder<Item>> getKnownItems() {
 		List<DeferredItem<?>> items = new ArrayList<>();
 		items.addAll(ModInit.SHIELDRACK_BLOCK_ITEMS.values());
+		items.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.values());
 		items.add(ModInit.CONVEYOR_BELT_BLOCK_ITEM);
 		return items.stream()
 				.map(DeferredItem::get)
@@ -92,6 +96,19 @@ public class WAMUtilsModelProvider extends ModelProvider {
 			TexturedModel.Provider WOOD = TexturedModel.createDefault(
 				(Block blk) -> TextureMapping.cube(texture),
 				SHEILD_RACK_MODEL
+			);
+
+			blockModels.createHorizontallyRotatedBlock(block, WOOD);
+		});
+
+		ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.forEach((woodType, blockReg) -> {
+			Block block = blockReg.get();
+			String woodName = woodType.name().toLowerCase();
+			final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("minecraft", "block/" + woodName + "_planks");
+
+			TexturedModel.Provider WOOD = TexturedModel.createDefault(
+				(Block blk) -> TextureMapping.cube(texture),
+				ENCHANTMENT_BOOK_SHELF_MODEL
 			);
 
 			blockModels.createHorizontallyRotatedBlock(block, WOOD);

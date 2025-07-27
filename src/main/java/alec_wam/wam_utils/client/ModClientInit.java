@@ -1,13 +1,17 @@
 package alec_wam.wam_utils.client;
 
 import alec_wam.wam_utils.WAMUtils;
+import alec_wam.wam_utils.client.model.EnchantedBookModel;
 import alec_wam.wam_utils.client.model.WorkerModel;
 import alec_wam.wam_utils.client.render.blockentities.ConveyorBeltBERenderer;
+import alec_wam.wam_utils.client.render.blockentities.EnchantmentBookshelfBERenderer;
 import alec_wam.wam_utils.client.render.blockentities.ShieldRackBERenderer;
-import alec_wam.wam_utils.client.render.entities.RenderHelper;
 import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
+import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
+import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfScreen;
 import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryScreen;
+import alec_wam.wam_utils.network.BaseBEMessagePayload;
 import alec_wam.wam_utils.network.ClientPayloadHandler;
 import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
@@ -38,6 +42,9 @@ public class ModClientInit {
     public static final ModelLayerLocation WORKER_SLIM_MODEL_INNER_ARMOR = new ModelLayerLocation(WAMUtils.prefix("worker_slim"), "inner_armor");
     public static final ModelLayerLocation WORKER_SLIM_MODEL_OUTER_ARMOR = new ModelLayerLocation(WAMUtils.prefix("worker_slim"), "outer_armor");
 	
+    public static final ModelLayerLocation BOOK_LAYER = new ModelLayerLocation(WAMUtils.prefix("book"), "main");
+    
+
 	@SubscribeEvent
 	public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
@@ -53,6 +60,8 @@ public class ModClientInit {
         event.registerLayerDefinition(WORKER_SLIM_MODEL, () -> LayerDefinition.create(WorkerModel.createMesh(CubeDeformation.NONE, true), 64, 64).apply(HumanoidModel.BABY_TRANSFORMER));
 	    event.registerLayerDefinition(WORKER_SLIM_MODEL_INNER_ARMOR, () -> LayerDefinition.create(HumanoidArmorModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION), 64, 32).apply(HumanoidModel.BABY_TRANSFORMER));
         event.registerLayerDefinition(WORKER_SLIM_MODEL_OUTER_ARMOR, () -> LayerDefinition.create(HumanoidArmorModel.createBodyLayer(LayerDefinitions.OUTER_ARMOR_DEFORMATION), 64, 32).apply(HumanoidModel.BABY_TRANSFORMER));
+    
+        event.registerLayerDefinition(BOOK_LAYER, () -> EnchantedBookModel.createBodyLayer());
     }
     
     @SubscribeEvent
@@ -64,6 +73,10 @@ public class ModClientInit {
         event.registerBlockEntityRenderer(
                 ModInit.SHIELDRACK_BLOCK_ENTITY.get(),
                 ShieldRackBERenderer::new
+        );
+        event.registerBlockEntityRenderer(
+                ModInit.ENCHANTMENT_BOOK_SHELF_BLOCK_ENTITY.get(),
+                EnchantmentBookshelfBERenderer::new
         );
     }
 
@@ -86,11 +99,16 @@ public class ModClientInit {
             SyncWorkerFishingPayload.TYPE,
             ClientPayloadHandler::handleSyncWorkerFishingOnMain
         );
+        event.register(
+            BaseBEMessagePayload.TYPE,
+            ClientPayloadHandler::handleBaseBEMessageOnMain
+        );
     }
 
     @SubscribeEvent // on the mod event bus only on the physical client
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModInit.WORKER_INVENTORY_MENU_TYPE.get(), WorkerInventoryScreen::new);
+        event.register(ModInit.ENCHANTMENT_BOOK_SHELF_MENU_TYPE.get(), EnchantmentBookshelfScreen::new);
     }
 	
 }

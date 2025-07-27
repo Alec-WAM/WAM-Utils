@@ -20,6 +20,19 @@
   "block.wamutils.pale_oak_shieldrack": "Pale Oak Shield Rack",
   "block.wamutils.bamboo_shieldrack": "Bamboo Shield Rack",
 
+  "block.wamutils.acacia_enchantment_book_shelf": "Acacia Improved Bookshelf",
+  "block.wamutils.oak_enchantment_book_shelf": "Oak Improved Bookshelf",
+  "block.wamutils.birch_enchantment_book_shelf": "Birch Improved Bookshelf",
+  "block.wamutils.spruce_enchantment_book_shelf": "Spruce Improved Bookshelf",
+  "block.wamutils.jungle_enchantment_book_shelf": "Jungle Improved Bookshelf",
+  "block.wamutils.dark_oak_enchantment_book_shelf": "Dark Oak Improved Bookshelf",
+  "block.wamutils.mangrove_enchantment_book_shelf": "Mangrove Improved Bookshelf",
+  "block.wamutils.cherry_enchantment_book_shelf": "Cherry Improved Bookshelf",
+  "block.wamutils.crimson_enchantment_book_shelf": "Crimson Improved Bookshelf",
+  "block.wamutils.warped_enchantment_book_shelf": "Warped Improved Bookshelf",
+  "block.wamutils.pale_oak_enchantment_book_shelf": "Pale Oak Improved Bookshelf",
+  "block.wamutils.bamboo_enchantment_book_shelf": "Bamboo Improved Bookshelf",
+
   "item.wamutils.example_item": "Example Item",
   "item.wamutils.worker_spawn_item": "Mini Worker",
   "item.wamutils.worker_staff": "Worker Job Staff",
@@ -34,5 +47,23 @@
   "wamutils.message.workers.io_type.in": "Input",
   "wamutils.message.workers.io_type.out": "Output",
   "wamutils.message.workers.io_type.both": "Input/Output",
-  "wamutils.container.worker.title": "Worker Inventory"
+
+  "wamutils.container.worker.title": "Worker Inventory",
+  "wamutils.container.enchantment_bookshelf.title": "Enchantment Bookshelf",
+
+  "wamutils.gui.tooltip.enchantment_category.all.tooltip": "All Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.armor.tooltip": "Armor Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.armor_feet.tooltip": "Boot Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.armor_legs.tooltip": "Legging Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.armor_chest.tooltip": "Chestplate Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.armor_head.tooltip": "Helmet Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.wearable.tooltip": "Wearable Item Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.weapon.tooltip": "Weapon Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.bow.tooltip": "Bow Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.crossbow.tooltip": "Crossbow Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.digger.tooltip": "Digging Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.fishing_rod.tooltip": "Fishing Rod Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.trident.tooltip": "Trident Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.durability.tooltip": "Durability Item Enchantments",
+	"wamutils.gui.tooltip.enchantment_category.curse.tooltip": "Curse Enchantments"
 }

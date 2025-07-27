@@ -30,6 +30,12 @@ public class WAMUtilsRecipeProvider extends RecipeProvider {
         return this.shaped(RecipeCategory.DECORATIONS, shieldRack, i).define('W', material).define('#', item).pattern("W#W").pattern(" W ");
     }
 
+    protected RecipeBuilder enchantmentBookshelf(ItemLike enchantmentBookshelf, Ingredient material) {
+        int i = 1;
+        Item item = Items.BOOKSHELF;
+        return this.shaped(RecipeCategory.DECORATIONS, enchantmentBookshelf, i).define('W', material).define('#', item).pattern("WWW").pattern(" # ").pattern("WWW");
+    }
+
     @Override
     protected void buildRecipes() {
         WoodType.values().forEach((woodType) -> {
@@ -38,6 +44,18 @@ public class WAMUtilsRecipeProvider extends RecipeProvider {
             if (shieldRack != null) {
                 ItemLike itemlike = blockFamily.get(Variant.SLAB);
                 RecipeBuilder recipeBuilder = this.shieldRack(shieldRack, Ingredient.of(itemlike));
+                blockFamily.getRecipeGroupPrefix()
+                    .ifPresent(
+                        prefix -> recipeBuilder.group(prefix + "_" + Variant.SLAB.getRecipeGroup())
+                    );
+                recipeBuilder.unlockedBy(blockFamily.getRecipeUnlockedBy().orElseGet(() -> getHasName(itemlike)), this.has(itemlike));
+                recipeBuilder.save(this.output);
+            }
+
+            Item enchantedBookshelf = ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.get(woodType).asItem();
+            if (enchantedBookshelf != null) {
+                ItemLike itemlike = blockFamily.get(Variant.SLAB);
+                RecipeBuilder recipeBuilder = this.enchantmentBookshelf(enchantedBookshelf, Ingredient.of(itemlike));
                 blockFamily.getRecipeGroupPrefix()
                     .ifPresent(
                         prefix -> recipeBuilder.group(prefix + "_" + Variant.SLAB.getRecipeGroup())

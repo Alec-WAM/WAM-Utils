@@ -1,4 +1,4 @@
-package alec_wam.wam_utils.client.render.entities;
+package alec_wam.wam_utils.client.util;
 
 import java.awt.Color;
 

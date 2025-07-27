@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "wamutils:block/oak_enchantment_book_shelf"
+  }
+}

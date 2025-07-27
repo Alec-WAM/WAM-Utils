@@ -20,24 +20,50 @@ public class WAMUtilsBlockTags extends BlockTagsProvider {
 		super(output, lookupProvider, WAMUtils.MODID);
 	}
 
+	//Block Collections
+	public static final TagKey<Block> SHIELD_RACKS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "shield_racks"));
+	public static final TagKey<Block> ENCHANTMENT_BOOKSHELVES = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "enchantment_bookshelves"));
+
 	public static final TagKey<Block> TREE_ATTACHMENTS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "tree_attachments"));
+
+	public static final TagKey<Block> ENCHANTMENT_INDEXER_BOOKSHELVES = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "enchantment_indexer_bookshelves"));
 
 	public static final TagKey<Block> WORKER_FLOWERS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "worker_flowers"));
 	public static final TagKey<Block> WORKER_FLOWERS_BONEMEAL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "worker_flowers_bonemeal"));
 	
 	@Override
 	protected void addTags(Provider provider) {
-		tag(TREE_ATTACHMENTS)
-        .add(Blocks.BEE_NEST, Blocks.COCOA, Blocks.MOSS_CARPET, Blocks.SHROOMLIGHT, Blocks.VINE);
 		
+		//Block Mining
 		tag(BlockTags.MINEABLE_WITH_AXE)
 			.add(ModInit.SHIELDRACK_BLOCKS.values().stream()
+				.map(block -> block.get())
+				.toList().toArray(Block[]::new))
+			.add(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
 				.map(block -> block.get())
 				.toList().toArray(Block[]::new));
 				
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.add(ModInit.CONVEYOR_BELT_BLOCK.get(), ModInit.CONVEYOR_SPLITTER_BLOCK.get(), ModInit.ITEM_GRATE_BLOCK.get());
 		
+		//Block Collections
+		tag(SHIELD_RACKS)
+			.add(ModInit.SHIELDRACK_BLOCKS.values().stream()
+				.map(block -> block.get())
+				.toList().toArray(Block[]::new));
+		tag(ENCHANTMENT_BOOKSHELVES)
+			.add(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
+				.map(block -> block.get())
+				.toList().toArray(Block[]::new));
+
+		//Misc Block Lists
+		tag(TREE_ATTACHMENTS)
+        	.add(Blocks.BEE_NEST, Blocks.COCOA, Blocks.MOSS_CARPET, Blocks.SHROOMLIGHT, Blocks.VINE);
+		
+		tag(ENCHANTMENT_INDEXER_BOOKSHELVES)
+			.add(Blocks.CHISELED_BOOKSHELF)
+			.addTag(ENCHANTMENT_BOOKSHELVES);
+
 		tag(WORKER_FLOWERS)
 			.addTag(Tags.Blocks.FLOWERS)
 			.remove(Tags.Blocks.FLOWERS_TALL)

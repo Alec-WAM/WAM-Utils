@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "wamutils:entity/book"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "wamutils:entity/enchanted_book"
+    }
+  ]
+}

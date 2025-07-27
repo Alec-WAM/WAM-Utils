@@ -1,16 +1,28 @@
 {
   "values": [
     "wamutils:cherry_shieldrack",
-    "wamutils:bamboo_shieldrack",
-    "wamutils:crimson_shieldrack",
-    "wamutils:birch_shieldrack",
-    "wamutils:dark_oak_shieldrack",
     "wamutils:pale_oak_shieldrack",
-    "wamutils:oak_shieldrack",
+    "wamutils:bamboo_shieldrack",
     "wamutils:spruce_shieldrack",
+    "wamutils:oak_shieldrack",
     "wamutils:jungle_shieldrack",
     "wamutils:acacia_shieldrack",
+    "wamutils:crimson_shieldrack",
+    "wamutils:mangrove_shieldrack",
+    "wamutils:birch_shieldrack",
     "wamutils:warped_shieldrack",
-    "wamutils:mangrove_shieldrack"
+    "wamutils:dark_oak_shieldrack",
+    "wamutils:cherry_enchantment_book_shelf",
+    "wamutils:pale_oak_enchantment_book_shelf",
+    "wamutils:bamboo_enchantment_book_shelf",
+    "wamutils:spruce_enchantment_book_shelf",
+    "wamutils:oak_enchantment_book_shelf",
+    "wamutils:jungle_enchantment_book_shelf",
+    "wamutils:acacia_enchantment_book_shelf",
+    "wamutils:crimson_enchantment_book_shelf",
+    "wamutils:mangrove_enchantment_book_shelf",
+    "wamutils:birch_enchantment_book_shelf",
+    "wamutils:warped_enchantment_book_shelf",
+    "wamutils:dark_oak_enchantment_book_shelf"
   ]
 }
