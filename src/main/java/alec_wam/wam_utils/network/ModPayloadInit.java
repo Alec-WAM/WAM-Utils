@@ -39,7 +39,11 @@ public class ModPayloadInit {
            BaseBEMessagePayload.TYPE,
            BaseBEMessagePayload.STREAM_CODEC,
 		   ServerPayloadHandler::handleBaseBEMessageOnMain
-       );
+       	);
+	   	registrar.playToClient(
+			SyncClientShelfItemsPayload.TYPE,
+    		SyncClientShelfItemsPayload.STREAM_CODEC
+		);
 	}	
 
 	public static ProblemReporter.PathElement problemPath(CustomPacketPayload payload) {

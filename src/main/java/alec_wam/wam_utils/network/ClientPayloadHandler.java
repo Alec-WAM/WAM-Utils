@@ -3,6 +3,8 @@ package alec_wam.wam_utils.network;
 import java.util.Optional;
 
 import alec_wam.wam_utils.common.blocks.BaseBE;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerMenu;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerScreen;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
@@ -69,6 +71,17 @@ public class ClientPayloadHandler {
 				BlockEntity	blockEntity = level.getBlockEntity(data.pos());
 				if(blockEntity != null && blockEntity instanceof BaseBE baseBE) {
 					baseBE.handleCustomMessage(data.messageType(), data.messageData(), true);
+				}
+			}
+		});
+	}
+
+	public static void handleClientShelfItemMessageOnMain(final SyncClientShelfItemsPayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			if(Minecraft.getInstance().screen != null){
+				if (Minecraft.getInstance().screen instanceof EnchantmentIndexerScreen screen) {
+					EnchantmentIndexerMenu menu = screen.getMenu();
+					menu.setItemList(data.shelfItems());
 				}
 			}
 		});

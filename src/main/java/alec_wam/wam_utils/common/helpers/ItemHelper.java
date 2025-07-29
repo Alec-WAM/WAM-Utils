@@ -31,6 +31,7 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -69,6 +70,21 @@ public class ItemHelper {
 
 	public static Set<Holder<Enchantment>> getEnchantments(ItemStack stack){
 		return stack.getOrDefault(EnchantmentHelper.getComponentType(stack), ItemEnchantments.EMPTY).keySet();
+	}
+
+	public static ItemEnchantments getItemEnchantments(ItemStack stack){
+		
+		ItemEnchantments itemenchantments = stack.getOrDefault(EnchantmentHelper.getComponentType(stack), ItemEnchantments.EMPTY);
+		
+		if(stack.is(Items.ENCHANTED_BOOK)){
+			return itemenchantments;
+		}
+        // Neo: Respect gameplay-only enchantments when enchantment effect tag checks
+        var lookup = net.neoforged.neoforge.common.CommonHooks.resolveLookup(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        if (lookup != null) {
+            itemenchantments = stack.getAllEnchantments(lookup);
+        }
+		return itemenchantments;
 	}
 
 	public static final Comparator<ItemStack> SORT_STACK_SIZE = (stack1, stack2) -> {

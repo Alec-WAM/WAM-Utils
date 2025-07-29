@@ -24,6 +24,7 @@ import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.EnchantmentBookshe
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfMenu;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBE;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBlock;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerMenu;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBE;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBlock;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
@@ -215,6 +216,8 @@ public class ModInit {
         BLOCK_ENTITIES.register("enchantment_indexer", () -> {
             return new BlockEntityType<>(EnchantmentIndexerBE::new, ENCHANTMENT_INDEXER_BLOCK.get());
         });
+    public static final Supplier<MenuType<EnchantmentIndexerMenu>> ENCHANTMENT_INDEXER_MENU_TYPE = MENU_TYPES.register("enchantment_indexer", () -> IMenuTypeExtension.create(EnchantmentIndexerMenu::new));
+
 
     // ENTITIES
     public static final DeferredHolder<EntityType<?>, EntityType<WorkerEntity>> WORKER_ENTITY = ENTITIES.register(

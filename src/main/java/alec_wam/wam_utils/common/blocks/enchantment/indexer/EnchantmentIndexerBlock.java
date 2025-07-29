@@ -2,6 +2,7 @@ package alec_wam.wam_utils.common.blocks.enchantment.indexer;
 
 import alec_wam.wam_utils.common.blocks.BaseEntityBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -28,8 +29,16 @@ public class EnchantmentIndexerBlock extends BaseEntityBlock {
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if(blockEntity !=null && blockEntity instanceof EnchantmentIndexerBE indexer) {
             boolean isClient = level.isClientSide;
-            if(!isClient && player.isCrouching()) {
-                indexer.buildShelfList();
+            if(!isClient) {
+                if(player.isCrouching()){
+                    indexer.buildShelfList();
+                }
+                else {
+                    //Open Inventory
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.openMenu(indexer);
+                    }
+                }
             }
             return isClient ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }

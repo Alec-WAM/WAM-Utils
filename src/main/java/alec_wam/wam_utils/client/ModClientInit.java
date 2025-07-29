@@ -10,9 +10,11 @@ import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
 import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfScreen;
+import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerScreen;
 import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryScreen;
 import alec_wam.wam_utils.network.BaseBEMessagePayload;
 import alec_wam.wam_utils.network.ClientPayloadHandler;
+import alec_wam.wam_utils.network.SyncClientShelfItemsPayload;
 import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import net.minecraft.client.model.HumanoidArmorModel;
@@ -103,12 +105,17 @@ public class ModClientInit {
             BaseBEMessagePayload.TYPE,
             ClientPayloadHandler::handleBaseBEMessageOnMain
         );
+        event.register(
+            SyncClientShelfItemsPayload.TYPE,
+            ClientPayloadHandler::handleClientShelfItemMessageOnMain
+        );
     }
 
     @SubscribeEvent // on the mod event bus only on the physical client
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModInit.WORKER_INVENTORY_MENU_TYPE.get(), WorkerInventoryScreen::new);
         event.register(ModInit.ENCHANTMENT_BOOK_SHELF_MENU_TYPE.get(), EnchantmentBookshelfScreen::new);
+        event.register(ModInit.ENCHANTMENT_INDEXER_MENU_TYPE.get(), EnchantmentIndexerScreen::new);
     }
 	
 }

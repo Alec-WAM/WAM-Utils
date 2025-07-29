@@ -525,6 +525,43 @@ public class BlockHelper {
         return stack;
     }
 
+	public static int insertSingleItemStacked(IItemHandler inventory, ItemStack stack, boolean simulate) {
+		if (inventory == null || stack.isEmpty())
+            return -1;
+
+		int sizeInventory = inventory.getSlots();
+
+		if(stack.isStackable()) {
+			// go through the inventory and try to fill up already existing items
+			for (int i = 0; i < sizeInventory; i++)
+			{
+				ItemStack slot = inventory.getStackInSlot(i);
+				if (ItemStack.isSameItemSameComponents(slot, stack))
+				{
+					ItemStack result = inventory.insertItem(i, stack, simulate);
+					if(result.isEmpty()){
+						return i;
+					}
+				}
+			}
+		}
+
+        // insert remainder into empty slots
+        // find empty slot
+		for (int i = 0; i < sizeInventory; i++)
+		{
+			if (inventory.getStackInSlot(i).isEmpty())
+			{
+				ItemStack result = inventory.insertItem(i, stack, simulate);
+				if(result.isEmpty()){
+					return i;
+				}
+			}
+		}
+
+		return -1;
+	}
+
 	public static boolean shouldSolidify(BlockGetter level, BlockPos pos, BlockState state, net.minecraft.world.level.material.FluidState fluidState) {
         return state.canBeHydrated(level, pos, fluidState, pos) || touchesLiquid(level, pos, state);
     }
