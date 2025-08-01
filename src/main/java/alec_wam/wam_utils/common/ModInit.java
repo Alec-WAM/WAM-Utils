@@ -109,7 +109,7 @@ public class ModInit {
             .isViewBlocking(ModInit::never)
 			);
     public static final DeferredItem<BlockItem> CONVEYOR_BELT_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("conveyor_belt", CONVEYOR_BELT_BLOCK);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyorBeltBE>> CONVEYOR_BELT_BLOCK_ENTITY = BLOCK_ENTITIES.register("conveyor_belt_block_entity", () -> new BlockEntityType<>(ConveyorBeltBE::new, CONVEYOR_BELT_BLOCK.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyorBeltBE>> CONVEYOR_BELT_BLOCK_ENTITY = BLOCK_ENTITIES.register("conveyor_belt_block_entity", () -> new BlockEntityType<ConveyorBeltBE>(ConveyorBeltBE::new, CONVEYOR_BELT_BLOCK.get()));
     
     public static final DeferredBlock<Block> CONVEYOR_SPLITTER_BLOCK = registerBlock("conveyor_splitter", ConveyorSplitterBlock::new, () -> BlockBehaviour.Properties.of()
 			.sound(SoundType.METAL)
@@ -117,7 +117,7 @@ public class ModInit {
 	        .explosionResistance(10.0f)
 			);
     public static final DeferredItem<BlockItem> CONVEYOR_SPLITTER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("conveyor_splitter", CONVEYOR_SPLITTER_BLOCK);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyorSplitterBE>> CONVEYOR_SPLITTER_BLOCK_ENTITY = BLOCK_ENTITIES.register("conveyor_splitter_block_entity", () -> new BlockEntityType<>(ConveyorSplitterBE::new, CONVEYOR_SPLITTER_BLOCK.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyorSplitterBE>> CONVEYOR_SPLITTER_BLOCK_ENTITY = BLOCK_ENTITIES.register("conveyor_splitter_block_entity", () -> new BlockEntityType<ConveyorSplitterBE>(ConveyorSplitterBE::new, CONVEYOR_SPLITTER_BLOCK.get()));
     
     
     public static final DeferredBlock<Block> ITEM_GRATE_BLOCK = registerBlock("item_grate", ItemGrateBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.METAL).strength(5.0F, 6.0F).noOcclusion());
@@ -192,7 +192,7 @@ public class ModInit {
                 .map(DeferredBlock::get)
                 .toList();
 
-            return new BlockEntityType<>(ShieldRackBE::new, blocks.toArray(Block[]::new));
+            return new BlockEntityType<ShieldRackBE>(ShieldRackBE::new, blocks.toArray(Block[]::new));
         });
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnchantmentBookshelfBE>> ENCHANTMENT_BOOK_SHELF_BLOCK_ENTITY =
@@ -201,7 +201,7 @@ public class ModInit {
                 .map(DeferredBlock::get)
                 .toList();
 
-            return new BlockEntityType<>(EnchantmentBookshelfBE::new, blocks.toArray(Block[]::new));
+            return new BlockEntityType<EnchantmentBookshelfBE>(EnchantmentBookshelfBE::new, blocks.toArray(Block[]::new));
         });
     public static final Supplier<MenuType<EnchantmentBookshelfMenu>> ENCHANTMENT_BOOK_SHELF_MENU_TYPE = MENU_TYPES.register("enchantment_book_shelf", () -> IMenuTypeExtension.create(EnchantmentBookshelfMenu::new));
 
@@ -214,7 +214,7 @@ public class ModInit {
     public static final DeferredItem<BlockItem> ENCHANTMENT_INDEXER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("enchantment_indexer", ENCHANTMENT_INDEXER_BLOCK);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnchantmentIndexerBE>> ENCHANTMENT_INDEXER_BLOCK_ENTITY =
         BLOCK_ENTITIES.register("enchantment_indexer", () -> {
-            return new BlockEntityType<>(EnchantmentIndexerBE::new, ENCHANTMENT_INDEXER_BLOCK.get());
+            return new BlockEntityType<EnchantmentIndexerBE>(EnchantmentIndexerBE::new, ENCHANTMENT_INDEXER_BLOCK.get());
         });
     public static final Supplier<MenuType<EnchantmentIndexerMenu>> ENCHANTMENT_INDEXER_MENU_TYPE = MENU_TYPES.register("enchantment_indexer", () -> IMenuTypeExtension.create(EnchantmentIndexerMenu::new));
 

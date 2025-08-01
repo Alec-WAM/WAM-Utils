@@ -232,7 +232,7 @@ public class RenderHelper {
 
     //This one does not block water
     public static void renderBoxSolid(PoseStack.Pose pose, Matrix4f matrix, MultiBufferSource buffer, double x, double y, double z, double xEnd, double yEnd, double zEnd, float red, float green, float blue, float alpha) {
-        VertexConsumer builder = buffer.getBuffer(RenderType.entityTranslucent(DUMMY_TEXTURE));
+        VertexConsumer builder = buffer.getBuffer(RenderType.translucentMovingBlock());
 
         float startX = (float) x;
         float startY = (float) y;

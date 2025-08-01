@@ -200,6 +200,11 @@ public class ButcherAnimalsJob extends AreaWorkerJob {
 	}
 
     @Override
+    public boolean pickupMobDrops(){
+        return true;
+    }
+
+    @Override
     public void stop() {
         this.killTarget = null;
         worker.getNavigation().stop();

@@ -2,6 +2,7 @@ package alec_wam.wam_utils.client.render.entities;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +14,9 @@ import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerInventorySettings;
 import alec_wam.wam_utils.common.entities.workers.WorkerInventorySettings.IOType;
 import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
+import alec_wam.wam_utils.common.items.WorkerStaffItem;
+import alec_wam.wam_utils.common.items.WorkerStaffItem.SelectionType;
+import alec_wam.wam_utils.common.items.WorkerStaffItem.WorkerBlockSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,6 +25,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -50,6 +55,7 @@ public class WorkerWorldRenderer {
 		MultiBufferSource.BufferSource buffersource = buffers.bufferSource();			
 		Vec3 projected = event.getCamera().getPosition();		
 		PoseStack pose = event.getPoseStack();
+		Player player = Minecraft.getInstance().player;
 
 		for(WorkerEntity worker : WORKERS_TO_RENDER.values()) {
 			if(worker.isAlive()) {
@@ -73,7 +79,54 @@ public class WorkerWorldRenderer {
 					}
 				}
 			}
-		}   
+		}
+		
+		ItemStack mainHandStack = player.getMainHandItem();
+		ItemStack offHandStack = player.getOffhandItem();
+		if(mainHandStack.is(ModInit.WORKER_STAFF_ITEM)) {
+			renderWorkerStaffSelection(mainHandStack, buffers, pose, buffersource, projected);			
+		}
+		else if(offHandStack.is(ModInit.WORKER_STAFF_ITEM)) {
+			renderWorkerStaffSelection(offHandStack, buffers, pose, buffersource, projected);
+		}
+	}
+
+	public static void renderWorkerStaffSelection(ItemStack stack, RenderBuffers buffers, PoseStack pose, MultiBufferSource.BufferSource buffersource, Vec3 projected){
+		SelectionType selection = stack.get(ModInit.WORKER_SELECTION_TYPE_COMPONENT);
+
+		WorkerBlockSettings settings = WorkerStaffItem.loadBlockSettings(stack);		
+		if(settings !=null) {			
+			if(selection == SelectionType.SINGLE) {
+				BlockPos pos = settings.getSingleBlockPos().orElse(null);
+				if(pos !=null) {
+					pose.pushPose();
+					pose.translate(-projected.x(), -projected.y(), -projected.z());
+					RenderHelper.renderLines(pose, new AABB(pos), Color.GREEN, buffersource);
+					pose.popPose();
+				}
+			}
+			if(selection == SelectionType.AREA) {
+				BlockPos pos1 = settings.getAreaBlockPos1().orElse(null);
+				BlockPos pos2 = settings.getAreaBlockPos2().orElse(null);
+				if(pos1 !=null && pos2 !=null) {
+					pose.pushPose();
+					pose.translate(-projected.x(), -projected.y(), -projected.z());
+					RenderHelper.renderLines(pose, AABB.encapsulatingFullBlocks(pos1, pos2), Color.GREEN, buffersource);
+					pose.popPose();
+				}
+			}
+			if(selection == SelectionType.LIST) {
+				List<BlockPos> posList = settings.getBlockPosList().orElse(null);
+				if(posList !=null && !posList.isEmpty()) {
+					pose.pushPose();
+					pose.translate(-projected.x(), -projected.y(), -projected.z());
+					posList.forEach((pos) -> {
+						RenderHelper.renderLines(pose, new AABB(pos), Color.GREEN, buffersource);
+					});
+					pose.popPose();
+				}
+			}
+		}
 	}
 
 	@SubscribeEvent
@@ -83,8 +136,7 @@ public class WorkerWorldRenderer {
 		Vec3 projected = event.getCamera().getPosition();		
 		LocalPlayer player = Minecraft.getInstance().player;
 		PoseStack pose = event.getPoseStack();		
-		ItemStack mainHandStack = player.getMainHandItem();		
-
+		ItemStack mainHandStack = player.getMainHandItem();	
 		
 		if(mainHandStack.is(ModInit.WORKER_INVENTORY_ITEM.get())) {
 			WorkerInventorySettings settings = mainHandStack.get(ModInit.WORKER_INVENTORY_SETTINGS_DATA_COMPONENT);
@@ -128,7 +180,7 @@ public class WorkerWorldRenderer {
 					pose.popPose();
 					
 					pose.popPose();
-					buffersource.endBatch(RenderType.entityTranslucent(RenderHelper.DUMMY_TEXTURE));
+					buffersource.endBatch(RenderType.translucentMovingBlock());
 				}
 			}
 		}
