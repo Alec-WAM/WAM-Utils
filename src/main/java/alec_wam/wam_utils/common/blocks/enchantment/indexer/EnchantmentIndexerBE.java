@@ -354,7 +354,7 @@ public class EnchantmentIndexerBE extends BaseBE implements MenuProvider{
         
         this.shelves.sort(new BlockDistanceComparator(worldPosition));
         
-        System.out.println("Found " + this.shelves.size() + " shelves");
+        // System.out.println("Found " + this.shelves.size() + " shelves");
 
         buildItemList();
 	}

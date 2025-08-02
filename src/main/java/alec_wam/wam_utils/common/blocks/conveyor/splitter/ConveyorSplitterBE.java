@@ -270,7 +270,6 @@ public class ConveyorSplitterBE extends BaseBE {
 	public InteractionResult playerInteract(Player player, BlockHitResult hitResult, @Nullable ItemStack stack, @Nullable InteractionHand hand) {
 		Direction dir = hitResult.getDirection();
 		if(player.isCrouching()) {
-			System.out.println("Crouching");
 			if(stack == null || stack.isEmpty()) {
 				IItemHandler handler = this.inventory;
 				if(handler !=null) {

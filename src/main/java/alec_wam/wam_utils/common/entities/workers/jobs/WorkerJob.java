@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity.ExternalInventoryStatus;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
+import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -31,16 +32,15 @@ public abstract class WorkerJob {
 	public abstract JobType getJobType();
 	
 	public boolean canKeepRunning() {
-//		return worker.getExternalInventoryStatus() == ExternalInventoryStatus.NONE && !worker.isEating;
-		return worker.getExternalInventoryStatus() == ExternalInventoryStatus.NONE;
+		return worker.getExternalInventoryStatus() == ExternalInventoryStatus.NONE && !worker.isEating();
 	}
 	
 	public boolean needsItem(ItemStack stack) {
-//		if(worker.foodData.needsFood() || worker.foodData.isHurt(worker)) {
-//			if(!ItemUtil.isBadFood(stack, worker)) {
-//				return true;
-//			}
-//		}
+		if(worker.getFoodData().needsFood() || worker.isHurt()) {
+			if(!ItemHelper.isBadFood(stack, worker)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	

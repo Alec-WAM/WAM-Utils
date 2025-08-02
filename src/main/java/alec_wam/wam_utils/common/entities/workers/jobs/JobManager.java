@@ -22,6 +22,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.impl.ConcreteJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.FishermanJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.FlowerHarvestJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.HarvestCropJob;
+import alec_wam.wam_utils.common.entities.workers.jobs.impl.MeleeAttackJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.ShearAnimalsJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.TreeChopJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
@@ -73,7 +74,8 @@ public class JobManager {
 		BEEHIVE(BeeHiveJob.class, BeeHiveJob::createJob),
 		FISHING(FishermanJob.class, FishermanJob::createJob),
 		COLLECT(CollectItemsJob.class, CollectItemsJob::createJob),
-		CONCRETE(ConcreteJob.class, ConcreteJob::createJob);
+		CONCRETE(ConcreteJob.class, ConcreteJob::createJob),		
+		DEFEND_MELEE(MeleeAttackJob.class, MeleeAttackJob::createJob);
 
 		
 		public static final StringRepresentable.EnumCodec<JobType> CODEC = StringRepresentable.fromEnum(JobType::values);

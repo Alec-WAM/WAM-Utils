@@ -63,6 +63,20 @@ public class ClientPayloadHandler {
 	    	}			
         });
     }
+
+	public static void handleSyncWorkerFoodDataOnMain(final SyncWorkerFoodDataPayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
+			Level level = Minecraft.getInstance().level;
+	    	if (level != null) {
+	    		Entity entity = level.getEntity(data.entityId());
+	            if (entity !=null && entity instanceof WorkerEntity worker) {
+	            	System.out.println("Syncing Worker Food Data");
+					worker.getFoodData().setFoodLevel(data.foodLevel());
+					worker.getFoodData().setSaturation(data.saturationLevel());
+	            }
+	    	}			
+        });
+    }
 	
 	public static void handleBaseBEMessageOnMain(final BaseBEMessagePayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {

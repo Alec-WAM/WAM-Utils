@@ -16,14 +16,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent.LivingTargetType;
@@ -172,16 +174,16 @@ public class ButcherAnimalsJob extends AreaWorkerJob {
 				return;
 			}
 
-            double distance = this.killTarget.position().distanceToSqr(worker.position());
-            double maxDistance = worker.getBbWidth() + 1.0D;
-            if (distance > maxDistance) {
-                if (worker.getNavigation().isDone()) {
-                    Path path = worker.getNavigation().createPath(this.killTarget, 0);
-                    if (path != null) {
-                        worker.getNavigation().moveTo(path, 1.0D);
-                    }
-                }
-            } else if(EntityHelper.isLookingAtHorizontally(worker, this.killTarget, 20)){
+            float multi = 3.0F;
+			Vec3 range = new Vec3(worker.getBbWidth() * multi, worker.getBbHeight(), worker.getBbWidth() * multi);
+			boolean canSee = this.worker.getSensing().hasLineOfSight(this.killTarget);
+			if(!EntityHelper.isWithinMeleeAttackRange(worker, this.killTarget, range) || !canSee) {			
+				if(worker.getNavigation().isDone()) {
+					BlockPos attackPos = this.killTarget.blockPosition();
+					BlockPos validBlockPos = EntityHelper.findWalkableAtOrAdjacentPos(worker, attackPos);
+					worker.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(validBlockPos, 1.0F, 0));
+				}
+			} else if(EntityHelper.isLookingAtHorizontally(worker, this.killTarget, 20)){
                 swingSword(this.killTarget);
             }
         }

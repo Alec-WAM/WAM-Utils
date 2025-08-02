@@ -30,11 +30,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
 public class EntityHelper {
+    public static final double DEFAULT_ATTACK_REACH = Math.sqrt(2.04F) - 0.6F;
+    public static final Vec3 DEFAULT_ATTACK_REACH_RANGE = new Vec3(DEFAULT_ATTACK_REACH, 0, DEFAULT_ATTACK_REACH);
 
 	public static final Comparator<Entity> getEntityDistanceComparator(LivingEntity entity) {
 		return (e1, e2) -> {
@@ -116,20 +119,47 @@ public class EntityHelper {
 
 	}
 	
+	public static boolean canWalkHere(Level level, BlockPos pos) {
+		BlockState at = level.getBlockState(pos);
+		BlockState below = level.getBlockState(pos.below());
+				
+		// Must be air and have solid block below
+		if (at.getCollisionShape(level, pos).isEmpty() 
+			&& Block.isFaceFull(below.getCollisionShape(level, pos.below()), Direction.UP) 
+			&& at.getFluidState().isEmpty()
+			&& level.getFluidState(pos).isEmpty()
+		) {
+			return true;
+		}
+		
+		return false;
+	}
+
+    /**
+     * Finds a walkable position for a given Mob entity starting from a specified center position. 
+     * It checks if the center position is walkable and, if not, looks for adjacent positions that are.
+     *
+     * @param entity The Mob entity for which a walkable position is being determined.
+     * @param center The central BlockPos to start searching for a walkable or adjacent position.
+     * @return A BlockPos that is walkable, either the center if walkable or an adjacent position.
+     */
+
+	public static BlockPos findWalkableAtOrAdjacentPos(Mob entity, BlockPos center) {
+		Level level = entity.level();
+		if(canWalkHere(level, center)){
+			return center;
+		}		
+		return findWalkableAdjacentPos(entity, center);
+	}
+
 	public static BlockPos findWalkableAdjacentPos(Mob entity, BlockPos center) {
 	    Level level = entity.level();
 	    for(BlockPos customCenter : new BlockPos[]{center, center.above(), center.below()}) {	        
 			for (Direction dir : Direction.Plane.HORIZONTAL) {
 				BlockPos candidate = customCenter.relative(dir);
-				BlockState below = level.getBlockState(candidate.below());
-				BlockState at = level.getBlockState(candidate);
 				
 				// Must be air and have solid block below
-				if (at.getCollisionShape(level, candidate).isEmpty() 
-					&& Block.isFaceFull(below.getCollisionShape(level, candidate.below()), Direction.UP) 
-					&& at.getFluidState().isEmpty()
-					&& level.getFluidState(candidate).isEmpty()
-				) {
+				if (canWalkHere(level, candidate)) {
 					return candidate;
 				}
 			}
@@ -247,4 +277,44 @@ public class EntityHelper {
 		// System.out.println( angleToTarget + " / " + angleDifference);
 		return angleDifference <= maxDegrees;
 	}
+
+	public static boolean isWithinMeleeAttackRange(LivingEntity attacker, Entity target) {
+		return isWithinMeleeAttackRange(attacker, target, DEFAULT_ATTACK_REACH_RANGE);
+	}
+
+	public static boolean isWithinMeleeAttackRange(LivingEntity attacker, Entity target, Vec3 range) {
+        Entity vehicle = attacker.getVehicle();
+        AABB aabb;
+        if (vehicle != null) {
+            AABB aabb1 = vehicle.getBoundingBox();
+            AABB aabb2 = attacker.getBoundingBox();
+            aabb = new AABB(
+                Math.min(aabb2.minX, aabb1.minX),
+                aabb2.minY,
+                Math.min(aabb2.minZ, aabb1.minZ),
+                Math.max(aabb2.maxX, aabb1.maxX),
+                aabb2.maxY,
+                Math.max(aabb2.maxZ, aabb1.maxZ)
+            );
+        } else {
+            aabb = attacker.getBoundingBox();
+        }
+
+        AABB attackAABB = aabb.inflate(range.x, range.y, range.z);
+		
+		return attackAABB.intersects(getEntityHitbox(target));
+    }
+
+	
+
+    public static AABB getEntityHitbox(Entity entity) {
+        AABB aabb = entity.getBoundingBox();
+        Entity vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            Vec3 vec3 = vehicle.getPassengerRidingPosition(entity);
+            return aabb.setMinY(Math.max(vec3.y, aabb.minY));
+        } else {
+            return aabb;
+        }
+    }
 }

@@ -30,11 +30,10 @@ public class ModPayloadInit {
 			SyncWorkerFishingPayload.TYPE,
     		SyncWorkerFishingPayload.STREAM_CODEC
 		);
-	    // registrar.playToClient(
-    	// 	SyncWorkerJobPayload.TYPE,
-    	// 	SyncWorkerJobPayload.STREAM_CODEC,
-    	// 	ClientPayloadHandler::handleSyncWorkerJobOnMain
-	    // );
+		registrar.playToClient(
+			SyncWorkerFoodDataPayload.TYPE,
+    		SyncWorkerFoodDataPayload.STREAM_CODEC
+		);
 	    registrar.playBidirectional(
            BaseBEMessagePayload.TYPE,
            BaseBEMessagePayload.STREAM_CODEC,

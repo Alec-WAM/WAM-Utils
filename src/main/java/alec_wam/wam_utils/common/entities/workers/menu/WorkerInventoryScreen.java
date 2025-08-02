@@ -4,13 +4,16 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import alec_wam.wam_utils.WAMUtils;
+import alec_wam.wam_utils.client.util.GuiHelper;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
+import alec_wam.wam_utils.common.entities.workers.WorkerFoodData;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -28,6 +31,8 @@ public class WorkerInventoryScreen extends AbstractContainerScreen<WorkerInvento
     private float yMouse;
 
     private final WorkerEntity workerEntity;
+    private final RandomSource random = RandomSource.create();
+    private int tickCount = 0;
 
     public WorkerInventoryScreen(WorkerInventoryMenu menu, Inventory playerInventory, Component title) {
         super(
@@ -43,8 +48,32 @@ public class WorkerInventoryScreen extends AbstractContainerScreen<WorkerInvento
     }
 
     @Override
+    public void containerTick(){
+        super.containerTick();
+        this.tickCount++;
+    }
+
+    @Override
     public void render(GuiGraphics p_283246_, int p_98876_, int p_98877_, float p_98878_) {
         super.render(p_283246_, p_98876_, p_98877_, p_98878_);
+        
+        int heartX = this.leftPos + 100;
+        int heartY = this.topPos + 58;
+
+        p_283246_.pose().pushMatrix();
+        p_283246_.pose().translate(heartX, heartY);
+        p_283246_.pose().scale(0.8f);
+        // TODO add ticking effects to hearts
+        GuiHelper.renderHearts(p_283246_, workerEntity, 0, 0, 10.0F, this.random);
+        GuiHelper.renderArmor(p_283246_, workerEntity, 0, -1, 1, 0);
+        
+        WorkerFoodData foodData = workerEntity.getFoodData();
+        if(foodData != null){
+            GuiHelper.renderFood(p_283246_, workerEntity, 82, 11, foodData.getFoodLevel(), foodData.getSaturationLevel(), this.tickCount, random);
+        }
+        
+        p_283246_.pose().popMatrix();
+        
         this.xMouse = p_98876_;
         this.yMouse = p_98877_;
         this.renderTooltip(p_283246_, p_98876_, p_98877_);

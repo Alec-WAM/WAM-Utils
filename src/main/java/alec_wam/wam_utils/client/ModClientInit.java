@@ -16,6 +16,7 @@ import alec_wam.wam_utils.network.BaseBEMessagePayload;
 import alec_wam.wam_utils.network.ClientPayloadHandler;
 import alec_wam.wam_utils.network.SyncClientShelfItemsPayload;
 import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
+import alec_wam.wam_utils.network.SyncWorkerFoodDataPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -100,6 +101,10 @@ public class ModClientInit {
         event.register(
             SyncWorkerFishingPayload.TYPE,
             ClientPayloadHandler::handleSyncWorkerFishingOnMain
+        );
+        event.register(
+            SyncWorkerFoodDataPayload.TYPE,
+            ClientPayloadHandler::handleSyncWorkerFoodDataOnMain
         );
         event.register(
             BaseBEMessagePayload.TYPE,

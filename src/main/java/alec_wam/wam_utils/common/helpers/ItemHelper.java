@@ -446,6 +446,11 @@ public class ItemHelper {
 	public static boolean isShield(ItemStack stack) {
 		return stack.has(DataComponents.BLOCKS_ATTACKS);
 	}
+
+	public static boolean isArmor(ItemStack stack, @Nullable LivingEntity entity) {
+		EquipmentSlot equipmentslot = entity !=null ? entity.getEquipmentSlotForItem(stack) : stack.getEquipmentSlot();
+		return getApproximateAttributeWith(stack, Attributes.ARMOR, equipmentslot) > 0.0D;
+	}
 	
 	public static double getMeleeDamage(ItemStack stack) {
 		double damage = getApproximateAttributeWith(stack, Attributes.ATTACK_DAMAGE, EquipmentSlot.MAINHAND);

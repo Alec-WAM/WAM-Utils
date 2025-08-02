@@ -30,6 +30,7 @@ import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
 import alec_wam.wam_utils.common.items.WorkerStaffItem;
 import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
+import alec_wam.wam_utils.network.SyncWorkerFoodDataPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.resources.PlayerSkin;
@@ -37,6 +38,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -89,6 +91,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -170,7 +173,11 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 	private boolean bobberLanded;
 	private int bobberThrowTicks;
 	
-	private final SimpleContainer inventory = new SimpleContainer(9);	
+	private final SimpleContainer inventory = new SimpleContainer(9);
+    private WorkerFoodData foodData = new WorkerFoodData();
+	private boolean isEating = false;	
+	private int lastSentFood = -99999999;
+	private boolean lastFoodSaturationZero = true;	
 	
 	public static final EntityDataAccessor<ExternalInventoryStatus> INVENTORY_STATUS = SynchedEntityData.defineId(WorkerEntity.class, ModInit.WORKER_EXTERNAL_INVENTORY_STATUS.get());
 	protected static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(
@@ -178,7 +185,17 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
     );
 
 	protected static final ImmutableList<? extends SensorType<? extends Sensor<? super WorkerEntity>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_PLAYERS);
-	protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET);
+	protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
+		MemoryModuleType.NEAREST_LIVING_ENTITIES, 
+		MemoryModuleType.DOORS_TO_CLOSE, 
+		MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, 
+		MemoryModuleType.NEAREST_VISIBLE_PLAYER, 
+		MemoryModuleType.LOOK_TARGET, 
+		MemoryModuleType.WALK_TARGET, 
+		MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+		MemoryModuleType.PATH, 
+		MemoryModuleType.ATTACK_TARGET
+	);
 	
 	public WorkerEntity(EntityType<WorkerEntity> type, Level level) {
 		super(type, level);
@@ -271,6 +288,9 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
         }
 
         this.readInventoryFromTag(valueInput);
+		ValueInput childFoodData = valueInput.childOrEmpty("FoodData");
+		this.foodData.readAdditionalSaveData(childFoodData);
+		this.isEating = valueInput.getBooleanOr("isEating", false);
         
         this.inventoryInteractDelay = valueInput.getIntOr("InventoryInteractDelay", 0);        
         this.externalInventorySettings = valueInput.read(NBT_EXTERNAL_INVENTORY, WorkerInventorySettings.CODEC).orElse(null);
@@ -297,6 +317,9 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
         }
 
         this.writeInventoryToTag(valueOutput);
+		ValueOutput childFoodData = valueOutput.child("FoodData");
+		this.foodData.addAdditionalSaveData(childFoodData);		
+		valueOutput.putBoolean("isEating", this.isEating);
         
         valueOutput.putInt("InventoryInteractDelay", this.inventoryInteractDelay);
         
@@ -585,11 +608,12 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 		}
 		
 		if (!level().isClientSide) {
-	         if(this.jobDirty) {
+			this.foodData.tick(this);
+			if(this.jobDirty) {
 				SyncWorkerJobPayload payload = this.buildSyncJobPayload();
 				PacketDistributor.sendToPlayersTrackingEntity(this, payload);
-	        	this.jobDirty = false;
-	         }
+				this.jobDirty = false;
+			}
 		}
     }
 	
@@ -606,6 +630,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 	@Override
 	public void aiStep() {
 		super.aiStep();		
+		syncFoodData();	
 		
 		if(!level().isClientSide) {
 			if(this.fallDistance > 3.5 && !this.isFallFlying()) {
@@ -627,17 +652,146 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 		}
 		tickJobs();
 		
-//		if((this.job == null || !this.job.blockEating()) && foodData.needsFood()) {
-//			if(!level().isClientSide) {
-//				startEating();
-//			}
-//		}
-//		
-//		//TODO Tick Special MobEffects (Hunger and Saturation)
-//		if(this.isEating) {
-//			this.eatFood();
-//		}
+		if((this.job == null || !this.job.blockEating()) && foodData.needsFood()) {
+			if(!level().isClientSide) {
+				startEating();
+			}
+		}
+		
+		//TODO Tick Special MobEffects (Hunger and Saturation)
+		if(this.isEating) {
+			this.eatFood();
+		}
 	}	
+
+	//FOOD
+
+    public WorkerFoodData getFoodData() {
+        return this.foodData;
+    }
+
+	public boolean isEating() {
+		return this.isEating;
+	}
+
+    public boolean canEat(boolean canAlwaysEat) {
+        return this.foodData.needsFood();
+    }
+
+    public boolean isHurt() {
+        return this.getHealth() > 0.0F && this.getHealth() < this.getMaxHealth();
+    }
+	
+	public void syncFoodData() {
+		if(!level().isClientSide) {
+			if (this.lastSentFood != this.foodData.getFoodLevel() || this.foodData.getSaturationLevel() == 0.0F != this.lastFoodSaturationZero) {
+				PacketDistributor.sendToPlayersTrackingEntity(this, new SyncWorkerFoodDataPayload(this.getId(), this.foodData.getFoodLevel(), this.foodData.getSaturationLevel()));
+				this.lastSentFood = this.foodData.getFoodLevel();
+				this.lastFoodSaturationZero = this.foodData.getSaturationLevel() == 0.0F;
+			}
+		}
+	}
+	
+	public void startEating() {
+		this.isEating = this.foodData.needsFood() && foodScanDelay <= 0;
+	}
+	
+	public void eatFood() {
+		if(foodScanDelay > 0) {
+			return;
+		}
+		if(this.getExternalInventoryStatus() != ExternalInventoryStatus.NONE)return;
+		if(this.foodData !=null) {
+			if(this.foodData.needsFood()) {
+				ItemStack handItem = this.getMainHandItem();
+				
+				if(!handItem.has(DataComponents.FOOD)) {			
+					ItemStack bestFood = ItemHelper.findBestFood(this);				
+					
+					if(bestFood.isEmpty()) {	
+//						System.out.println("Scanning for Food");
+						Pair<Direction, ItemStack> extractionStack = this.findFoodInExternalInventory();
+						if(extractionStack !=null && extractionStack.getFirst() !=null && extractionStack.getSecond() !=null && !extractionStack.getSecond().isEmpty()) {
+							ItemStack checkStack = extractionStack.getSecond();
+							if(this.canAddToInventory(checkStack)) {
+								ItemStackRequest request = new ItemStackRequest(extractionStack.getSecond());
+								this.startExtractingFromInventory(new Pair<Direction,WorkerEntity.ItemStackRequest>(extractionStack.getFirst(), request));
+								return;
+							}
+							else {
+								if(this.hasItemsToUnload()) {
+									if(this.startUnloadingInventory(true)) {
+										return;
+									}
+								}
+							}
+						}
+						foodScanDelay = FOOD_SCAN_DELAY_SECONDS * 20;
+						this.isEating = false;
+					}
+					else {
+						swapToHand(bestFood);
+						foodScanDelay = 0;
+					}
+				}
+				else {
+					if(this.getUseItem().isEmpty()) {
+						this.startUsingItem(InteractionHand.MAIN_HAND);
+					}
+				}
+				// else {
+				// 	ItemStack useItemStack = this.getUseItem();					
+				// 	if(this.getUseItem().isEmpty()) {
+				// 		System.out.println("No Use Item");
+				// 		this.startUsingItem(InteractionHand.MAIN_HAND);
+				// 	}
+				// 	else {
+				// 		if(this.getUseItemRemainingTicks() <= 0) {
+				// 			System.out.println("Has Use Item Finished");
+				// 			final FoodProperties foodProps = handItem.get(DataComponents.FOOD);
+							
+				// 			if(foodProps !=null) {								
+				// 				this.foodData.eat(foodProps);		
+				// 				this.isEating = this.foodData.needsFood();
+				// 			}
+				// 		}
+				// 		else {
+				// 			//TODO SHOW EFFECT
+				// 		}
+				// 	}
+				// }
+			}
+			else {				
+				this.isEating = false;
+			}
+		}
+	}
+
+	@Override
+	protected void completeUsingItem() {
+		 if (!this.level().isClientSide) {
+			InteractionHand interactionhand = this.getUsedItemHand();
+			if (this.useItem.equals(this.getItemInHand(interactionhand))) {
+				if (!this.useItem.isEmpty() && this.isUsingItem()) {
+					//Finished Using Item
+					final FoodProperties foodProps = this.useItem.get(DataComponents.FOOD);
+					
+					if(foodProps !=null) {								
+						this.foodData.eat(foodProps);
+						if(this.isEating){
+							this.isEating = this.foodData.needsFood();
+						}		
+					}
+				}
+			}
+		 }
+		super.completeUsingItem();
+	}
+
+	@Override
+    public void handleExtraItemsCreatedOnUse(ItemStack stack) {
+		this.addToInventory(stack);
+    }
 	
 	public void startFishing(Vec3 targetPosition){
 		this.isFishing = true;
@@ -973,7 +1127,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				ItemStack bestTool = ItemHelper.findBestMelee(this);				
 				
 				if(bestTool.isEmpty()) {	
-					System.out.println("Scanning for Melee");					
+					// System.out.println("Scanning for Melee");					
 					Pair<Direction, ItemStack> foundStack = this.findMeleeInExternalInventory();
 					if(foundStack !=null && foundStack.getFirst() !=null && foundStack.getSecond() !=null && !foundStack.getSecond().isEmpty()) {
 						ItemStack checkStack = foundStack.getSecond().copyWithCount(1);
@@ -1120,7 +1274,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				ItemStack bestArmor = ItemHelper.findBestArmor(this, slot);
 				
 				if(bestArmor.isEmpty()) {	
-					System.out.println("Scanning for Armor " + slot);					
+					// System.out.println("Scanning for Armor " + slot);					
 					Pair<Direction, ItemStack> foundStack = this.findArmorInExternalInventory(slot);
 					if(foundStack !=null && foundStack.getFirst() !=null && foundStack.getSecond() !=null && !foundStack.getSecond().isEmpty()) {
 						ItemStack checkStack = foundStack.getSecond().copyWithCount(1);
@@ -1365,13 +1519,13 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 		if(this.extractionStack !=null) {
 			Direction face = this.extractionStack.getFirst();
 			if(face == null) {
-				System.out.println("Finished Extracting: No Valid Face");
+				// System.out.println("Finished Extracting: No Valid Face");
 				this.setExternalInventoryStatus(ExternalInventoryStatus.NONE);
 				return;
 			}
 			ItemStackRequest stackRequest = this.extractionStack.getSecond();
 			if(stackRequest == null || stackRequest.stack.isEmpty()) {
-				System.out.println("Finished Extracting: No Valid ItemStack");
+				// System.out.println("Finished Extracting: No Valid ItemStack");
 				this.setExternalInventoryStatus(ExternalInventoryStatus.NONE);
 				return;
 			}
@@ -1406,14 +1560,14 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				//No valid item found, so we need to cancel the extraction
 				this.extractionStack = null;					
 
-				System.out.println("Finished Extracting: No Valid Item Found");
+				// System.out.println("Finished Extracting: No Valid Item Found");
 				this.setExternalInventoryStatus(ExternalInventoryStatus.NONE);
 				if(this.openContainer != null) {
 					this.doneWithOpenContainer = true;
 				}
 			}
 			else {
-				System.out.println("Finished Extracting: No Valid Inventory");
+				// System.out.println("Finished Extracting: No Valid Inventory");
 				this.setExternalInventoryStatus(ExternalInventoryStatus.NONE);
 			}
 		}
@@ -1592,7 +1746,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 			if (this.minion.wantsToSwim() && this.minion.isInWater()) {
 				if (livingentity != null && livingentity.getY() > this.minion.getY()
 						|| this.minion.searchingForLand) {
-					System.out.println("Searching For Land Move");
+					// System.out.println("Searching For Land Move");
 					this.minion.setDeltaMovement(this.minion.getDeltaMovement().add(0.0D, 0.002D, 0.0D));
 				}
 				
