@@ -1,5 +1,6 @@
 package alec_wam.wam_utils.common.entities.workers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -1714,6 +1715,32 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 			}
 		}
 		return Pair.of(null, ItemStack.EMPTY);
+	}
+	
+	public List<ItemStack> getExternalInventoryContents() {
+		if(this.externalInventorySettings != null) {
+			GlobalPos globalPos = this.externalInventorySettings.getPos();
+			
+			if(globalPos == null)return Collections.emptyList();
+			BlockPos pos = globalPos.pos();
+			List<Direction> outputSides = this.externalInventorySettings.getOutputFaces();							
+			List<ItemStack> contents = new ArrayList<>();
+			if(!outputSides.isEmpty()) {
+				for(Direction face : outputSides) {
+					Optional<IItemHandler> opHandler = BlockHelper.getItemHandler(level(), pos, face);
+					if(opHandler.isPresent()) {
+						for(int i = 0; i < opHandler.get().getSlots(); i++) {
+							ItemStack stack = opHandler.get().getStackInSlot(i);
+							if(!stack.isEmpty()) {
+								contents.add(stack);
+							}
+						}
+					}
+				}
+			}
+			return contents;
+		}
+		return Collections.emptyList();
 	}
 	
 	

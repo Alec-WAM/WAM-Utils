@@ -23,6 +23,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -73,6 +74,7 @@ import net.neoforged.neoforge.items.ContainerOrHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
 public class BlockHelper {
 	
@@ -443,7 +445,12 @@ public class BlockHelper {
 				invHandler = inventory.itemHandler();
 			}
 			else if(inventory.container() != null) {
-				invHandler = new InvWrapper(inventory.container());
+				if(inventory.container() instanceof WorldlyContainer worldlyContainer){
+					invHandler = new SidedInvWrapper(worldlyContainer, side);
+				}
+				else {
+					invHandler = new InvWrapper(inventory.container());
+				}
 			}
 		}
         return Optional.ofNullable(invHandler);
@@ -588,6 +595,10 @@ public class BlockHelper {
 
         return flag;
     }
+
+	public static boolean isWater(Level level, BlockPos pos) {
+		return level.getFluidState(pos).is(FluidTags.WATER) || level.getBlockState(pos).getFluidState().is(FluidTags.WATER);
+	}
 	
 	public static final Predicate<BlockState> IS_FULL_BEEHIVE = (state) -> {
 		return state.hasProperty(BeehiveBlock.HONEY_LEVEL) && state.getValue(BeehiveBlock.HONEY_LEVEL) >= BeehiveBlock.MAX_HONEY_LEVELS;

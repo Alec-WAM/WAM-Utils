@@ -33,6 +33,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
@@ -47,6 +50,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemHelper {
@@ -465,5 +469,32 @@ public class ItemHelper {
         itemattributemodifiers = item.getAttributeModifiers();
         return itemattributemodifiers.compute(d0, slot);
     }
+
+	public static ItemStack getBrewingOutput(PotionBrewing brewing, ItemStack input, ItemStack ingredient) {
+        if (input.isEmpty() || input.getCount() != 1) return ItemStack.EMPTY;
+        if (ingredient.isEmpty()) return ItemStack.EMPTY;
+
+        for (IBrewingRecipe recipe : brewing.getRecipes()) {
+            ItemStack output = recipe.getOutput(input, ingredient);
+            if (!output.isEmpty()) {
+                return output;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+	public static Optional<Holder<Potion>> getPotionContents(ItemStack stack){
+		return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion();
+	}
+
+	public static Optional<Holder<Potion>> getPotionFromItems(PotionBrewing brewing, ItemStack reagent, ItemStack potionItem) {
+		if (potionItem.isEmpty() || !brewing.hasMix(reagent, potionItem)) {
+            return Optional.empty();
+        } else {
+			// Swapped
+            ItemStack result = brewing.mix(potionItem, reagent);
+			return getPotionContents(result);
+        }
+	}
 
 }

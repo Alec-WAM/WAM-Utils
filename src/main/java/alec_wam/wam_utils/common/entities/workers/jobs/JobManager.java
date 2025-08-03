@@ -23,6 +23,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.impl.FishermanJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.FlowerHarvestJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.HarvestCropJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.MeleeAttackJob;
+import alec_wam.wam_utils.common.entities.workers.jobs.impl.PotionBrewJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.ShearAnimalsJob;
 import alec_wam.wam_utils.common.entities.workers.jobs.impl.TreeChopJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
@@ -72,6 +73,7 @@ public class JobManager {
 		BREED(BreedAnimalsJob.class, BreedAnimalsJob::createJob),
 		BUTCHER(ButcherAnimalsJob.class, ButcherAnimalsJob::createJob),
 		BEEHIVE(BeeHiveJob.class, BeeHiveJob::createJob),
+		BREWING(PotionBrewJob.class, PotionBrewJob::createJob),
 		FISHING(FishermanJob.class, FishermanJob::createJob),
 		COLLECT(CollectItemsJob.class, CollectItemsJob::createJob),
 		CONCRETE(ConcreteJob.class, ConcreteJob::createJob),		
