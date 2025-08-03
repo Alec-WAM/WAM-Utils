@@ -30,7 +30,7 @@ public class WAMUtilsBlockTags extends BlockTagsProvider {
 
 	public static final TagKey<Block> WORKER_FLOWERS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "worker_flowers"));
 	public static final TagKey<Block> WORKER_FLOWERS_BONEMEAL = BlockTags.create(ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "worker_flowers_bonemeal"));
-	
+		
 	@Override
 	protected void addTags(Provider provider) {
 		

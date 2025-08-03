@@ -1455,6 +1455,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				if (!stack.isEmpty() && (this.job !=null ? !job.needsItem(stack) : true)) {
 					foundItem.setTrue();
 					if(exportItem(stack, pos, inputSides, exportStackSize)) {
+						this.inventoryInteractDelay = 10;
 						exportedItem.setTrue();
 						break;
 					}
@@ -1465,6 +1466,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				if(!mainHandItem.isEmpty() && (this.job !=null ? !job.needsItem(mainHandItem) : true)) {
 					foundItem.setTrue();
 					if(exportItem(mainHandItem, pos, inputSides, exportStackSize)) {
+						this.inventoryInteractDelay = 10;
 						exportedItem.setTrue();
 					}
 				}
@@ -1474,6 +1476,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 				if(!offHandItem.isEmpty() && (this.job !=null ? !job.needsItem(offHandItem) : true)) {
 					foundItem.setTrue();
 					if(exportItem(offHandItem, pos, inputSides, exportStackSize)) {
+						this.inventoryInteractDelay = 10;
 						exportedItem.setTrue();
 					}
 				}
@@ -1496,7 +1499,7 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 //		}
 	}
 	
-	private boolean exportItem(ItemStack stack, BlockPos pos, List<Direction> inputSides, int exportStackSize) {
+	public boolean exportItem(ItemStack stack, BlockPos pos, List<Direction> inputSides, int exportStackSize) {
 		for (Direction face : inputSides) {
 			Optional<IItemHandler> opHandler = BlockHelper.getItemHandler(level(), pos, face);
 			if (opHandler.isPresent()) {
@@ -1507,7 +1510,6 @@ public class WorkerEntity extends PathfinderMob implements InventoryCarrier, Own
 					ItemStack insertedStack = BlockHelper.insertItemStacked(handler, insertCopy, false);
 					stack.shrink(oldSize - insertedStack.getCount());
 					if (insertedStack.getCount() != oldSize) {
-						this.inventoryInteractDelay = 10;
 						return true;
 					}
 				}

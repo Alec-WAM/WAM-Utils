@@ -17,6 +17,7 @@ public class WAMUtilsDatagen {
 	@SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         event.createProvider(WAMUtilsBlockTags::new);
+        event.createProvider(WAMUtilsPotionTags::new);
         event.createProvider(WAMUtilsModelProvider::new);
         event.createProvider(WAMUtilsRecipeProvider.Runner::new);
         event.createProvider(WAMUtilsSpriteSourceProvider::new);

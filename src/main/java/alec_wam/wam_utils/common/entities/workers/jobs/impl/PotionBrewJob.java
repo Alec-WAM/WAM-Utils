@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager;
@@ -17,6 +19,7 @@ import alec_wam.wam_utils.common.entities.workers.jobs.WorkerJob;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
 import alec_wam.wam_utils.common.helpers.EntityHelper;
 import alec_wam.wam_utils.common.helpers.ItemHelper;
+import alec_wam.wam_utils.datagen.WAMUtilsPotionTags;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,7 +48,9 @@ import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class PotionBrewJob extends MultiBlockPosWorkerJob {
@@ -62,7 +67,6 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
         FILLING,
         FUELING,
         BREWING,
-        WAITING,
         EMPTYING;
 
         public static final StringRepresentable.EnumCodec<BrewingTask> CODEC = StringRepresentable.fromEnum(BrewingTask::values);
@@ -73,7 +77,16 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
         public String getSerializedName() {
             return this.name();
         }
-    } 
+    }
+    
+    public static record BrewingWaitPos(BlockPos pos, ItemStack stack) {
+        public static final Codec<BrewingWaitPos> CODEC = RecordCodecBuilder.create(instance -> // Given an instance
+			instance.group( // Define the fields within the instance
+                BlockPos.CODEC.fieldOf("pos").forGetter((BrewingWaitPos item) -> item.pos),
+                ItemStack.CODEC.fieldOf("stack").forGetter((BrewingWaitPos item) -> item.stack)
+			).apply(instance, BrewingWaitPos::new) // Define how to create the object
+		);
+    }
 	
 	private BrewingTask currentTask = BrewingTask.NONE;
     private boolean hasFuel = false;
@@ -81,6 +94,11 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
     private Pair<ItemStack, ItemStack> currentPotion = null;
     private int inventoryScanDelay = 0;
     private int waitingForPotionDelay = 0;
+    private List<BrewingWaitPos> waitingPos = new ArrayList<>();
+    private BlockPos doneBrewingPos;
+
+    // Don't save this value. It is a minor delay value that is not important
+    private int fillBottleDelay = 0;
 
 	public PotionBrewJob(WorkerEntity worker, ResourceKey<Level> dimension, List<BlockPos> blockPosList) {
 		super(worker, dimension, blockPosList);
@@ -104,6 +122,15 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
         }
         brewingOutput.putInt("InventoryScanDelay", this.inventoryScanDelay);
         brewingOutput.putInt("WaitingForPotionDelay", this.waitingForPotionDelay);
+
+        ValueOutputList waitingPosOutput = brewingOutput.childrenList("WaitingPosList");
+        for(BrewingWaitPos waitPos : this.waitingPos) {
+            ValueOutput posOutput = waitingPosOutput.addChild();
+            posOutput.store("WaitPos", BrewingWaitPos.CODEC, waitPos);
+        }        
+        if(this.doneBrewingPos != null) {
+            brewingOutput.store("DoneBrewingPos", BlockPos.CODEC, this.doneBrewingPos);
+        }
 	}
 	
 	@Override
@@ -126,6 +153,16 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
         }
         this.inventoryScanDelay = brewingInput.getIntOr("InventoryScanDelay", 0);
         this.waitingForPotionDelay = brewingInput.getIntOr("WaitingForPotionDelay", 0);
+
+        this.waitingPos.clear();
+        ValueInputList waitingPosList = brewingInput.childrenListOrEmpty("WaitingPosList");
+        for(ValueInput posInput : waitingPosList) {
+            BrewingWaitPos waitPos = posInput.read("WaitPos", BrewingWaitPos.CODEC).orElse(null);
+            if(waitPos != null) {
+                this.waitingPos.add(waitPos);
+            }
+        }
+        this.doneBrewingPos = brewingInput.read("DoneBrewingPos", BlockPos.CODEC).orElse(null);
 	}
 
 	public static PotionBrewJob createJob(WorkerEntity worker, ItemStack stack, Player player) {
@@ -150,7 +187,8 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
 	public void run() {
 		super.run();
 		if(!worker.level().isClientSide) {
-			brewPotions();
+			this.updateWaitingForPotions();
+            this.brewPotions();
 		}
 		
 		//Unload Inventory if idling for 5 seconds
@@ -183,15 +221,17 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                 return false;
             }
             if(state.is(Blocks.BREWING_STAND)){
-                return this.currentPotion != null;
+                return (this.currentPotion != null && isEmptyBrewingStand(level, pos)) || (hasFuel && needsFuel(level, pos));
             }
+		    return false;
         }
         if(this.currentTask == BrewingTask.FILLING){
             return BlockHelper.isWater(level, pos);
         }
-        if(this.currentTask == BrewingTask.BREWING 
-            || this.currentTask == BrewingTask.EMPTYING
-            || this.currentTask == BrewingTask.WAITING){
+        if(this.currentTask == BrewingTask.EMPTYING){
+            return state.is(Blocks.BREWING_STAND) && this.doneBrewingPos !=null && pos.equals(this.doneBrewingPos);
+        }
+        if(this.currentTask != BrewingTask.NONE){
             return state.is(Blocks.BREWING_STAND);
         }
 		return false;
@@ -235,12 +275,11 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                 if(blockEntity instanceof BrewingStandBlockEntity) {
                     brewingStand = (BrewingStandBlockEntity)blockEntity;
 
-                    //TODO Figure out fuel
                     if(this.currentTask == BrewingTask.NONE) {
-                        if(this.hasFuel){
-                            // IItemHandler itemHandler = BlockHelper.getItemHandler(level, pos, Direction.UP);
+                        if(this.hasFuel && needsFuel(level, pos)){
+                            this.currentTask = BrewingTask.FUELING;
                         }
-                        if(this.currentPotion != null){
+                        else if(this.currentPotion != null){
                             this.currentTask = BrewingTask.BREWING;
                             // System.out.println("Setting Task to Brewing");
                         }
@@ -271,7 +310,7 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
 
                 if(ItemHelper.findItem(worker, this::isCurrentPotionIngredient).isEmpty() 
                     || ItemHelper.findItem(worker, this::isCurrentPotionInput).isEmpty()){
-                    System.out.println("Couldn't find ingredients. Clearing");
+                    // System.out.println("Couldn't find ingredients. Clearing");
                     this.currentTask = BrewingTask.NONE;
                     this.currentPotion = null;
                     this.invalidateWorkingPos();
@@ -279,6 +318,11 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                 }
             }
             
+            if(this.currentTask == BrewingTask.FUELING){
+                if(!worker.requireItem(IS_BREWING_FUEL, Optional.of(1))){
+                    return;
+                }
+            }
 			
 			if (this.isCloseToBlockPos()) {
 				if(EntityHelper.isLookingAtHorizontally(worker, pos, 20)){
@@ -308,31 +352,77 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                                 }
                             }
                         }
-                        else if(this.currentTask == BrewingTask.WAITING) {                            
-                            if(brewingStand !=null){
-                                if(this.currentPotion != null){
-                                    this.waitForPotion(pos, brewingStand);
-                                }
+                        else if(this.currentTask == BrewingTask.EMPTYING) {
+                            if(brewingStand !=null && this.doneBrewingPos != null && pos.equals(this.doneBrewingPos)){
+                                this.emptyBrewingStand(pos, brewingStand);
                             }
                         }
-                        else if(this.currentTask == BrewingTask.EMPTYING) {
-                            // System.out.println("Emptying");
-                            
+                        else if(this.currentTask == BrewingTask.FUELING) {
                             if(brewingStand !=null){
-                                if(this.currentPotion != null){
-                                    this.emptyBrewingStand(pos, brewingStand);
-                                }
+                                this.fuelBrewingStand(pos, brewingStand);
                             }
                         }
 					}
                     else {
-                        System.out.println("Invalidate Working Pos");
+                        // System.out.println("Invalidate Working Pos");
                         this.invalidateWorkingPos();
                     }
 				}
 			}
 		}
 	}
+
+    public void updateWaitingForPotions() {
+        if(waitingForPotionDelay > 0){
+            // System.out.println("Waiting For Potion Delay: " + waitingForPotionDelay);
+            waitingForPotionDelay--;
+            return;
+        }
+
+        if(doneBrewingPos != null){
+            // System.out.println("Done Brewing Pos: " + doneBrewingPos);
+            if(this.currentTask == BrewingTask.NONE){
+                this.currentTask = BrewingTask.EMPTYING;
+            }
+            return;
+        }
+
+        BrewingWaitPos finishedBrewingStandPos = null;
+        // System.out.println("Waiting For Potions Size: " + this.waitingPos.size());
+        for(BrewingWaitPos waitPos : this.waitingPos){
+            if(this.waitForPotion(waitPos.pos, waitPos.stack)){
+                finishedBrewingStandPos = waitPos;
+                break;
+            }
+        }
+
+        if(finishedBrewingStandPos == null){
+            this.waitingForPotionDelay = 150; //BrwingStand takes 400 ticks to brew
+        }
+        else {
+            // System.out.println("Finished Brewing Pos: " + finishedBrewingStandPos);
+            this.doneBrewingPos = finishedBrewingStandPos.pos;
+            this.waitingPos.remove(finishedBrewingStandPos);
+        }
+    }    
+
+    public boolean waitForPotion(BlockPos pos, ItemStack originalInput){
+        Level level = worker.level();
+        Optional<IItemHandler> itemHandler = BlockHelper.getItemHandler(level, pos, Direction.DOWN);
+        if(itemHandler.isPresent()) {
+            // System.out.println("Waiting For Potion: " + pos);
+            IItemHandler inv = itemHandler.get();
+
+            for(int i = 0; i < 3; i++){
+                ItemStack stack = inv.getStackInSlot(i);
+                if(ItemStack.isSameItemSameComponents(stack, originalInput)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     public boolean isCurrentPotionIngredient(ItemStack stack){
         if(this.currentPotion == null){
@@ -346,10 +436,42 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
         return ItemStack.isSameItemSameComponents(stack, this.currentPotion.getSecond());
     }
 
+    public boolean isEmptyBrewingStand(Level level, BlockPos pos) {
+        // Check all non fuel slots
+        Optional<IItemHandler> itemHandlerOpt = BlockHelper.getItemHandler(level, pos, Direction.DOWN);
+        if(itemHandlerOpt.isPresent()) {
+            IItemHandler itemHandler = itemHandlerOpt.get();
+            for(int i = 0; i < 4; i++){
+                ItemStack stack = itemHandler.getStackInSlot(i);
+                if(!stack.isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean needsFuel(Level level, BlockPos pos){
+        Optional<IItemHandler> itemHandlerOpt = BlockHelper.getItemHandler(level, pos, null);
+        if(itemHandlerOpt.isPresent()) {
+            IItemHandler itemHandler = itemHandlerOpt.get();
+            ItemStack fuelSlotStack = itemHandler.getStackInSlot(4);
+            if(fuelSlotStack.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void fillWaterBottle(ItemStack handItem, BlockPos pos){
         ItemStack filledBottle = PotionContents.createItemStack(Items.POTION, Potions.WATER);
 
         if(worker.canAddToInventory(filledBottle) || handItem.getCount() == 1)  {
+            if(this.fillBottleDelay > 0){
+                this.fillBottleDelay--;
+                return;
+            }
+            
             worker.swing(InteractionHand.MAIN_HAND);
             Level level = worker.level();
             level.playSound(
@@ -359,7 +481,7 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
 
             handItem.shrink(1);
             worker.addToInventory(filledBottle);
-            //TODO Add a delay to the filling
+            this.fillBottleDelay = 20;
         }
         else {
             this.worker.startUnloadingInventory(true);
@@ -390,41 +512,12 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
             }
 
             if(insertedIngredient && insertedInputs){
-                this.currentTask = BrewingTask.WAITING;
+                // Allow worker to brew another potion
+                this.waitingPos.add(new BrewingWaitPos(pos, this.currentPotion.getSecond().copyWithCount(1)));
+                this.currentPotion = null;
+                this.currentTask = BrewingTask.NONE;
+                this.finishWorking();
             }
-        }
-    }
-
-    public void waitForPotion(BlockPos pos, BrewingStandBlockEntity brewingStand){
-        if(waitingForPotionDelay > 0){
-            waitingForPotionDelay--;
-            return;
-        }
-        // System.out.println("Waiting for brewing");
-
-        if(this.currentPotion == null){
-            this.currentTask = BrewingTask.NONE;
-            this.invalidateWorkingPos();
-            return;
-        }
-        
-        Level level = worker.level();
-        Optional<IItemHandler> itemHandler = BlockHelper.getItemHandler(level, pos, Direction.DOWN);
-        ItemStack originalInput = this.currentPotion.getSecond();
-        if(itemHandler.isPresent()) {
-            IItemHandler inv = itemHandler.get();
-
-            for(int i = 0; i < 3; i++){
-                ItemStack stack = inv.getStackInSlot(i);
-                if(ItemStack.isSameItemSameComponents(stack, originalInput)){
-                    this.waitingForPotionDelay = 100;
-                    // System.out.println("Brewing not done"); 
-                    return;
-                }
-            }
-
-            // System.out.println("Brewing done"); 
-            this.currentTask = BrewingTask.EMPTYING;
         }
     }
 
@@ -442,21 +535,43 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                     worker.addToInventory(extracted);
                 }
             }
+            this.doneBrewingPos = null;
             this.worker.startUnloadingInventory(false);
-            this.currentPotion = null;
             this.currentTask = BrewingTask.NONE;
             this.finishWorking();
         }
     }
 
-    @SuppressWarnings("deprecation")
+    public void fuelBrewingStand(BlockPos pos, BrewingStandBlockEntity brewingStand){
+        //TODO Make this take multiple items instead of one
+        Level level = worker.level();
+        Optional<IItemHandler> itemHandler = BlockHelper.getItemHandler(level, pos, null);
+        if(itemHandler.isPresent()) {
+            IItemHandler inv = itemHandler.get();
+            ItemStack fuelStack = ItemHelper.findItem(worker, IS_BREWING_FUEL);
+            final int startCount = fuelStack.getCount();
+            boolean insertedFuel = false;
+            int fuelSlot = 4;
+            if(!fuelStack.isEmpty() && inv.insertItem(fuelSlot, fuelStack.copyWithCount(1), true).getCount() != startCount){
+                inv.insertItem(fuelSlot, fuelStack.copyWithCount(1), false);
+                // System.out.println("Inserted Fuel");
+                fuelStack.shrink(1);
+                insertedFuel = true;
+            }
+
+            if(insertedFuel){
+                this.currentTask = BrewingTask.NONE;
+                this.finishWorking();
+            }
+        }
+    }
+
     public void buildIngredientList(){
         Level level = worker.level();
         if(level == null || !(level instanceof ServerLevel))return;
-        System.out.println("Building Ingredient List");
+        // System.out.println("Building Ingredient List");
         ServerLevel serverLevel = (ServerLevel)level;
         PotionBrewing brewing = serverLevel.potionBrewing();
-        // TODO Handle multiple brewing stands
         List<ItemStack> externalItems = worker.getExternalInventoryContents();
         boolean foundGlassBottles = false;
         boolean foundFuel = false;
@@ -486,7 +601,7 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
 
         this.hasGlassBottles = foundGlassBottles;
         this.hasFuel = foundFuel;
-        // System.out.println("Has Glass Bottles: " + this.hasGlassBottles);
+        // System.out.println("Has Fuel: " + this.hasFuel);
 
         if(ingredients.isEmpty() || inputs.isEmpty()) {
             // No Ingredients
@@ -508,7 +623,7 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
                 if (mixedPotion.isPresent()) {
                     Holder<Potion> potion = mixedPotion.get();
 
-                    if(potion.is(Potions.MUNDANE) || potion.is(Potions.THICK)) {
+                    if(potion.is(WAMUtilsPotionTags.WORKER_POTION_JOB_BLACKLIST)) {
                         continue inputs;
                     }
                     boolean foundMatch = false;
@@ -538,8 +653,8 @@ public class PotionBrewJob extends MultiBlockPosWorkerJob {
             }
         }
         if(!bestIngredient.isEmpty() && !bestInput.isEmpty()) {
-            System.out.println("Found Recipe");
-            System.out.println("bestIngredient: " + bestIngredient + " bestInput: " + bestInput);
+            // System.out.println("Found Recipe");
+            // System.out.println("bestIngredient: " + bestIngredient + " bestInput: " + bestInput);
             this.currentPotion = Pair.of(bestIngredient, bestInput);
         }
     }
