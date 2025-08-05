@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,half=lower": {
+      "model": "wamutils:block/mob_sign_bottom",
+      "y": 90
+    },
+    "facing=east,half=upper": {
+      "model": "wamutils:block/silverfish_mob_sign",
+      "y": 90
+    },
+    "facing=north,half=lower": {
+      "model": "wamutils:block/mob_sign_bottom"
+    },
+    "facing=north,half=upper": {
+      "model": "wamutils:block/silverfish_mob_sign"
+    },
+    "facing=south,half=lower": {
+      "model": "wamutils:block/mob_sign_bottom",
+      "y": 180
+    },
+    "facing=south,half=upper": {
+      "model": "wamutils:block/silverfish_mob_sign",
+      "y": 180
+    },
+    "facing=west,half=lower": {
+      "model": "wamutils:block/mob_sign_bottom",
+      "y": 270
+    },
+    "facing=west,half=upper": {
+      "model": "wamutils:block/silverfish_mob_sign",
+      "y": 270
+    }
+  }
+}

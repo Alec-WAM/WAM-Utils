@@ -26,6 +26,7 @@ import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBE
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.EnchantmentIndexerBlock;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerMenu;
 import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignTypeObjects;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBE;
 import alec_wam.wam_utils.common.blocks.shieldrack.ShieldRackBlock;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
@@ -131,7 +132,9 @@ public class ModInit {
     public static final Map<WoodType, DeferredItem<BlockItem>> SHIELDRACK_BLOCK_ITEMS = new HashMap<>(); 
 
     public static final Map<WoodType, DeferredBlock<Block>> ENCHANTMENT_BOOK_SHELF_BLOCKS = new HashMap<>();
-    public static final Map<WoodType, DeferredItem<BlockItem>> ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS = new HashMap<>();  
+    public static final Map<WoodType, DeferredItem<BlockItem>> ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS = new HashMap<>();
+    
+    public static final Map<MobSignBlock.MobSignType, MobSignTypeObjects> MOB_SIGN_TYPE_OBJECTS = new HashMap<>();
 
     static {
         WOOD_BLOCK_FAMILIES.put(WoodType.OAK, BlockFamilies.OAK_PLANKS);
@@ -188,6 +191,19 @@ public class ModInit {
                 )
             );
         });
+
+        for(MobSignBlock.MobSignType mobSignType : MobSignBlock.MobSignType.values()) {
+            String registryName = mobSignType.getTexture() + "_mob_sign";
+            DeferredBlock<Block> block = registerBlock(registryName, MobSignBlock::new, () -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.WOOD)
+                .sound(SoundType.WOOD)
+                .strength(2.5F, 3.0F)
+                .ignitedByLava());
+            DeferredItem<BlockItem> blockItem = ITEMS.registerSimpleBlockItem(registryName, block);
+            DeferredHolder<PoiType, PoiType> poiType = POI_TYPES.register(registryName, () -> new PoiType(BlockHelper.getBlockStates(block.get()), 0, 1));
+
+            MOB_SIGN_TYPE_OBJECTS.put(mobSignType, new MobSignTypeObjects(block, blockItem, poiType));
+        }
     } 
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShieldRackBE>> SHIELDRACK_BLOCK_ENTITY =
@@ -221,34 +237,7 @@ public class ModInit {
             return new BlockEntityType<EnchantmentIndexerBE>(EnchantmentIndexerBE::new, ENCHANTMENT_INDEXER_BLOCK.get());
         });
     public static final Supplier<MenuType<EnchantmentIndexerMenu>> ENCHANTMENT_INDEXER_MENU_TYPE = MENU_TYPES.register("enchantment_indexer", () -> IMenuTypeExtension.create(EnchantmentIndexerMenu::new));
-
-
-    public static final DeferredBlock<Block> ENDERMAN_MOB_SIGN_BLOCK = registerBlock("enderman_mob_sign", MobSignBlock::new, () -> BlockBehaviour.Properties.of()
-            .mapColor(MapColor.WOOD)
-            .sound(SoundType.WOOD)
-            .strength(2.5F, 3.0F)
-            .ignitedByLava());
-    public static final DeferredItem<BlockItem> ENDERMAN_MOB_SIGN_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("enderman_mob_sign", ENDERMAN_MOB_SIGN_BLOCK);
-    public static final DeferredHolder<PoiType, PoiType> ENDERMAN_MOB_SIGN_POI = POI_TYPES.register("enderman_mob_sign", () -> new PoiType(BlockHelper.getBlockStates(ENDERMAN_MOB_SIGN_BLOCK.get()), 0, 1));
-
-    public static final DeferredBlock<Block> WANDERING_TRADER_MOB_SIGN_BLOCK = registerBlock("wandering_trader_mob_sign", MobSignBlock::new, () -> BlockBehaviour.Properties.of()
-            .mapColor(MapColor.WOOD)
-            .sound(SoundType.WOOD)
-            .strength(2.5F, 3.0F)
-            .ignitedByLava());
-    public static final DeferredItem<BlockItem> WANDERING_TRADER_MOB_SIGN_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("wandering_trader_mob_sign", WANDERING_TRADER_MOB_SIGN_BLOCK);
-    public static final DeferredHolder<PoiType, PoiType> WANDERING_TRADER_MOB_SIGN_POI = POI_TYPES.register("wandering_trader_mob_sign", () -> new PoiType(BlockHelper.getBlockStates(WANDERING_TRADER_MOB_SIGN_BLOCK.get()), 0, 1));
-
-    public static final DeferredBlock<Block> PILLAGER_MOB_SIGN_BLOCK = registerBlock("pillager_mob_sign", MobSignBlock::new, () -> BlockBehaviour.Properties.of()
-            .mapColor(MapColor.WOOD)
-            .sound(SoundType.WOOD)
-            .strength(2.5F, 3.0F)
-            .ignitedByLava());
-    public static final DeferredItem<BlockItem> PILLAGER_MOB_SIGN_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("pillager_mob_sign", PILLAGER_MOB_SIGN_BLOCK);
-    public static final DeferredHolder<PoiType, PoiType> PILLAGER_MOB_SIGN_POI = POI_TYPES.register("pillager_mob_sign", () -> new PoiType(BlockHelper.getBlockStates(PILLAGER_MOB_SIGN_BLOCK.get()), 0, 1));
-
-
-
+    
     // ENTITIES
     public static final DeferredHolder<EntityType<?>, EntityType<WorkerEntity>> WORKER_ENTITY = ENTITIES.register(
     		"worker", 
@@ -382,6 +371,7 @@ public class ModInit {
             VANILLA_SORTED_WOOD_TYPES.forEach(woodType -> {
                 event.accept(ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.get(woodType));
             });
+            MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).forEach(event::accept);
         }
     }
     

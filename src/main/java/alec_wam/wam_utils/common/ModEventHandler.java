@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import alec_wam.wam_utils.WAMUtils;
 import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignTypeObjects;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
@@ -59,6 +61,26 @@ public class ModEventHandler {
 			event.setSpawnCancelled(true);
 		}
 	}
+
+	@SubscribeEvent
+	public static void cancelAddEntity(final EntityJoinLevelEvent event) {
+		Entity entity = event.getEntity();
+		
+		if(entity.getType() == EntityType.SILVERFISH) {
+			BlockPos pos = BlockPos.containing(entity.getX(), entity.getY(), entity.getZ());
+			if(cancelSpawn(event.getEntity().getType(), event.getLevel(), pos, null)) {
+				event.setCanceled(true);
+			}
+		}
+	}
+
+	public static ResourceKey<PoiType> getMobSignPoiType(MobSignBlock.MobSignType signType){
+		MobSignTypeObjects objects = ModInit.MOB_SIGN_TYPE_OBJECTS.get(signType);
+		if(objects != null) {
+			return objects.poiType().getKey();
+		}
+		return null;
+	}
 	
 	public static boolean cancelSpawn(EntityType<?> entityType, LevelAccessor levelAccessor, BlockPos pos, EntitySpawnReason spawnType) {
         if (levelAccessor.isClientSide()) return true;
@@ -67,22 +89,41 @@ public class ModEventHandler {
         
         if(spawnType == EntitySpawnReason.EVENT) {
         	if(entityType == EntityType.WANDERING_TRADER || entityType == EntityType.TRADER_LLAMA) {
-        		BlockPos closestSign = poiInRange(poiManager, ModInit.WANDERING_TRADER_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
-        		if(closestSign != null) {
-        			// RandomSource random = level.random;        			
-        			// BlockUtils.spawnHappyParticles(level, closestSign, random);
-        			return true;
-        		}
+				ResourceKey<PoiType> poiType = getMobSignPoiType(MobSignBlock.MobSignType.WANDERING_TRADER);
+        		if(poiType !=null){
+					BlockPos closestSign = poiInRange(poiManager, poiType, pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
+					if(closestSign != null) {
+						// RandomSource random = level.random;        			
+						// BlockUtils.spawnHappyParticles(level, closestSign, random);
+						return true;
+					}
+				}
         	}
         }
+		if(spawnType == EntitySpawnReason.SPAWNER || spawnType == EntitySpawnReason.TRIGGERED || spawnType == null) {
+			if(entityType == EntityType.SILVERFISH) {
+				ResourceKey<PoiType> poiType = getMobSignPoiType(MobSignBlock.MobSignType.SILVERFISH);
+        		if(poiType !=null){
+					BlockPos closestSign = poiInRange(poiManager, poiType, pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
+					if(closestSign != null) {
+						// RandomSource random = level.random;        			
+						// BlockUtils.spawnHappyParticles(level, closestSign, random);
+						return true;
+					}
+				}
+        	}
+		}
         if(spawnType == EntitySpawnReason.PATROL) {
         	if(entityType == EntityType.PILLAGER) {
-        		BlockPos closestSign = poiInRange(poiManager, ModInit.PILLAGER_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
-        		if(closestSign != null) {
-        			// RandomSource random = level.random;        			
-        			// BlockUtils.spawnHappyParticles(level, closestSign, random);
-        			return true;
-        		}
+        		ResourceKey<PoiType> poiType = getMobSignPoiType(MobSignBlock.MobSignType.PILLAGER);
+        		if(poiType !=null){
+					BlockPos closestSign = poiInRange(poiManager, poiType, pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
+					if(closestSign != null) {
+						// RandomSource random = level.random;        			
+						// BlockUtils.spawnHappyParticles(level, closestSign, random);
+						return true;
+					}
+				}
         	}
         }
         return false;
@@ -106,12 +147,15 @@ public class ModEventHandler {
         PoiManager poiManager = level.getPoiManager();
         
         if(entityType == EntityType.ENDERMAN || entityType == EntityType.SHULKER) {
-    		BlockPos closestSign = poiInRange(poiManager, ModInit.ENDERMAN_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SMALL_SIGN_RANGE_HORIZONTAL, MobSignBlock.SMALL_SIGN_RANGE_VERTICAL);
-    		if(closestSign != null) {
-    			//RandomSource random = level.random;        			
-    			//BlockUtils.spawnHappyParticles(level, closestSign, random);
-    			return true;
-    		}
+    		ResourceKey<PoiType> poiType = getMobSignPoiType(MobSignBlock.MobSignType.ENDERMAN);
+			if(poiType !=null){
+				BlockPos closestSign = poiInRange(poiManager, poiType, pos, MobSignBlock.SMALL_SIGN_RANGE_HORIZONTAL, MobSignBlock.SMALL_SIGN_RANGE_VERTICAL);
+				if(closestSign != null) {
+					//RandomSource random = level.random;        			
+					//BlockUtils.spawnHappyParticles(level, closestSign, random);
+					return true;
+				}
+			}
     	}
         return false;
     }

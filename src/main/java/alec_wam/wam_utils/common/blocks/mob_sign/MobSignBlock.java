@@ -1,12 +1,17 @@
 package alec_wam.wam_utils.common.blocks.mob_sign;
 
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -31,8 +36,36 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 public class MobSignBlock extends Block implements SimpleWaterloggedBlock {
+
+    public static enum MobSignType {
+        ENDERMAN("enderman", Set.of(EntityType.ENDERMAN, EntityType.SHULKER)),
+        WANDERING_TRADER("wandering_trader", Set.of(EntityType.WANDERING_TRADER, EntityType.TRADER_LLAMA)),
+        PILLAGER("pillager", Set.of(EntityType.PILLAGER)),
+        SILVERFISH("silverfish", Set.of(EntityType.SILVERFISH));
+
+        final String texture;
+        final Set<EntityType<?>> entities;
+
+        MobSignType(String texture, Set<EntityType<?>> entities){
+            this.texture = texture;
+            this.entities = entities;
+        }
+
+        public String getTexture() {
+            return texture;
+        }
+
+        public Set<EntityType<?>> getEntities() {
+            return entities;
+        }
+    }
+
+    public static record MobSignTypeObjects(DeferredBlock<Block> block, DeferredItem<BlockItem> item, DeferredHolder<PoiType, PoiType> poiType) {}
 
     public static final int SIGN_RANGE_HORIZONTAL = 128;
 	public static final int SIGN_RANGE_VERTICAL = 64;

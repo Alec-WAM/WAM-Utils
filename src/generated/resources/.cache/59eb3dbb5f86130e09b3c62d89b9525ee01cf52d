@@ -1,4 +1,4 @@
-// 1.21.8	2025-08-04T20:43:12.7786074	Loot Tables
+// 1.21.8	2025-08-04T22:06:17.938481	Loot Tables
 c101c18b9fdce990ab4e0ff73b21c47a22e16a84 data/wamutils/loot_table/blocks/acacia_enchantment_book_shelf.json
 18c4a2fcee5409e3de7308034b9a8ddeb7054317 data/wamutils/loot_table/blocks/acacia_shieldrack.json
 9b1ae47ce6bd8583d5bb768ef98087cd509691a9 data/wamutils/loot_table/blocks/bamboo_enchantment_book_shelf.json
@@ -25,6 +25,7 @@ ecb37c039e630b08227b89e10bbf80a9d4aa1f7b data/wamutils/loot_table/blocks/oak_enc
 493c07de9bf11633a4d5b01fcce0499162774d23 data/wamutils/loot_table/blocks/pale_oak_enchantment_book_shelf.json
 42d564e99acedea095f65996e19c323e233b86e9 data/wamutils/loot_table/blocks/pale_oak_shieldrack.json
 bf6608a76d068b2cf6b01af4c12206a34a1146a9 data/wamutils/loot_table/blocks/pillager_mob_sign.json
+f777f0c8708aa5f3420200ba90762f5721f2afe1 data/wamutils/loot_table/blocks/silverfish_mob_sign.json
 e56010dfacd2a909d5d181aa2f55aea91419d035 data/wamutils/loot_table/blocks/spruce_enchantment_book_shelf.json
 56ce514ff9be4d1b31c041528527726e8dc543b6 data/wamutils/loot_table/blocks/spruce_shieldrack.json
 f47dcb3726037c703c43bc26658c4a7e55879fec data/wamutils/loot_table/blocks/wandering_trader_mob_sign.json

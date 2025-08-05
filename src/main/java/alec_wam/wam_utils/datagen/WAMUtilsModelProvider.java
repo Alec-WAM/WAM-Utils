@@ -2,11 +2,14 @@ package alec_wam.wam_utils.datagen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import alec_wam.wam_utils.WAMUtils;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignType;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignTypeObjects;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -82,7 +85,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		blocks.addAll(ModInit.SHIELDRACK_BLOCKS.values());
 		blocks.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values());
 		blocks.add(ModInit.CONVEYOR_BELT_BLOCK);
-		blocks.add(ModInit.ENDERMAN_MOB_SIGN_BLOCK);
+		blocks.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::block).toList());
 		return blocks.stream()
 				.map(DeferredBlock::get)
 				.map(Holder::direct);
@@ -94,7 +97,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		items.addAll(ModInit.SHIELDRACK_BLOCK_ITEMS.values());
 		items.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.values());
 		items.add(ModInit.CONVEYOR_BELT_BLOCK_ITEM);
-		items.add(ModInit.ENDERMAN_MOB_SIGN_BLOCK_ITEM);
+		items.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).toList());
 		return items.stream()
 				.map(DeferredItem::get)
 				.map(Holder::direct);
@@ -155,9 +158,9 @@ public class WAMUtilsModelProvider extends ModelProvider {
 			blockModels.createHorizontallyRotatedBlock(block, WOOD);
 		});
 		
-		createMobSign(blockModels, itemModels, ModInit.ENDERMAN_MOB_SIGN_BLOCK.get(), ModInit.ENDERMAN_MOB_SIGN_BLOCK_ITEM.get(), "enderman_sign");
-		createMobSign(blockModels, itemModels, ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get(), ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK_ITEM.get(), "wandering_trader_sign");
-		createMobSign(blockModels, itemModels, ModInit.PILLAGER_MOB_SIGN_BLOCK.get(), ModInit.PILLAGER_MOB_SIGN_BLOCK_ITEM.get(), "pillager_sign");
+		ModInit.MOB_SIGN_TYPE_OBJECTS.entrySet().forEach((Entry<MobSignType, MobSignTypeObjects> entry) -> {
+			createMobSign(blockModels, itemModels, entry.getValue().block().get(), entry.getValue().item().get(), entry.getKey().getTexture() + "_sign");
+		});
 
 		Block block = ModInit.CONVEYOR_BELT_BLOCK.get();
 		MultiVariant multivariant_normal = BlockModelGenerators.plainVariant(CONVEYOR_BELT_MODEL);

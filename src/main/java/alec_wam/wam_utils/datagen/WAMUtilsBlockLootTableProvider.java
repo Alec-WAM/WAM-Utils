@@ -1,5 +1,6 @@
 package alec_wam.wam_utils.datagen;
 
+import java.util.List;
 import java.util.Set;
 
 import alec_wam.wam_utils.common.ModInit;
@@ -33,15 +34,14 @@ public class WAMUtilsBlockLootTableProvider extends BlockLootSubProvider  {
 
     @Override
     protected void generate() {
+        List<Block> mobSignBlocks = ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream()
+				.map(object -> object.block().get())
+				.toList();
         Set<Block> specialBlocks = Set.of(
-            ModInit.ENDERMAN_MOB_SIGN_BLOCK.get(),
-            ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get(),
-            ModInit.PILLAGER_MOB_SIGN_BLOCK.get()
+            mobSignBlocks.toArray(Block[]::new)
         );
-
-        doubleBlockLoot(ModInit.ENDERMAN_MOB_SIGN_BLOCK.get());
-        doubleBlockLoot(ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get());
-        doubleBlockLoot(ModInit.PILLAGER_MOB_SIGN_BLOCK.get());
+        
+        mobSignBlocks.forEach(this::doubleBlockLoot);
 
         ModInit.BLOCKS.getEntries()
             .stream()

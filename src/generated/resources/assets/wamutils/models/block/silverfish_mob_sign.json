@@ -1,0 +1,6 @@
+{
+  "parent": "wamutils:block/mob_sign_top",
+  "textures": {
+    "front": "wamutils:block/silverfish_sign"
+  }
+}
