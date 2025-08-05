@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -12,6 +13,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.BlockPos;
@@ -347,7 +349,7 @@ public class BlockHelper {
 					continue;
 				return false;
 			}
-
+			//TODO Create new block tag for other mods to add to this
 //			TODO Figure out IPlantable in 1.21.5
 //			if (state.getBlock() instanceof IPlantable)
 //				return true;
@@ -596,9 +598,13 @@ public class BlockHelper {
         return flag;
     }
 
-	public static boolean isWater(Level level, BlockPos pos) {
-		return level.getFluidState(pos).is(FluidTags.WATER) || level.getBlockState(pos).getFluidState().is(FluidTags.WATER);
+	public static boolean isWater(Level level, BlockPos pos) {		
+		return level.isWaterAt(pos);
 	}
+
+	public static Set<BlockState> getBlockStates(Block block) {
+        return ImmutableSet.copyOf(block.getStateDefinition().getPossibleStates());
+    }
 	
 	public static final Predicate<BlockState> IS_FULL_BEEHIVE = (state) -> {
 		return state.hasProperty(BeehiveBlock.HONEY_LEVEL) && state.getValue(BeehiveBlock.HONEY_LEVEL) >= BeehiveBlock.MAX_HONEY_LEVELS;

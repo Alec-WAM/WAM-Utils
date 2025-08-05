@@ -13,6 +13,7 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
@@ -26,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -46,6 +48,16 @@ public class WAMUtilsModelProvider extends ModelProvider {
 
 	public static final ModelTemplate ENCHANTMENT_BOOK_SHELF_MODEL = ModelTemplates.create(
         WAMUtils.MODID + ":enchantment_book_shelf", TextureSlot.ALL
+    );
+
+	public static final ModelTemplate MOB_SIGN_TOP_MODEL = ModelTemplates.create(
+        WAMUtils.MODID + ":mob_sign_top", TextureSlot.FRONT
+    );
+	public static final ResourceLocation MOB_SIGN_BOTTOM_MODEL = createEmptyTexture(
+        WAMUtils.MODID + ":mob_sign_bottom"
+    );
+	public static final ModelTemplate MOB_SIGN_ITEM_MODEL = ModelTemplates.createItem(
+        WAMUtils.MODID + ":mob_sign", TextureSlot.FRONT
     );
 
 	public static final ResourceLocation CONVEYOR_BELT_MODEL = createEmptyTexture(
@@ -70,6 +82,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		blocks.addAll(ModInit.SHIELDRACK_BLOCKS.values());
 		blocks.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values());
 		blocks.add(ModInit.CONVEYOR_BELT_BLOCK);
+		blocks.add(ModInit.ENDERMAN_MOB_SIGN_BLOCK);
 		return blocks.stream()
 				.map(DeferredBlock::get)
 				.map(Holder::direct);
@@ -81,9 +94,37 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		items.addAll(ModInit.SHIELDRACK_BLOCK_ITEMS.values());
 		items.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.values());
 		items.add(ModInit.CONVEYOR_BELT_BLOCK_ITEM);
+		items.add(ModInit.ENDERMAN_MOB_SIGN_BLOCK_ITEM);
 		return items.stream()
 				.map(DeferredItem::get)
 				.map(Holder::direct);
+	}
+
+	public void createMobSign(BlockModelGenerators blockModels, ItemModelGenerators itemModels, Block block, Item item, String signTexture){
+		final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "block/" + signTexture);
+
+		TexturedModel.Provider SIGN_TOP = TexturedModel.createDefault(
+			(Block blk) -> new TextureMapping().put(TextureSlot.FRONT, texture),
+			MOB_SIGN_TOP_MODEL
+		);
+		MultiVariant multivariant_top = BlockModelGenerators.plainVariant(SIGN_TOP.create(block, blockModels.modelOutput));
+		MultiVariant multivariant_bottom = BlockModelGenerators.plainVariant(MOB_SIGN_BOTTOM_MODEL);
+		
+		blockModels.blockStateOutput.accept(
+			MultiVariantGenerator.dispatch(block)
+			.with(
+				PropertyDispatch.initial(BlockStateProperties.DOUBLE_BLOCK_HALF)
+					.select(DoubleBlockHalf.LOWER, multivariant_bottom)
+					.select(DoubleBlockHalf.UPPER, multivariant_top)
+			)
+			.with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+		);
+
+		ResourceLocation itemModel = MOB_SIGN_ITEM_MODEL.create(item, new TextureMapping().put(TextureSlot.FRONT, texture), itemModels.modelOutput);
+		itemModels.itemModelOutput.accept(
+			item, 
+			ItemModelUtils.plainModel(itemModel)
+		);
 	}
 
     @Override
@@ -113,6 +154,10 @@ public class WAMUtilsModelProvider extends ModelProvider {
 
 			blockModels.createHorizontallyRotatedBlock(block, WOOD);
 		});
+		
+		createMobSign(blockModels, itemModels, ModInit.ENDERMAN_MOB_SIGN_BLOCK.get(), ModInit.ENDERMAN_MOB_SIGN_BLOCK_ITEM.get(), "enderman_sign");
+		createMobSign(blockModels, itemModels, ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get(), ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK_ITEM.get(), "wandering_trader_sign");
+		createMobSign(blockModels, itemModels, ModInit.PILLAGER_MOB_SIGN_BLOCK.get(), ModInit.PILLAGER_MOB_SIGN_BLOCK_ITEM.get(), "pillager_sign");
 
 		Block block = ModInit.CONVEYOR_BELT_BLOCK.get();
 		MultiVariant multivariant_normal = BlockModelGenerators.plainVariant(CONVEYOR_BELT_MODEL);

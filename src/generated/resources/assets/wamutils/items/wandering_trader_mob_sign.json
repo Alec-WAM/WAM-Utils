@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "wamutils:item/wandering_trader_mob_sign"
+  }
+}

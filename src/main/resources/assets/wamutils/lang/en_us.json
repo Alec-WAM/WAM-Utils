@@ -33,6 +33,11 @@
   "block.wamutils.pale_oak_enchantment_book_shelf": "Pale Oak Improved Bookshelf",
   "block.wamutils.bamboo_enchantment_book_shelf": "Bamboo Improved Bookshelf",
 
+  
+  "block.wamutils.enderman_mob_sign": "Enderman Teleport Proof Sign",
+  "block.wamutils.wandering_trader_mob_sign": "Wandering Trader Proof Sign",
+  "block.wamutils.pillager_mob_sign": "Pillager Proof Sign",
+
   "item.wamutils.example_item": "Example Item",
   "item.wamutils.worker_spawn_item": "Mini Worker",
   "item.wamutils.worker_staff": "Worker Job Staff",

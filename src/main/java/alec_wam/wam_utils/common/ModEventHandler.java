@@ -1,13 +1,28 @@
 package alec_wam.wam_utils.common;
 
+import java.util.stream.Stream;
+
 import alec_wam.wam_utils.WAMUtils;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock;
 import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck;
 
 @EventBusSubscriber(modid = WAMUtils.MODID)
 public class ModEventHandler {
@@ -28,5 +43,89 @@ public class ModEventHandler {
 				}
 			}
 		}
+    }
+
+	@SubscribeEvent
+	public static void checkSpawn(final SpawnPlacementCheck event) {
+		if(cancelSpawn(event.getEntityType(), event.getLevel(), event.getPos(), event.getSpawnType())) {
+			event.setResult(SpawnPlacementCheck.Result.FAIL);
+		}
+	}
+	
+	@SubscribeEvent
+	public static void cancelFinalizeSpawn(final FinalizeSpawnEvent event) {
+		BlockPos pos = BlockPos.containing(event.getX(), event.getY(), event.getZ());
+		if(cancelSpawn(event.getEntity().getType(), event.getLevel(), pos, event.getSpawnType())) {
+			event.setSpawnCancelled(true);
+		}
+	}
+	
+	public static boolean cancelSpawn(EntityType<?> entityType, LevelAccessor levelAccessor, BlockPos pos, EntitySpawnReason spawnType) {
+        if (levelAccessor.isClientSide()) return true;
+        ServerLevel level = ((ServerLevelAccessor) levelAccessor).getLevel();
+        PoiManager poiManager = level.getPoiManager();
+        
+        if(spawnType == EntitySpawnReason.EVENT) {
+        	if(entityType == EntityType.WANDERING_TRADER || entityType == EntityType.TRADER_LLAMA) {
+        		BlockPos closestSign = poiInRange(poiManager, ModInit.WANDERING_TRADER_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
+        		if(closestSign != null) {
+        			// RandomSource random = level.random;        			
+        			// BlockUtils.spawnHappyParticles(level, closestSign, random);
+        			return true;
+        		}
+        	}
+        }
+        if(spawnType == EntitySpawnReason.PATROL) {
+        	if(entityType == EntityType.PILLAGER) {
+        		BlockPos closestSign = poiInRange(poiManager, ModInit.PILLAGER_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SIGN_RANGE_HORIZONTAL, MobSignBlock.SIGN_RANGE_VERTICAL);
+        		if(closestSign != null) {
+        			// RandomSource random = level.random;        			
+        			// BlockUtils.spawnHappyParticles(level, closestSign, random);
+        			return true;
+        		}
+        	}
+        }
+        return false;
+    }
+
+	@SubscribeEvent
+	public static void endermanTeleport(final EntityTeleportEvent.EnderEntity event) {
+		BlockPos fromPos = BlockPos.containing(event.getPrev());
+		BlockPos toPos = BlockPos.containing(event.getTarget());
+		if(cancelTeleport(event.getEntity().getType(), event.getEntityLiving().level(), fromPos)) {
+			event.setCanceled(true);
+		}
+		if(cancelTeleport(event.getEntity().getType(), event.getEntityLiving().level(), toPos)) {
+			event.setCanceled(true);
+		}
+	}
+	
+	public static boolean cancelTeleport(EntityType<?> entityType, LevelAccessor levelAccessor, BlockPos pos) {
+        if (levelAccessor.isClientSide()) return true;
+        ServerLevel level = ((ServerLevelAccessor) levelAccessor).getLevel();
+        PoiManager poiManager = level.getPoiManager();
+        
+        if(entityType == EntityType.ENDERMAN || entityType == EntityType.SHULKER) {
+    		BlockPos closestSign = poiInRange(poiManager, ModInit.ENDERMAN_MOB_SIGN_POI.getKey(), pos, MobSignBlock.SMALL_SIGN_RANGE_HORIZONTAL, MobSignBlock.SMALL_SIGN_RANGE_VERTICAL);
+    		if(closestSign != null) {
+    			//RandomSource random = level.random;        			
+    			//BlockUtils.spawnHappyParticles(level, closestSign, random);
+    			return true;
+    		}
+    	}
+        return false;
+    }
+	
+	public static BlockPos poiInRange(PoiManager poiManager, ResourceKey<PoiType> poiType, BlockPos pos, int horizonal, int vertical) {
+		Stream<BlockPos> all = poiManager.findAll(poiType1 -> poiType1.is(poiType), pos1 -> true, pos, (int) Math.ceil(Math.sqrt(horizonal * horizonal + vertical * vertical)), PoiManager.Occupancy.ANY);
+		//return all.anyMatch(center -> isInRange(center, pos));
+		return all.filter(center -> isInRange(center, pos, horizonal, vertical)).findFirst().orElse(null);
+	}
+	
+	private static boolean isInRange(BlockPos center, BlockPos pos, int horizonal, int vertical) {
+        int dimX = Math.abs(center.getX() - pos.getX());
+        int dimY = Math.abs(center.getY() - pos.getY());
+        int dimZ = Math.abs(center.getZ() - pos.getZ());
+        return dimX <= horizonal && dimZ <= horizonal && dimY <= vertical;
     }
 }

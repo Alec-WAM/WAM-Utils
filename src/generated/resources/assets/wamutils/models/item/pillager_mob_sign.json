@@ -1,0 +1,6 @@
+{
+  "parent": "wamutils:item/mob_sign",
+  "textures": {
+    "front": "wamutils:block/pillager_sign"
+  }
+}

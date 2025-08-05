@@ -41,7 +41,12 @@ public class WAMUtilsBlockTags extends BlockTagsProvider {
 				.toList().toArray(Block[]::new))
 			.add(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
 				.map(block -> block.get())
-				.toList().toArray(Block[]::new));
+				.toList().toArray(Block[]::new))
+			.add(
+				ModInit.ENDERMAN_MOB_SIGN_BLOCK.get(),
+				ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get(),
+				ModInit.PILLAGER_MOB_SIGN_BLOCK.get()
+			);
 				
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.add(ModInit.CONVEYOR_BELT_BLOCK.get(), ModInit.CONVEYOR_SPLITTER_BLOCK.get(), ModInit.ITEM_GRATE_BLOCK.get());

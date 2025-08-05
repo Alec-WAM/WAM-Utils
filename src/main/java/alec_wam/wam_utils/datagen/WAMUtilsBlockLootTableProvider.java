@@ -7,6 +7,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class WAMUtilsBlockLootTableProvider extends BlockLootSubProvider  {
 
@@ -24,9 +26,22 @@ public class WAMUtilsBlockLootTableProvider extends BlockLootSubProvider  {
                 .toList();
     }
 
+
+    public void doubleBlockLoot(Block block) {
+        this.add(block, builder -> this.createSinglePropConditionTable(block, DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
+    }
+
     @Override
     protected void generate() {
-        Set<Block> specialBlocks = Set.of();
+        Set<Block> specialBlocks = Set.of(
+            ModInit.ENDERMAN_MOB_SIGN_BLOCK.get(),
+            ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get(),
+            ModInit.PILLAGER_MOB_SIGN_BLOCK.get()
+        );
+
+        doubleBlockLoot(ModInit.ENDERMAN_MOB_SIGN_BLOCK.get());
+        doubleBlockLoot(ModInit.WANDERING_TRADER_MOB_SIGN_BLOCK.get());
+        doubleBlockLoot(ModInit.PILLAGER_MOB_SIGN_BLOCK.get());
 
         ModInit.BLOCKS.getEntries()
             .stream()

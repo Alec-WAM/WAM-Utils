@@ -1,4 +1,4 @@
-// 1.21.8	2025-07-26T17:01:06.1827471	Loot Tables
+// 1.21.8	2025-08-04T20:43:12.7786074	Loot Tables
 c101c18b9fdce990ab4e0ff73b21c47a22e16a84 data/wamutils/loot_table/blocks/acacia_enchantment_book_shelf.json
 18c4a2fcee5409e3de7308034b9a8ddeb7054317 data/wamutils/loot_table/blocks/acacia_shieldrack.json
 9b1ae47ce6bd8583d5bb768ef98087cd509691a9 data/wamutils/loot_table/blocks/bamboo_enchantment_book_shelf.json
@@ -14,6 +14,7 @@ a279aaa61e9e16d1de00665074df4bb6a8b4f942 data/wamutils/loot_table/blocks/crimson
 ab8798e26befa67a0092980a827394fdb4cceefc data/wamutils/loot_table/blocks/dark_oak_enchantment_book_shelf.json
 a66230a0e410e6d46f0d01740f7d75b5af893a28 data/wamutils/loot_table/blocks/dark_oak_shieldrack.json
 25b1d429437cdba1d9ed5f5c5913ba09d6d94c34 data/wamutils/loot_table/blocks/enchantment_indexer.json
+d2de13eb7979e0532f4c10f060beeaddefb8dd90 data/wamutils/loot_table/blocks/enderman_mob_sign.json
 63b207a358db4bb138169c8ba4a60b2bc7f53b01 data/wamutils/loot_table/blocks/item_grate.json
 32b25907e4f2f2fdd24664b8301ae4ea650998f0 data/wamutils/loot_table/blocks/jungle_enchantment_book_shelf.json
 6463af29d6e6166668f9364c040a255857df7e16 data/wamutils/loot_table/blocks/jungle_shieldrack.json
@@ -23,7 +24,9 @@ ecb37c039e630b08227b89e10bbf80a9d4aa1f7b data/wamutils/loot_table/blocks/oak_enc
 19580e5127b314eaf7f562877f807e9bd581ef61 data/wamutils/loot_table/blocks/oak_shieldrack.json
 493c07de9bf11633a4d5b01fcce0499162774d23 data/wamutils/loot_table/blocks/pale_oak_enchantment_book_shelf.json
 42d564e99acedea095f65996e19c323e233b86e9 data/wamutils/loot_table/blocks/pale_oak_shieldrack.json
+bf6608a76d068b2cf6b01af4c12206a34a1146a9 data/wamutils/loot_table/blocks/pillager_mob_sign.json
 e56010dfacd2a909d5d181aa2f55aea91419d035 data/wamutils/loot_table/blocks/spruce_enchantment_book_shelf.json
 56ce514ff9be4d1b31c041528527726e8dc543b6 data/wamutils/loot_table/blocks/spruce_shieldrack.json
+f47dcb3726037c703c43bc26658c4a7e55879fec data/wamutils/loot_table/blocks/wandering_trader_mob_sign.json
 d562d7209f7f95adb193ddf1f8aeeacd09a65d59 data/wamutils/loot_table/blocks/warped_enchantment_book_shelf.json
 78610f1c8e64ec93166ba9d5363a2481935a06dd data/wamutils/loot_table/blocks/warped_shieldrack.json
