@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +14,9 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -36,6 +39,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.crafting.BlockTagIngredient;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -43,17 +47,19 @@ import net.neoforged.neoforge.registries.DeferredItem;
 public class MobSignBlock extends Block implements SimpleWaterloggedBlock {
 
     public static enum MobSignType {
-        ENDERMAN("enderman", Set.of(EntityType.ENDERMAN, EntityType.SHULKER)),
-        WANDERING_TRADER("wandering_trader", Set.of(EntityType.WANDERING_TRADER, EntityType.TRADER_LLAMA)),
-        PILLAGER("pillager", Set.of(EntityType.PILLAGER)),
-        SILVERFISH("silverfish", Set.of(EntityType.SILVERFISH));
+        ENDERMAN("enderman", Set.of(EntityType.ENDERMAN, EntityType.SHULKER), Ingredient.of(Items.ENDER_PEARL)),
+        WANDERING_TRADER("wandering_trader", Set.of(EntityType.WANDERING_TRADER, EntityType.TRADER_LLAMA), Ingredient.of(Items.LEAD)),
+        PILLAGER("pillager", Set.of(EntityType.PILLAGER), null), //This ingredient needs special handling for the raid banner
+        SILVERFISH("silverfish", Set.of(EntityType.SILVERFISH), new Ingredient(new BlockTagIngredient(BlockTags.BASE_STONE_OVERWORLD)));
 
         final String texture;
         final Set<EntityType<?>> entities;
+        final Ingredient recipeIngredient;
 
-        MobSignType(String texture, Set<EntityType<?>> entities){
+        MobSignType(String texture, Set<EntityType<?>> entities, Ingredient recipeIngredient) {
             this.texture = texture;
             this.entities = entities;
+            this.recipeIngredient = recipeIngredient;
         }
 
         public String getTexture() {
@@ -62,6 +68,10 @@ public class MobSignBlock extends Block implements SimpleWaterloggedBlock {
 
         public Set<EntityType<?>> getEntities() {
             return entities;
+        }
+
+        public Ingredient getRecipeIngredient() {
+            return recipeIngredient;
         }
     }
 

@@ -3,8 +3,11 @@ package alec_wam.wam_utils.datagen;
 import java.util.concurrent.CompletableFuture;
 
 import alec_wam.wam_utils.common.ModInit;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignType;
+import alec_wam.wam_utils.common.blocks.mob_sign.MobSignBlock.MobSignTypeObjects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.BlockFamily.Variant;
 import net.minecraft.data.PackOutput;
@@ -12,11 +15,14 @@ import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 public class WAMUtilsRecipeProvider extends RecipeProvider {
 
@@ -36,8 +42,14 @@ public class WAMUtilsRecipeProvider extends RecipeProvider {
         return this.shaped(RecipeCategory.DECORATIONS, enchantmentBookshelf, i).define('W', material).define('#', item).pattern("WWW").pattern(" # ").pattern("WWW");
     }
 
+    protected RecipeBuilder mobSign(ItemLike mobSign, Ingredient material) {
+        int i = 1;
+        return this.shaped(RecipeCategory.MISC, mobSign, i).define('F', ItemTags.FENCES).define('S', ItemTags.SIGNS).define('#', material).pattern("#").pattern("S").pattern("F");
+    }
+
     @Override
     protected void buildRecipes() {
+        
         WoodType.values().forEach((woodType) -> {
             BlockFamily blockFamily = ModInit.WOOD_BLOCK_FAMILIES.get(woodType);
             Item shieldRack = ModInit.SHIELDRACK_BLOCK_ITEMS.get(woodType).asItem();
@@ -62,6 +74,27 @@ public class WAMUtilsRecipeProvider extends RecipeProvider {
                     );
                 recipeBuilder.unlockedBy(blockFamily.getRecipeUnlockedBy().orElseGet(() -> getHasName(itemlike)), this.has(itemlike));
                 recipeBuilder.save(this.output);
+            }
+        });
+
+        ModInit.MOB_SIGN_TYPE_OBJECTS.entrySet().forEach((entry) -> {
+            MobSignType mobSignType = entry.getKey();
+            MobSignTypeObjects object = entry.getValue();
+            Item mobSign = object.item().asItem();
+            if (mobSign != null) {
+                Ingredient ingredient = null;
+                if(mobSignType == MobSignType.PILLAGER){
+                    ingredient = DataComponentIngredient.of(true, Raid.getOminousBannerInstance(this.registries.lookupOrThrow(Registries.BANNER_PATTERN)));
+                }
+                else {
+                    ingredient = mobSignType.getRecipeIngredient();
+                }
+                if(ingredient !=null){
+                    RecipeBuilder recipeBuilder = this.mobSign(mobSign, ingredient);
+                    recipeBuilder.unlockedBy("has_fences", this.has(ItemTags.FENCES));
+                    recipeBuilder.group("mob_signs");
+                    recipeBuilder.save(this.output);
+                }
             }
         });
     }
