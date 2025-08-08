@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.google.common.base.Function;
@@ -15,6 +16,10 @@ import com.google.common.base.Function;
 import alec_wam.wam_utils.WAMUtils;
 import alec_wam.wam_utils.common.blocks.BaseBE;
 import alec_wam.wam_utils.common.blocks.ItemGrateBlock;
+import alec_wam.wam_utils.common.blocks.auto_trader.AutoTraderBE;
+import alec_wam.wam_utils.common.blocks.auto_trader.AutoTraderBlock;
+import alec_wam.wam_utils.common.blocks.auto_trader.AutoTraderBlockItem;
+import alec_wam.wam_utils.common.blocks.auto_trader.menu.AutoTraderMenu;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
@@ -42,6 +47,7 @@ import alec_wam.wam_utils.common.items.WorkerStaffItem;
 import alec_wam.wam_utils.common.items.WorkerStaffItem.SelectionType;
 import alec_wam.wam_utils.common.items.WorkerStaffItem.WorkerBlockSettings;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamilies;
@@ -238,6 +244,27 @@ public class ModInit {
         });
     public static final Supplier<MenuType<EnchantmentIndexerMenu>> ENCHANTMENT_INDEXER_MENU_TYPE = MENU_TYPES.register("enchantment_indexer", () -> IMenuTypeExtension.create(EnchantmentIndexerMenu::new));
     
+    public static final DeferredBlock<Block> VILLAGER_AUTO_TRADER_BLOCK = registerBlock("villager_auto_trader", AutoTraderBlock::new, () -> BlockBehaviour.Properties.of()
+            .mapColor(MapColor.WOOD)
+            .sound(SoundType.WOOD)
+            .strength(2.5F, 3.0F)
+            .ignitedByLava());
+    public static final DeferredItem<BlockItem> VILLAGER_AUTO_TRADER_BLOCK_ITEM = ITEMS.register("villager_auto_trader", key -> new AutoTraderBlockItem(VILLAGER_AUTO_TRADER_BLOCK.get(), new Item.Properties().setId(ResourceKey.create(Registries.ITEM, key)).useBlockDescriptionPrefix()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AutoTraderBE>> VILLAGER_AUTO_TRADER_BLOCK_ENTITY =
+        BLOCK_ENTITIES.register("villager_auto_trader", () -> {
+            return new BlockEntityType<AutoTraderBE>(AutoTraderBE::new, VILLAGER_AUTO_TRADER_BLOCK.get());
+        });
+    public static final Supplier<MenuType<AutoTraderMenu>> VILLAGER_AUTO_TRADER_MENU_TYPE = MENU_TYPES.register("villager_auto_trader", () -> IMenuTypeExtension.create(AutoTraderMenu::new));
+
+    public static final Supplier<DataComponentType<UUID>> AUTO_TRADER_VILLAGER_DATA_COMPONENT = DATA_COMPONENTS.registerComponentType(
+    	    "auto_trader_villager_data",
+    	    builder -> builder
+    	        // The codec to read/write the data to disk
+    	        .persistent(UUIDUtil.CODEC)
+    	        // The codec to read/write the data across the network
+    	        .networkSynchronized(UUIDUtil.STREAM_CODEC)
+    	);
+
     // ENTITIES
     public static final DeferredHolder<EntityType<?>, EntityType<WorkerEntity>> WORKER_ENTITY = ENTITIES.register(
     		"worker", 
@@ -351,11 +378,12 @@ public class ModInit {
         ENCHANTMENT_BOOK_SHELF_BLOCKS.values().stream()
                 .map(DeferredBlock::get).forEach(block -> blocks.add(block));
         blocks.add(ENCHANTMENT_INDEXER_BLOCK.get());
+        blocks.add(VILLAGER_AUTO_TRADER_BLOCK.get());
         
         event.registerBlock(Capabilities.ItemHandler.BLOCK,
                 (level, pos, state, be, side) -> {
                     if (be instanceof BaseBE baseBe)
-                        return baseBe.getItemHandler(side);
+                        return baseBe.getExternalItemHandler(side);
                     return null;
                 },
                 blocks.toArray(Block[]::new)
@@ -372,6 +400,7 @@ public class ModInit {
                 event.accept(ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.get(woodType));
             });
             MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).forEach(event::accept);
+            event.accept(VILLAGER_AUTO_TRADER_BLOCK_ITEM.get());
         }
     }
     

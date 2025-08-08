@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "wamutils:block/wooden_block",
+    "side": "wamutils:block/villager_auto_trader"
+  }
+}

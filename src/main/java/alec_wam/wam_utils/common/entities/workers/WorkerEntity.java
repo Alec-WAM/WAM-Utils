@@ -111,6 +111,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+//TODO Add Entity XP pickup
+
 public class WorkerEntity extends PathfinderMob implements InventoryCarrier, OwnableEntity, MenuProvider {
 	private static final Logger LOGGER = Logger.getLogger(WorkerEntity.class.getName());
 

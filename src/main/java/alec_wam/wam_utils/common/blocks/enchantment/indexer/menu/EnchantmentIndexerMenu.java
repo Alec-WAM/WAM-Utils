@@ -44,7 +44,7 @@ public class EnchantmentIndexerMenu extends AbstractBaseBEMenu<EnchantmentIndexe
     @Override
     public void addSlots(Inventory playerInv) {
 
-        ItemStackHandler inventory = this.blockEntity.getItemHandler(null);
+        ItemStackHandler inventory = this.blockEntity.getInternalInventory();
         this.filterItemContainer = new SimpleContainer(1);
         // Input
         this.addSlot(new SlotItemHandler(inventory, 0, 172, 53) {
@@ -86,7 +86,7 @@ public class EnchantmentIndexerMenu extends AbstractBaseBEMenu<EnchantmentIndexe
     }
 
     public ItemStack getExtractedItemStack() {
-        return this.blockEntity.getItemHandler(null).getStackInSlot(1);
+        return this.blockEntity.getExternalItemHandler(null).getStackInSlot(1);
     }
 
     public String getFilterSearchValue() {

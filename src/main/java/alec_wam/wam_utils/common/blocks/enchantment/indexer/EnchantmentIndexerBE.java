@@ -209,9 +209,14 @@ public class EnchantmentIndexerBE extends BaseBE implements MenuProvider{
     }
 
     @Override
-    public ItemStackHandler getItemHandler(@Nullable Direction side) {
+    public ItemStackHandler getInternalInventory() {
         return this.inventory;
     }
+
+	@Override
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
+		return inventory;
+	}
 
     @Override
     public void tickServer(){

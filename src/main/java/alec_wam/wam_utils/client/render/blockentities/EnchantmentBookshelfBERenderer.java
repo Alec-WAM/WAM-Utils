@@ -48,7 +48,7 @@ public class EnchantmentBookshelfBERenderer implements BlockEntityRenderer<Encha
     public void render(EnchantmentBookshelfBE blockEntity, float partialTick, PoseStack poseStack,
             MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 cameraPos) {
         Direction direction = blockEntity.getBlockState().getValue(EnchantmentBookshelfBlock.FACING);
-        IItemHandler handler = blockEntity.getItemHandler(null);
+        IItemHandler handler = blockEntity.getExternalItemHandler(null);
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);

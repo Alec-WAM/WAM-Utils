@@ -9,22 +9,29 @@ import alec_wam.wam_utils.common.entities.workers.WorkerEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 
 @EventBusSubscriber(modid = WAMUtils.MODID)
 public class ModEventHandler {
@@ -172,4 +179,31 @@ public class ModEventHandler {
         int dimZ = Math.abs(center.getZ() - pos.getZ());
         return dimX <= horizonal && dimZ <= horizonal && dimY <= vertical;
     }
+
+	@SubscribeEvent
+	public static void entityInteract(EntityInteract event) {
+		Entity entity = event.getTarget();
+		Player player = event.getEntity();
+		ItemStack stack = event.getItemStack();
+		if(entity !=null){
+			if(entity instanceof AbstractVillager villager) {
+				if(stack.is(ModInit.VILLAGER_AUTO_TRADER_BLOCK_ITEM.get())) {
+					if(event.getSide() == LogicalSide.SERVER){
+						stack.set(ModInit.AUTO_TRADER_VILLAGER_DATA_COMPONENT.get(), villager.getUUID());
+					}
+					event.setCancellationResult(InteractionResult.SUCCESS);
+					return;
+				}
+				if(villager instanceof Villager realVillager){
+					if(stack.is(ModInit.MAGIC_BONEMEAL.get())) {
+						if(event.getSide() == LogicalSide.SERVER){
+							realVillager.restock();
+						}
+						event.setCancellationResult(InteractionResult.SUCCESS);
+						return;
+					}					
+				}
+			}
+		}
+	}
 }

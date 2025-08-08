@@ -38,6 +38,8 @@
   "block.wamutils.wandering_trader_mob_sign": "Wandering Trader Proof Sign",
   "block.wamutils.pillager_mob_sign": "Pillager Proof Sign",
   "block.wamutils.silverfish_mob_sign": "Silverfish Proof Sign",
+  
+  "block.wamutils.villager_auto_trader": "Villager Auto Trader",
 
   "item.wamutils.example_item": "Example Item",
   "item.wamutils.worker_spawn_item": "Mini Worker",

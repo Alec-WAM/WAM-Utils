@@ -41,18 +41,12 @@ public abstract class BaseEntityBlock extends Block implements EntityBlock {
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
         super.setPlacedBy(world, pos, state, entity, stack);
-//        TODO Load Data From Item
-//        if (!world.isClientSide && entity instanceof Player player) {
-//            BlockEntity blockEntity = world.getBlockEntity(pos);
-//            if (blockEntity instanceof BaseBE baseBE) {
-//                if (stack.has(JustDireDataComponents.CUSTOM_DATA_1)) {
-//                    CompoundTag compound = stack.get(JustDireDataComponents.CUSTOM_DATA_1).copyTag();
-//                    if (!compound.isEmpty())
-//                        blockEntity.loadCustomOnly(compound, world.registryAccess());
-//                }
-//            	baseBE.setPlacedBy(player.getUUID());
-//            }
-//        }
+       if (!world.isClientSide && entity instanceof Player player) {
+           BlockEntity blockEntity = world.getBlockEntity(pos);
+           if (blockEntity instanceof BaseBE baseBE) {               
+                baseBE.loadFromItem(player, stack);
+           }
+       }
     }
 
     @Override
@@ -111,7 +105,13 @@ public abstract class BaseEntityBlock extends Block implements EntityBlock {
         BlockEntity blockEntity = builder.getParameter(LootContextParams.BLOCK_ENTITY);
 
         if (blockEntity instanceof BaseBE baseBE) {
-        	IItemHandler iItemHandler = baseBE.getItemHandler(null);
+        	ItemStack thisBlockDrop = drops.stream().filter(stack -> stack.is(this.asItem())).findFirst().orElse(ItemStack.EMPTY);
+            
+            if(!thisBlockDrop.isEmpty()) {
+            	baseBE.saveToItem(thisBlockDrop);
+            }
+
+            IItemHandler iItemHandler = baseBE.getExternalItemHandler(null);
         	if(iItemHandler !=null) {
 	            for (int i = 0; i < iItemHandler.getSlots(); ++i) {
 	            	drops.add(iItemHandler.getStackInSlot(i));

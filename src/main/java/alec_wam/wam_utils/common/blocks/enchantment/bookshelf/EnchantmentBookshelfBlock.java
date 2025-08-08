@@ -99,7 +99,7 @@ public class EnchantmentBookshelfBlock extends BaseEntityBlock {
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
     	BlockEntity blockentity = level.getBlockEntity(pos);
         if (blockentity !=null && blockentity instanceof EnchantmentBookshelfBE be) {
-        	return ItemHandlerHelper.calcRedstoneFromInventory(be.getItemHandler(null));
+        	return ItemHandlerHelper.calcRedstoneFromInventory(be.getExternalItemHandler(null));
         }
     	return 0;
     }
@@ -123,7 +123,7 @@ public class EnchantmentBookshelfBlock extends BaseEntityBlock {
         
         BlockEntity be = level.getBlockEntity(pos);
         if(be !=null && be instanceof EnchantmentBookshelfBE shelf) {
-            IItemHandler handler = shelf.getItemHandler(null);
+            IItemHandler handler = shelf.getExternalItemHandler(null);
             if(handler == null) {
             	return 0.0F;
             }
@@ -152,7 +152,7 @@ public class EnchantmentBookshelfBlock extends BaseEntityBlock {
         if (!level.isClientSide) {
 	    	BlockEntity be = level.getBlockEntity(blockPos);
 	        if (be instanceof EnchantmentBookshelfBE bookshelf) {
-	        	IItemHandler inventory = bookshelf.getItemHandler(null);
+	        	IItemHandler inventory = bookshelf.getExternalItemHandler(null);
 	        	if(!player.isShiftKeyDown()) {
 	        		if(!stack.isEmpty() && inventory !=null) {
                         //TODO Make this a tag
@@ -168,20 +168,7 @@ public class EnchantmentBookshelfBlock extends BaseEntityBlock {
 	        			}
 	        		}
 
-	        		//TODO Handle book interaction with extract with hand
-	        		// MenuProvider containerProvider = new MenuProvider() {
-	        		// 	@Override
-	        		// 	public Component getDisplayName() {
-	        		// 		return Component.translatable(SCREEN_NAME);
-	        		// 	}
-
-	        		// 	@Override
-	        		// 	public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-	        		// 		return new EnchantmentBookshelfContainer(windowId, pos, playerInventory, playerEntity);
-	        		// 	}
-	        		// };
-	        		// NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
-                    //Open Inventory
+	        		//Open Inventory
                     if (player instanceof ServerPlayer serverPlayer) {
                         serverPlayer.openMenu(bookshelf);
                     }

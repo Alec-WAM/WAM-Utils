@@ -92,10 +92,15 @@ public class ConveyorBeltBE extends BaseBE {
 	
 	public ConveyorBeltBE(BlockPos pos, BlockState blockState) {
 		super(ModInit.CONVEYOR_BELT_BLOCK_ENTITY.get(), pos, blockState);
-	}
+	}	
+
+    @Override
+    public ItemStackHandler getInternalInventory() {
+        return this.inventory;
+    }
 
 	@Override
-	public ItemStackHandler getItemHandler(@Nullable Direction side) {
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
 		return inventory;
 	}
 

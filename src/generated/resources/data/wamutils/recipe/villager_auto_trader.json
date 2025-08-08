@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:emerald",
+    "S": "#minecraft:wooden_slabs"
+  },
+  "pattern": [
+    "SSS",
+    "###",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "wamutils:villager_auto_trader"
+  }
+}

@@ -1,16 +1,16 @@
 {
   "values": [
-    "wamutils:acacia_enchantment_book_shelf",
+    "wamutils:birch_enchantment_book_shelf",
+    "wamutils:oak_enchantment_book_shelf",
     "wamutils:bamboo_enchantment_book_shelf",
-    "wamutils:cherry_enchantment_book_shelf",
-    "wamutils:crimson_enchantment_book_shelf",
-    "wamutils:jungle_enchantment_book_shelf",
-    "wamutils:mangrove_enchantment_book_shelf",
     "wamutils:dark_oak_enchantment_book_shelf",
     "wamutils:pale_oak_enchantment_book_shelf",
     "wamutils:warped_enchantment_book_shelf",
-    "wamutils:oak_enchantment_book_shelf",
     "wamutils:spruce_enchantment_book_shelf",
-    "wamutils:birch_enchantment_book_shelf"
+    "wamutils:cherry_enchantment_book_shelf",
+    "wamutils:crimson_enchantment_book_shelf",
+    "wamutils:acacia_enchantment_book_shelf",
+    "wamutils:jungle_enchantment_book_shelf",
+    "wamutils:mangrove_enchantment_book_shelf"
   ]
 }

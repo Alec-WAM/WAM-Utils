@@ -12,12 +12,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public abstract class BaseBE extends BlockEntity {
@@ -36,7 +39,7 @@ public abstract class BaseBE extends BlockEntity {
     
     public void saveInventory(ValueOutput valueOutput) {        
 		ValueOutput inventoryChild = valueOutput.child("inventory");
-		ItemStackHandler inventory = this.getItemHandler(null);
+		ItemStackHandler inventory = this.getInternalInventory();
         if(inventory !=null){
             inventory.serialize(inventoryChild);
         }
@@ -49,7 +52,7 @@ public abstract class BaseBE extends BlockEntity {
     }
 
 	public void loadInventory(ValueInput valueInput) {
-        ItemStackHandler inventory = this.getItemHandler(null);
+        ItemStackHandler inventory = this.getInternalInventory();
         if(inventory !=null){
             inventory.deserialize(valueInput.childOrEmpty("inventory"));
         }
@@ -92,11 +95,23 @@ public abstract class BaseBE extends BlockEntity {
         }
     }
 
-	public ItemStackHandler getItemHandler(@Nullable Direction side) {
+    protected ItemStackHandler getInternalInventory() {
+        return null;
+    }
+
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
 		return null;
 	}
 
     public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
 
+    }
+
+    public void loadFromItem(Player player, ItemStack stack){
+        
+    }
+
+    public void saveToItem(ItemStack stack){
+        
     }
 }

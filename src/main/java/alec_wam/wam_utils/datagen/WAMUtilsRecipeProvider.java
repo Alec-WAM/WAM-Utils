@@ -97,6 +97,10 @@ public class WAMUtilsRecipeProvider extends RecipeProvider {
                 }
             }
         });
+
+        RecipeBuilder recipeBuilderAutoDrader = this.shaped(RecipeCategory.MISC, ModInit.VILLAGER_AUTO_TRADER_BLOCK_ITEM.get(), 1).define('S', ItemTags.WOODEN_SLABS).define('#', Items.EMERALD).pattern("SSS").pattern("###").pattern("SSS");
+        recipeBuilderAutoDrader.unlockedBy("has_wooden_slabs", this.has(ItemTags.WOODEN_SLABS));
+        recipeBuilderAutoDrader.save(this.output);
     }
 
     // The runner to add to the data generator

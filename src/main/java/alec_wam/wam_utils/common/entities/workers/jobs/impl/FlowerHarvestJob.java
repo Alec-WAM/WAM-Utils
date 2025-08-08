@@ -144,8 +144,7 @@ public class FlowerHarvestJob extends MultiBlockPosWorkerJob {
 			
 			if (this.isCloseToBlockPos()) {
 				BlockPos pos = getWorkingPos();
-                // TODO Handle if the entity is inside block and ignore angle
-				if(EntityHelper.isLookingAtHorizontally(worker, pos, 20)){
+				if(this.worker.blockPosition() == pos || EntityHelper.isLookingAtHorizontally(worker, pos, 20)){
 					if(canInteractWithBlock(level, pos)) {						
                         if(!this.hasGrownFlowers){
                             //Grow Flowers

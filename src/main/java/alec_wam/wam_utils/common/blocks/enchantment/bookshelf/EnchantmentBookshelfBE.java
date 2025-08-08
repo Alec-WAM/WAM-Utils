@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class EnchantmentBookshelfBE extends BaseBE implements MenuProvider{
@@ -67,10 +68,16 @@ public class EnchantmentBookshelfBE extends BaseBE implements MenuProvider{
         filter = valueInput.read("filter", EnchantmentCategoryFilter.CODEC).orElse(EnchantmentCategoryFilter.ALL);
     }
 
+
     @Override
-    public ItemStackHandler getItemHandler(@Nullable Direction side) {
-        return inventory;
+    public ItemStackHandler getInternalInventory() {
+        return this.inventory;
     }
+
+	@Override
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
+		return inventory;
+	}
 
     public boolean isValidBookForSlot(ItemStack stack, int slot) {
 		if(!stack.isEmpty()) {

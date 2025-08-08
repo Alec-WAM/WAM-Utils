@@ -29,7 +29,7 @@ public class ShieldRackBERenderer implements BlockEntityRenderer<ShieldRackBE> {
 	@Override
 	public void render(ShieldRackBE blockEntity, float partialTick, PoseStack poseStack,
 			MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 cameraPos) {
-		IItemHandler handler = blockEntity.getItemHandler(null);        
+		IItemHandler handler = blockEntity.getExternalItemHandler(null);        
 		if(handler !=null) {
 			// poseStack.pushPose();			
 			// this.itemRenderState.render(poseStack, bufferSource, 15728880, OverlayTexture.NO_OVERLAY);

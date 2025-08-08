@@ -9,6 +9,7 @@ import alec_wam.wam_utils.client.render.blockentities.ShieldRackBERenderer;
 import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
 import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
+import alec_wam.wam_utils.common.blocks.auto_trader.menu.AutoTraderScreen;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfScreen;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerScreen;
 import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryScreen;
@@ -121,6 +122,7 @@ public class ModClientInit {
         event.register(ModInit.WORKER_INVENTORY_MENU_TYPE.get(), WorkerInventoryScreen::new);
         event.register(ModInit.ENCHANTMENT_BOOK_SHELF_MENU_TYPE.get(), EnchantmentBookshelfScreen::new);
         event.register(ModInit.ENCHANTMENT_INDEXER_MENU_TYPE.get(), EnchantmentIndexerScreen::new);
+        event.register(ModInit.VILLAGER_AUTO_TRADER_MENU_TYPE.get(), AutoTraderScreen::new);
     }
 	
 }

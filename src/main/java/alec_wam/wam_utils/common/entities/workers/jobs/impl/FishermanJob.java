@@ -120,7 +120,7 @@ public class FishermanJob extends MultiBlockPosWorkerJob {
 	}
 	
 	public void handleFishing(){
-		//TODO Do specific fishing rod sort
+		//TODO Do specific fishing rod enchantment sort
 		if(worker.swapToItem(IS_FISHING_ROD, ItemHelper.BEST_ITEM_SORTER)){
 			this.scanDelay = 10 * 20;
 			return;

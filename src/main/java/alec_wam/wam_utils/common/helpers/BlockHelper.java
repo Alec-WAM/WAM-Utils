@@ -74,7 +74,6 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.items.ContainerOrHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
@@ -487,38 +486,44 @@ public class BlockHelper {
 	
 	@NotNull
     public static ItemStack insertItemStacked(IItemHandler inventory, @NotNull ItemStack stack, boolean simulate)
+	{
+		int min = 0;
+		int max = inventory !=null ? inventory.getSlots() : 0;
+		return insertItemStacked(inventory, stack, min, max, simulate);
+	}
+
+	@NotNull
+    public static ItemStack insertItemStacked(IItemHandler inventory, @NotNull ItemStack stack, int minSlot, int maxSlot, boolean simulate)
     {
         if (inventory == null || stack.isEmpty())
             return stack;
 
-        // not stackable -> just insert into a new slot
-        if (!stack.isStackable())
+        final int safeMin = Math.max(minSlot, 0);
+		final int safeMax = Math.min(maxSlot, inventory.getSlots());
+
+		if (stack.isStackable())
         {
-            return ItemHandlerHelper.insertItem(inventory, stack, simulate);
-        }
+			// go through the inventory and try to fill up already existing items
+			for (int i = safeMin; i < safeMax; i++)
+			{
+				ItemStack slot = inventory.getStackInSlot(i);
+				if (ItemStack.isSameItemSameComponents(slot, stack))
+				{
+					stack = inventory.insertItem(i, stack, simulate);
 
-        int sizeInventory = inventory.getSlots();
-
-        // go through the inventory and try to fill up already existing items
-        for (int i = 0; i < sizeInventory; i++)
-        {
-            ItemStack slot = inventory.getStackInSlot(i);
-            if (ItemStack.isSameItemSameComponents(slot, stack))
-            {
-                stack = inventory.insertItem(i, stack, simulate);
-
-                if (stack.isEmpty())
-                {
-                    break;
-                }
-            }
-        }
+					if (stack.isEmpty())
+					{
+						break;
+					}
+				}
+			}
+		}
 
         // insert remainder into empty slots
         if (!stack.isEmpty())
         {
             // find empty slot
-            for (int i = 0; i < sizeInventory; i++)
+            for (int i = safeMin; i < safeMax; i++)
             {
                 if (inventory.getStackInSlot(i).isEmpty())
                 {

@@ -27,6 +27,8 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -303,9 +305,7 @@ public class EntityHelper {
         AABB attackAABB = aabb.inflate(range.x, range.y, range.z);
 		
 		return attackAABB.intersects(getEntityHitbox(target));
-    }
-
-	
+    }	
 
     public static AABB getEntityHitbox(Entity entity) {
         AABB aabb = entity.getBoundingBox();
@@ -317,4 +317,14 @@ public class EntityHelper {
             return aabb;
         }
     }
+
+	public static int getOfferIndex(MerchantOffers offers, MerchantOffer offer) {
+		for (int i = 0; i < offers.size(); i++) {
+			MerchantOffer merchantoffer = offers.get(i);
+			if (merchantoffer.satisfiedBy(offer.getCostA(), offer.getCostB()) && ItemStack.isSameItemSameComponents(offer.getResult(), merchantoffer.getResult())) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class ShieldRackBE extends BaseBE {
@@ -88,10 +89,15 @@ public class ShieldRackBE extends BaseBE {
 	}
 
     @Override
-    public ItemStackHandler getItemHandler(@Nullable Direction side) {
-        // TODO Create sub inventories for each side
+    public ItemStackHandler getInternalInventory() {
         return this.inventory;
     }
+
+	@Override
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
+		//TODO Create sub inventories for each side
+        return inventory;
+	}
 	
 	// @Override
 	// public AABB getRenderBoundingBox() {

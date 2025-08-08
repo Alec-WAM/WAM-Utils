@@ -220,9 +220,16 @@ public class ConveyorSplitterBE extends BaseBE {
 	}	
 	
 	//TODO Change this to an ItemHandler that only accepts allowed items
+	
+
+    @Override
+    public ItemStackHandler getInternalInventory() {
+        return this.inventory;
+    }
+
 	@Override
-	public ItemStackHandler getItemHandler(@Nullable Direction side) {
-		return this.inventory;
+	public IItemHandler getExternalItemHandler(@Nullable Direction side) {
+		return inventory;
 	}
 
 	@Override

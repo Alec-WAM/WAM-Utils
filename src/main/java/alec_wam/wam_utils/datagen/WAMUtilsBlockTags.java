@@ -44,7 +44,8 @@ public class WAMUtilsBlockTags extends BlockTagsProvider {
 				.toList().toArray(Block[]::new))
 			.add(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream()
 				.map(object -> object.block().get())
-				.toList().toArray(Block[]::new));
+				.toList().toArray(Block[]::new))
+			.add(ModInit.VILLAGER_AUTO_TRADER_BLOCK.get());
 				
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
 			.add(ModInit.CONVEYOR_BELT_BLOCK.get(), ModInit.CONVEYOR_SPLITTER_BLOCK.get(), ModInit.ITEM_GRATE_BLOCK.get());

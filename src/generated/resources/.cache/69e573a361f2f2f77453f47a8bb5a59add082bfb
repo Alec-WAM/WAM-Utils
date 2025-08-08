@@ -1,4 +1,4 @@
-// 1.21.8	2025-08-05T20:24:23.5361766	WAM Utils Recipes
+// 1.21.8	2025-08-08T15:50:53.6384689	WAM Utils Recipes
 6099c4b2d38960509494cced9c1fabbc763098d7 data/wamutils/advancement/recipes/decorations/acacia_enchantment_book_shelf.json
 8a6b1d5ed8b9a5c1c75bc803585a0a071e06438d data/wamutils/advancement/recipes/decorations/acacia_shieldrack.json
 8461a6d0dff2d0f489b78eeacba86c6570c59ef5 data/wamutils/advancement/recipes/decorations/bamboo_enchantment_book_shelf.json
@@ -26,6 +26,7 @@ b5718ea85bc3e929fe9891f8c7e9109d6d61cc19 data/wamutils/advancement/recipes/decor
 ed8cbf19a1a2b0ff6e2ab047e5526acddbe72d9f data/wamutils/advancement/recipes/misc/enderman_mob_sign.json
 7fecdf7831b9f040bf979d192803cdc547c752b3 data/wamutils/advancement/recipes/misc/pillager_mob_sign.json
 23bf2828e3f15870c650caace016462e61e3b9b6 data/wamutils/advancement/recipes/misc/silverfish_mob_sign.json
+f0bc46d3de5dbd7c5c44a880cdf87c957a6516a1 data/wamutils/advancement/recipes/misc/villager_auto_trader.json
 8bb2af4ff3599132d7823ed3be8db6635a8aa069 data/wamutils/advancement/recipes/misc/wandering_trader_mob_sign.json
 1256ab3bf4d500f134218399a833468dceca697e data/wamutils/recipe/acacia_enchantment_book_shelf.json
 dd06d1a7f11c4cbb54f1382fed0f671b24b6fc66 data/wamutils/recipe/acacia_shieldrack.json
@@ -52,6 +53,7 @@ da071fe25d6f0ee9b958dfe8d395bbd2617eab16 data/wamutils/recipe/pillager_mob_sign.
 f0d40c1979acf64bc15086c28afbbb42a442e2a7 data/wamutils/recipe/silverfish_mob_sign.json
 583f0a6840c3c17d99a36b0deca1cb70e1c28d49 data/wamutils/recipe/spruce_enchantment_book_shelf.json
 5ddba534dfa1fe8e685cba3a9a89a94eac1acb71 data/wamutils/recipe/spruce_shieldrack.json
+d3b3bc78f9602af6b9d86931e2eda3bd879b3e9f data/wamutils/recipe/villager_auto_trader.json
 13bed985cbfa63382bb3e539836d7e81bb820074 data/wamutils/recipe/wandering_trader_mob_sign.json
 a168b4f03fcc69122945a0c3f2aa24bbf5fdbe70 data/wamutils/recipe/warped_enchantment_book_shelf.json
 15e6a15ad4ea039f67d2ed38484ea8db516087ae data/wamutils/recipe/warped_shieldrack.json

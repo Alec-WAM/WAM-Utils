@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wamutils:block/villager_auto_trader"
+    }
+  }
+}

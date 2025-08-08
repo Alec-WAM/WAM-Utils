@@ -27,7 +27,7 @@ public class EnchantmentBookshelfMenu extends AbstractBaseBEMenu<EnchantmentBook
 
     @Override
     public void addSlots(Inventory playerInv){
-        ItemStackHandler inventory = this.blockEntity.getItemHandler(null);
+        ItemStackHandler inventory = this.blockEntity.getInternalInventory();
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 8; j++) {
                 this.addSlot(new SlotItemHandler(inventory, i * 8 + j, 22 + j * 18, 19 + i * 22));
