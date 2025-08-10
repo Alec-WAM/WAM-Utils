@@ -48,8 +48,12 @@ public abstract class WorkerJob {
 		return false;
 	}
 	
-	public boolean pickupMobDrops() {
+	public boolean pickupMobDrops(ItemStack stack) {
 		return false;
+	}
+
+	public boolean unloadWhenFull(){
+		return true;
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package alec_wam.wam_utils.common;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import alec_wam.wam_utils.WAMUtils;
@@ -16,6 +18,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +39,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInte
 @EventBusSubscriber(modid = WAMUtils.MODID)
 public class ModEventHandler {
     
+	//TODO Set last hurtby player when LivingHurtEvent is fired to Worker due to it not being a tamable animal
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void mobDrops(LivingDropsEvent event){
         if(event.isCanceled())return;
@@ -46,9 +51,20 @@ public class ModEventHandler {
 			if(causingEntity instanceof WorkerEntity worker) {
 				
 				if(worker.getJob() !=null) {
-					if(worker.getJob().pickupMobDrops()) {
-						event.getDrops().removeIf((item) -> worker.silentPickupItem(item));
+					List<ItemEntity> toRemove = new ArrayList<>();
+					// Copy list to prevent concurrent modification
+					for (ItemEntity item : new ArrayList<>(event.getDrops())) {
+						if(worker.getJob().pickupMobDrops(item.getItem())) {							
+							if(worker.silentPickupItem(item)) {
+								toRemove.add(item);
+							}
+							else if(worker.getJob().unloadWhenFull()){
+								//Inventory is full
+								worker.startUnloadingInventory(false);
+							}
+						}
 					}
+					event.getDrops().removeAll(toRemove);
 				}
 			}
 		}

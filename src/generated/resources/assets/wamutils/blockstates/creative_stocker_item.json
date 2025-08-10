@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "wamutils:block/creative_stocker_item",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "wamutils:block/creative_stocker_item",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "wamutils:block/creative_stocker_item"
+    },
+    "facing=south": {
+      "model": "wamutils:block/creative_stocker_item",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "wamutils:block/creative_stocker_item"
+    },
+    "facing=west": {
+      "model": "wamutils:block/creative_stocker_item",
+      "y": 270
+    }
+  }
+}

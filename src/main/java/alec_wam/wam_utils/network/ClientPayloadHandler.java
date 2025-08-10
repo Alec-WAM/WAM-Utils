@@ -70,7 +70,6 @@ public class ClientPayloadHandler {
 	    	if (level != null) {
 	    		Entity entity = level.getEntity(data.entityId());
 	            if (entity !=null && entity instanceof WorkerEntity worker) {
-	            	System.out.println("Syncing Worker Food Data");
 					worker.getFoodData().setFoodLevel(data.foodLevel());
 					worker.getFoodData().setSaturation(data.saturationLevel());
 	            }

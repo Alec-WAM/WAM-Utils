@@ -1,4 +1,4 @@
-// 1.21.8	2025-08-08T15:50:53.6364699	Loot Tables
+// 1.21.8	2025-08-09T16:34:05.7993521	Loot Tables
 c101c18b9fdce990ab4e0ff73b21c47a22e16a84 data/wamutils/loot_table/blocks/acacia_enchantment_book_shelf.json
 18c4a2fcee5409e3de7308034b9a8ddeb7054317 data/wamutils/loot_table/blocks/acacia_shieldrack.json
 9b1ae47ce6bd8583d5bb768ef98087cd509691a9 data/wamutils/loot_table/blocks/bamboo_enchantment_book_shelf.json
@@ -9,6 +9,7 @@ f32fabb2435d9a712053d1d413089aecfdcb6b4b data/wamutils/loot_table/blocks/cherry_
 0c1bc0012493337c596923c65cbdbb2f10a4a764 data/wamutils/loot_table/blocks/cherry_shieldrack.json
 c7b01909c00971dca0ae335c75b796b1d7a7bf49 data/wamutils/loot_table/blocks/conveyor_belt.json
 8c2fd3319659c1e89f6c656079bfaa5b209defb1 data/wamutils/loot_table/blocks/conveyor_splitter.json
+53772f1ec385cb6c25c7cdbc6a0865750678d6b8 data/wamutils/loot_table/blocks/creative_stocker_item.json
 5282b67bc1a1210ee606e6ed4fd81004e6c52b50 data/wamutils/loot_table/blocks/crimson_enchantment_book_shelf.json
 a279aaa61e9e16d1de00665074df4bb6a8b4f942 data/wamutils/loot_table/blocks/crimson_shieldrack.json
 ab8798e26befa67a0092980a827394fdb4cceefc data/wamutils/loot_table/blocks/dark_oak_enchantment_book_shelf.json

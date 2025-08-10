@@ -40,12 +40,16 @@
   "block.wamutils.silverfish_mob_sign": "Silverfish Proof Sign",
   
   "block.wamutils.villager_auto_trader": "Villager Auto Trader",
+  
+  "block.wamutils.creative_stocker_item": "Creative Stocker (Item)",
 
   "item.wamutils.example_item": "Example Item",
   "item.wamutils.worker_spawn_item": "Mini Worker",
   "item.wamutils.worker_staff": "Worker Job Staff",
   "item.wamutils.worker_inventory_item": "Worker Inventory Programmer",
-  "item.wamutils.magic_bonemeal": "Magic Bonemeal",
+  "item.wamutils.magic_bonemeal": "Magic Bonemeal",  
+  "item.wamutils.enchantment_clear": "Enchantment Clear Book",
+
   "wamutils.message.workers.staff.clear_selection": "Cleared Selection",
   "wamutils.message.workers.staff.selection_type": "Selection Type: %s",
   "wamutils.message.workers.staff.job_type": "Job Type: %s",

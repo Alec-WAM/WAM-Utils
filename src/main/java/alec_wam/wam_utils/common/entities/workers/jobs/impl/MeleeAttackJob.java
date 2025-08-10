@@ -278,7 +278,7 @@ public class MeleeAttackJob extends AreaWorkerJob {
 	}
 	
 	@Override
-	public boolean pickupMobDrops() {
+	public boolean pickupMobDrops(ItemStack stack) {
 		return true;
 	}
 	

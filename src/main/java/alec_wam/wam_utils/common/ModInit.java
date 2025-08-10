@@ -24,6 +24,9 @@ import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBlock;
+import alec_wam.wam_utils.common.blocks.creative.item_stock.CreativeItemStockBE;
+import alec_wam.wam_utils.common.blocks.creative.item_stock.CreativeItemStockBlock;
+import alec_wam.wam_utils.common.blocks.creative.item_stock.menu.CreativeStockItemMenu;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.EnchantmentBookshelfBE;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.EnchantmentBookshelfBlock;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfMenu;
@@ -40,6 +43,7 @@ import alec_wam.wam_utils.common.entities.workers.WorkerInventorySettings;
 import alec_wam.wam_utils.common.entities.workers.jobs.JobManager.JobType;
 import alec_wam.wam_utils.common.entities.workers.menu.WorkerInventoryMenu;
 import alec_wam.wam_utils.common.helpers.BlockHelper;
+import alec_wam.wam_utils.common.items.EnchantmentClearItem;
 import alec_wam.wam_utils.common.items.MagicBonemealItem;
 import alec_wam.wam_utils.common.items.WorkerInventoryItem;
 import alec_wam.wam_utils.common.items.WorkerSpawnItem;
@@ -265,6 +269,16 @@ public class ModInit {
     	        .networkSynchronized(UUIDUtil.STREAM_CODEC)
     	);
 
+    public static final DeferredBlock<Block> CREATIVE_STOCKER_ITEM_BLOCK = registerBlock("creative_stocker_item", CreativeItemStockBlock::new, () -> BlockBehaviour.Properties.of()
+            .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.5F));
+    public static final DeferredItem<BlockItem> CREATIVE_STOCKER_ITEM_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("creative_stocker_item", CREATIVE_STOCKER_ITEM_BLOCK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreativeItemStockBE>> CREATIVE_STOCKER_ITEM_BLOCK_ENTITY =
+        BLOCK_ENTITIES.register("creative_stocker_item", () -> {
+            return new BlockEntityType<CreativeItemStockBE>(CreativeItemStockBE::new, CREATIVE_STOCKER_ITEM_BLOCK.get());
+        });
+    public static final Supplier<MenuType<CreativeStockItemMenu>> CREATIVE_STOCKER_ITEM_BLOCK_MENU_TYPE = MENU_TYPES.register("creative_stocker_item", () -> IMenuTypeExtension.create(CreativeStockItemMenu::new));
+
+
     // ENTITIES
     public static final DeferredHolder<EntityType<?>, EntityType<WorkerEntity>> WORKER_ENTITY = ENTITIES.register(
     		"worker", 
@@ -324,7 +338,8 @@ public class ModInit {
     	);
     
     public static final DeferredItem<Item> MAGIC_BONEMEAL = ITEMS.registerItem("magic_bonemeal", MagicBonemealItem::new, new Item.Properties().stacksTo(1));
-    
+    public static final DeferredItem<Item> ENCHANTMENT_CLEAR_ITEM = ITEMS.registerItem("enchantment_clear", EnchantmentClearItem::new, new Item.Properties().stacksTo(1).enchantable(1));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> LOGISTICS_TAB = CREATIVE_MODE_TABS.register("logistics_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.wamutils.logistics")) //The language key for the title of your CreativeModeTab
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -332,7 +347,8 @@ public class ModInit {
             .displayItems((parameters, output) -> {
                 output.accept(CONVEYOR_BELT_BLOCK_ITEM.get());
                 output.accept(CONVEYOR_SPLITTER_BLOCK_ITEM.get());
-                output.accept(ITEM_GRATE_BLOCK.get());
+                output.accept(ITEM_GRATE_BLOCK_ITEM.get());
+                output.accept(CREATIVE_STOCKER_ITEM_BLOCK_ITEM.get());
             }).build());
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> WORKER_TAB = CREATIVE_MODE_TABS.register("worker_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.wamutils.workers")) //The language key for the title of your CreativeModeTab
@@ -344,16 +360,6 @@ public class ModInit {
                 output.accept(WORKER_INVENTORY_ITEM.get());
                 output.accept(MAGIC_BONEMEAL.get());
             }).build());
-    
-    
-    // public static final Supplier<AttachmentType<ItemStackHandler>> ITEM_HANDLER_ATTACHMENT = ATTACHMENT_TYPES.register(
-    //         "wam_utils_item_handler", () -> AttachmentType.serializable(holder -> {                
-    //             if(holder instanceof ShieldRackBE shieldRackBE)
-    //                 return new ShieldRackInventory(shieldRackBE);
-    //             if (holder instanceof BaseBE baseBe)
-    //                 return new ItemStackHandler(baseBe.getInventorySize());
-    //             return new ItemStackHandler(1);
-    //         }).build());
     
     
     public static void register(IEventBus modEventBus) {
@@ -379,6 +385,7 @@ public class ModInit {
                 .map(DeferredBlock::get).forEach(block -> blocks.add(block));
         blocks.add(ENCHANTMENT_INDEXER_BLOCK.get());
         blocks.add(VILLAGER_AUTO_TRADER_BLOCK.get());
+        blocks.add(CREATIVE_STOCKER_ITEM_BLOCK.get());
         
         event.registerBlock(Capabilities.ItemHandler.BLOCK,
                 (level, pos, state, be, side) -> {
@@ -401,6 +408,10 @@ public class ModInit {
             });
             MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).forEach(event::accept);
             event.accept(VILLAGER_AUTO_TRADER_BLOCK_ITEM.get());
+        }
+
+        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(ENCHANTMENT_CLEAR_ITEM.get());
         }
     }
     

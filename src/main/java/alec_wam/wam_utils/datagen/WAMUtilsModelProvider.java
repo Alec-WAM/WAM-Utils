@@ -86,6 +86,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		blocks.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCKS.values());
 		blocks.add(ModInit.CONVEYOR_BELT_BLOCK);
 		blocks.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::block).toList());
+		blocks.add(ModInit.CREATIVE_STOCKER_ITEM_BLOCK);
 		return blocks.stream()
 				.map(DeferredBlock::get)
 				.map(Holder::direct);
@@ -98,6 +99,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		items.addAll(ModInit.ENCHANTMENT_BOOK_SHELF_BLOCK_ITEMS.values());
 		items.add(ModInit.CONVEYOR_BELT_BLOCK_ITEM);
 		items.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).toList());
+		items.add(ModInit.CREATIVE_STOCKER_ITEM_BLOCK_ITEM);
 		return items.stream()
 				.map(DeferredItem::get)
 				.map(Holder::direct);
@@ -130,6 +132,27 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		);
 	}
 
+	public void createDispenserStyleBlock(BlockModelGenerators blockModels, Block dispenserBlock) {
+        TextureMapping texturemapping = new TextureMapping()
+            .put(TextureSlot.TOP, TextureMapping.getBlockTexture(dispenserBlock, "_top"))
+            .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(dispenserBlock, "_side"))
+            .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(dispenserBlock, "_front"));
+        MultiVariant multivariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.create(dispenserBlock, texturemapping, blockModels.modelOutput));
+        blockModels.blockStateOutput
+            .accept(
+                MultiVariantGenerator.dispatch(dispenserBlock)
+                    .with(
+                        PropertyDispatch.initial(BlockStateProperties.FACING)
+                            .select(Direction.DOWN, multivariant.with(BlockModelGenerators.X_ROT_180))
+                            .select(Direction.UP, multivariant)
+                            .select(Direction.NORTH, multivariant)
+                            .select(Direction.EAST, multivariant.with(BlockModelGenerators.Y_ROT_90))
+                            .select(Direction.SOUTH, multivariant.with(BlockModelGenerators.Y_ROT_180))
+                            .select(Direction.WEST, multivariant.with(BlockModelGenerators.Y_ROT_270))
+                    )
+            );
+    }
+
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         ModInit.SHIELDRACK_BLOCKS.forEach((woodType, blockReg) -> {
@@ -161,6 +184,8 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		ModInit.MOB_SIGN_TYPE_OBJECTS.entrySet().forEach((Entry<MobSignType, MobSignTypeObjects> entry) -> {
 			createMobSign(blockModels, itemModels, entry.getValue().block().get(), entry.getValue().item().get(), entry.getKey().getTexture() + "_sign");
 		});
+
+		createDispenserStyleBlock(blockModels, ModInit.CREATIVE_STOCKER_ITEM_BLOCK.get());
 
 		Block block = ModInit.CONVEYOR_BELT_BLOCK.get();
 		MultiVariant multivariant_normal = BlockModelGenerators.plainVariant(CONVEYOR_BELT_MODEL);

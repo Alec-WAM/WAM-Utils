@@ -482,7 +482,18 @@ public class BlockHelper {
             }
         }
         return true;
-    }
+    }	
+
+	public static int countItems(IItemHandler handler, Predicate<ItemStack> predicate) {
+		int count = 0;
+		for (int i = 0; i < handler.getSlots(); i++) {
+			ItemStack stack = handler.getStackInSlot(i);
+			if (!stack.isEmpty() && predicate.test(stack)) {
+				count += stack.getCount();
+			}
+		}
+		return count;
+	}
 	
 	@NotNull
     public static ItemStack insertItemStacked(IItemHandler inventory, @NotNull ItemStack stack, boolean simulate)
