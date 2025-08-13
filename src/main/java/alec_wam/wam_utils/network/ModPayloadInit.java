@@ -43,6 +43,11 @@ public class ModPayloadInit {
 			SyncClientShelfItemsPayload.TYPE,
     		SyncClientShelfItemsPayload.STREAM_CODEC
 		);
+		registrar.playToServer(
+			FilterSlotPayload.TYPE,
+    		FilterSlotPayload.STREAM_CODEC,
+		   	ServerPayloadHandler::handleFilterSlotOnMain
+		);
 	}	
 
 	public static ProblemReporter.PathElement problemPath(CustomPacketPayload payload) {

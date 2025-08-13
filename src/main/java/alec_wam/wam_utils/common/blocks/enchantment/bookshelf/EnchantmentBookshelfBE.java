@@ -12,7 +12,6 @@ import alec_wam.wam_utils.common.helpers.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -48,9 +47,9 @@ public class EnchantmentBookshelfBE extends BaseBE implements MenuProvider{
     }
 
     @Override
-    public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
+    public void handleCustomMessage(String messageType, ValueInput valueInput, boolean isClient) {
         if(messageType.equals("set_filter")) {
-            this.filter = EnchantmentCategoryFilter.values()[messageData.getIntOr("filter", 0)];
+            this.filter = EnchantmentCategoryFilter.values()[valueInput.getIntOr("filter", 0)];
             this.setChanged();
             this.markDirtyClient();
         }

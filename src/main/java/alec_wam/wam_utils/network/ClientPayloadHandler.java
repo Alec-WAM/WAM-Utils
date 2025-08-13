@@ -83,7 +83,13 @@ public class ClientPayloadHandler {
 	    	if (level != null) {
 				BlockEntity	blockEntity = level.getBlockEntity(data.pos());
 				if(blockEntity != null && blockEntity instanceof BaseBE baseBE) {
-					baseBE.handleCustomMessage(data.messageType(), data.messageData(), true);
+					try (ProblemReporter.ScopedCollector problemreporter = new ProblemReporter.ScopedCollector(ModPayloadInit.problemPath(data), ModPayloadInit.LOGGER)) {
+						ValueInput valueInput = TagValueInput.create(problemreporter, level.registryAccess(), data.messageData());
+						baseBE.handleCustomMessage(data.messageType(), valueInput, false);
+					}
+					catch(Exception e){
+						ModPayloadInit.LOGGER.error("Failed to convert to ValueInput for BaseBE message", e);
+					}
 				}
 			}
 		});

@@ -39,9 +39,9 @@
   "block.wamutils.pillager_mob_sign": "Pillager Proof Sign",
   "block.wamutils.silverfish_mob_sign": "Silverfish Proof Sign",
   
-  "block.wamutils.villager_auto_trader": "Villager Auto Trader",
-  
-  "block.wamutils.creative_stocker_item": "Creative Stocker (Item)",
+  "block.wamutils.villager_auto_trader": "Villager Auto Trader",  
+  "block.wamutils.creative_stocker_item": "Creative Stocker (Item)",  
+  "block.wamutils.item_extractor": "Item Extractor",
 
   "item.wamutils.example_item": "Example Item",
   "item.wamutils.worker_spawn_item": "Mini Worker",
@@ -62,6 +62,13 @@
 
   "wamutils.container.worker.title": "Worker Inventory",
   "wamutils.container.enchantment_bookshelf.title": "Enchantment Bookshelf",
+
+  "wamutils.gui.cancel": "Cancel",
+  "wamutils.gui.save": "Save",
+
+  "wamutils.gui.item_filter.type": "Filter Type",
+  "wamutils.gui.item_filter.mode.item": "ITEM",
+  "wamutils.gui.item_filter.mode.tag": "TAG",
 
   "wamutils.gui.tooltip.enchantment_category.all.tooltip": "All Enchantments",
 	"wamutils.gui.tooltip.enchantment_category.armor.tooltip": "Armor Enchantments",

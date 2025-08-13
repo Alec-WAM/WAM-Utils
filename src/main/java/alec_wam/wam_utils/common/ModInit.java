@@ -22,6 +22,9 @@ import alec_wam.wam_utils.common.blocks.auto_trader.AutoTraderBlockItem;
 import alec_wam.wam_utils.common.blocks.auto_trader.menu.AutoTraderMenu;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBE;
 import alec_wam.wam_utils.common.blocks.conveyor.ConveyorBeltBlock;
+import alec_wam.wam_utils.common.blocks.conveyor.extractor.ItemExtractorBE;
+import alec_wam.wam_utils.common.blocks.conveyor.extractor.ItemExtractorBlock;
+import alec_wam.wam_utils.common.blocks.conveyor.extractor.menu.ItemExtractorMenu;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBE;
 import alec_wam.wam_utils.common.blocks.conveyor.splitter.ConveyorSplitterBlock;
 import alec_wam.wam_utils.common.blocks.creative.item_stock.CreativeItemStockBE;
@@ -134,7 +137,17 @@ public class ModInit {
     public static final DeferredItem<BlockItem> CONVEYOR_SPLITTER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("conveyor_splitter", CONVEYOR_SPLITTER_BLOCK);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyorSplitterBE>> CONVEYOR_SPLITTER_BLOCK_ENTITY = BLOCK_ENTITIES.register("conveyor_splitter_block_entity", () -> new BlockEntityType<ConveyorSplitterBE>(ConveyorSplitterBE::new, CONVEYOR_SPLITTER_BLOCK.get()));
     
-    
+    //TODO Make this metal
+    public static final DeferredBlock<Block> ITEM_EXTRACTOR_BLOCK = registerBlock("item_extractor", ItemExtractorBlock::new, () -> BlockBehaviour.Properties.of()
+            .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.5F));
+    public static final DeferredItem<BlockItem> ITEM_EXTRACTOR_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("item_extractor", ITEM_EXTRACTOR_BLOCK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemExtractorBE>> ITEM_EXTRACTOR_BLOCK_ENTITY =
+        BLOCK_ENTITIES.register("item_extractor", () -> {
+            return new BlockEntityType<ItemExtractorBE>(ItemExtractorBE::new, ITEM_EXTRACTOR_BLOCK.get());
+        });
+    public static final Supplier<MenuType<ItemExtractorMenu>> ITEM_EXTRACTOR_MENU_TYPE = MENU_TYPES.register("item_extractor", () -> IMenuTypeExtension.create(ItemExtractorMenu::new));
+
+
     public static final DeferredBlock<Block> ITEM_GRATE_BLOCK = registerBlock("item_grate", ItemGrateBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.METAL).strength(5.0F, 6.0F).noOcclusion());
     public static final DeferredItem<BlockItem> ITEM_GRATE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("item_grate", ITEM_GRATE_BLOCK);
 
@@ -269,6 +282,9 @@ public class ModInit {
     	        .networkSynchronized(UUIDUtil.STREAM_CODEC)
     	);
 
+
+    
+
     public static final DeferredBlock<Block> CREATIVE_STOCKER_ITEM_BLOCK = registerBlock("creative_stocker_item", CreativeItemStockBlock::new, () -> BlockBehaviour.Properties.of()
             .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.5F));
     public static final DeferredItem<BlockItem> CREATIVE_STOCKER_ITEM_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("creative_stocker_item", CREATIVE_STOCKER_ITEM_BLOCK);
@@ -347,6 +363,7 @@ public class ModInit {
             .displayItems((parameters, output) -> {
                 output.accept(CONVEYOR_BELT_BLOCK_ITEM.get());
                 output.accept(CONVEYOR_SPLITTER_BLOCK_ITEM.get());
+                output.accept(ITEM_EXTRACTOR_BLOCK_ITEM.get());
                 output.accept(ITEM_GRATE_BLOCK_ITEM.get());
                 output.accept(CREATIVE_STOCKER_ITEM_BLOCK_ITEM.get());
             }).build());

@@ -103,7 +103,7 @@ public abstract class BaseBE extends BlockEntity {
 		return null;
 	}
 
-    public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
+    public void handleCustomMessage(String messageType, ValueInput valueInput, boolean isClient) {
 
     }
 

@@ -13,7 +13,6 @@ import alec_wam.wam_utils.common.helpers.EntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -258,9 +257,9 @@ public class AutoTraderBE extends BaseBE implements MenuProvider {
     }
 
     @Override
-    public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
+    public void handleCustomMessage(String messageType, ValueInput valueInput, boolean isClient) {
         if(messageType.equalsIgnoreCase("SelectOffer")){
-            int index = messageData.getIntOr("index", -1);
+            int index = valueInput.getIntOr("index", -1);
             if(this.villager == null) return;
             MerchantOffers villagerOffers = this.villager.getOffers();
             if(villagerOffers !=null && index >= 0 && index < villagerOffers.size()){
@@ -277,7 +276,7 @@ public class AutoTraderBE extends BaseBE implements MenuProvider {
             }
         }
         
-        super.handleCustomMessage(messageType, messageData, isClient);
+        super.handleCustomMessage(messageType, valueInput, isClient);
     }
     
 }

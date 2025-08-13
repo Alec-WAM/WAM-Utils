@@ -27,7 +27,13 @@ public enum GuiIcons {
 	BUTTON_BOUNDINGBOX_OFF(1, 1),
 
 	ICON_WARNING(2, 0),
-	ICON_CHECKMARK(2, 1);
+	ICON_CHECKMARK(2, 1),
+	
+	ICON_ADD(3, 0),
+	ICON_EDIT(3, 1),
+	ICON_DELETE(3, 2),
+	ICON_WHITELIST(3, 3),
+	ICON_BLACKLIST(3, 4);
 	
 	public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(WAMUtils.MODID, "textures/gui/gui_icons.png");
 	private final int row;

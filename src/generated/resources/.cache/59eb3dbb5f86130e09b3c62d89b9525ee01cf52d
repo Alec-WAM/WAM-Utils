@@ -1,4 +1,4 @@
-// 1.21.8	2025-08-09T16:34:05.7993521	Loot Tables
+// 1.21.8	2025-08-11T21:55:56.8269006	Loot Tables
 c101c18b9fdce990ab4e0ff73b21c47a22e16a84 data/wamutils/loot_table/blocks/acacia_enchantment_book_shelf.json
 18c4a2fcee5409e3de7308034b9a8ddeb7054317 data/wamutils/loot_table/blocks/acacia_shieldrack.json
 9b1ae47ce6bd8583d5bb768ef98087cd509691a9 data/wamutils/loot_table/blocks/bamboo_enchantment_book_shelf.json
@@ -16,6 +16,7 @@ ab8798e26befa67a0092980a827394fdb4cceefc data/wamutils/loot_table/blocks/dark_oa
 a66230a0e410e6d46f0d01740f7d75b5af893a28 data/wamutils/loot_table/blocks/dark_oak_shieldrack.json
 25b1d429437cdba1d9ed5f5c5913ba09d6d94c34 data/wamutils/loot_table/blocks/enchantment_indexer.json
 d2de13eb7979e0532f4c10f060beeaddefb8dd90 data/wamutils/loot_table/blocks/enderman_mob_sign.json
+f9ca7f21e6633f023a5f12641ccbe53330849a0b data/wamutils/loot_table/blocks/item_extractor.json
 63b207a358db4bb138169c8ba4a60b2bc7f53b01 data/wamutils/loot_table/blocks/item_grate.json
 32b25907e4f2f2fdd24664b8301ae4ea650998f0 data/wamutils/loot_table/blocks/jungle_enchantment_book_shelf.json
 6463af29d6e6166668f9364c040a255857df7e16 data/wamutils/loot_table/blocks/jungle_shieldrack.json

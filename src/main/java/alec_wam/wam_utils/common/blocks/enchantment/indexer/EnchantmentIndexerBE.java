@@ -29,7 +29,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -47,6 +46,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -388,10 +388,10 @@ public class EnchantmentIndexerBE extends BaseBE implements MenuProvider{
     }
 
     @Override
-    public void handleCustomMessage(String messageType, CompoundTag messageData, boolean isClient) {
+    public void handleCustomMessage(String messageType, ValueInput valueInput, boolean isClient) {
         if(!isClient){
             if(messageType.equals("extract_enchantment")) {
-                Optional<UUID> uuid = messageData.read("uuid", UUIDUtil.CODEC);
+                Optional<UUID> uuid = valueInput.read("uuid", UUIDUtil.CODEC);
                 if(uuid.isPresent()) {
                     ShelfItem item = this.itemList.get(uuid.get());
                     if(item !=null){
@@ -401,7 +401,7 @@ public class EnchantmentIndexerBE extends BaseBE implements MenuProvider{
                 }
             }
         }
-        super.handleCustomMessage(messageType, messageData, isClient);
+        super.handleCustomMessage(messageType, valueInput, isClient);
     }
 
     public static class BlockDistanceComparator implements Comparator<BlockPos> {					

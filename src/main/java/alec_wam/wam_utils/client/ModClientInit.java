@@ -10,6 +10,7 @@ import alec_wam.wam_utils.client.render.entities.WorkerEntityRenderer;
 import alec_wam.wam_utils.client.util.RenderHelper;
 import alec_wam.wam_utils.common.ModInit;
 import alec_wam.wam_utils.common.blocks.auto_trader.menu.AutoTraderScreen;
+import alec_wam.wam_utils.common.blocks.conveyor.extractor.menu.ItemExtractorScreen;
 import alec_wam.wam_utils.common.blocks.creative.item_stock.menu.CreativeStockItemScreen;
 import alec_wam.wam_utils.common.blocks.enchantment.bookshelf.menu.EnchantmentBookshelfScreen;
 import alec_wam.wam_utils.common.blocks.enchantment.indexer.menu.EnchantmentIndexerScreen;
@@ -20,6 +21,9 @@ import alec_wam.wam_utils.network.SyncClientShelfItemsPayload;
 import alec_wam.wam_utils.network.SyncWorkerFishingPayload;
 import alec_wam.wam_utils.network.SyncWorkerFoodDataPayload;
 import alec_wam.wam_utils.network.SyncWorkerJobPayload;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -27,6 +31,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -36,6 +42,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDef
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 @EventBusSubscriber(modid = WAMUtils.MODID, value = Dist.CLIENT)
 public class ModClientInit {
@@ -93,6 +100,17 @@ public class ModClientInit {
         }
     }
 
+    @SubscribeEvent
+    public static void addTooltip(ItemTooltipEvent event) {
+        Screen screen = Minecraft.getInstance().screen;
+        ItemStack stack = event.getItemStack();
+        if(screen !=null && screen instanceof ItemExtractorScreen) {
+            stack.getTags().forEach((tag) -> {
+                event.getToolTip().add(Component.literal(tag.location().toString()).withStyle(ChatFormatting.GRAY));
+            });
+        }
+    }
+
     
     @SubscribeEvent
     public static void registerClientPayloads(RegisterClientPayloadHandlersEvent event) {
@@ -125,6 +143,7 @@ public class ModClientInit {
         event.register(ModInit.ENCHANTMENT_INDEXER_MENU_TYPE.get(), EnchantmentIndexerScreen::new);
         event.register(ModInit.VILLAGER_AUTO_TRADER_MENU_TYPE.get(), AutoTraderScreen::new);
         event.register(ModInit.CREATIVE_STOCKER_ITEM_BLOCK_MENU_TYPE.get(), CreativeStockItemScreen::new);
+        event.register(ModInit.ITEM_EXTRACTOR_MENU_TYPE.get(), ItemExtractorScreen::new);
     }
 	
 }

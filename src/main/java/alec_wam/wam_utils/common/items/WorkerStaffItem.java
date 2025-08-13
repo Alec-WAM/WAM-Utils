@@ -304,7 +304,7 @@ public class WorkerStaffItem extends Item {
 	@Override
 	public void appendHoverText(
 	        ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag
-    ) {		
+    ) {	
 		JobType job = getJobType(stack);
 		if(job !=null) {
 			tooltipAdder.accept(Component.literal(job.name()).withStyle(ChatFormatting.DARK_AQUA));

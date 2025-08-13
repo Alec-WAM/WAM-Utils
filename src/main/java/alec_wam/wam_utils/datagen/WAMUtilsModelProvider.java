@@ -79,6 +79,10 @@ public class WAMUtilsModelProvider extends ModelProvider {
         WAMUtils.MODID + ":conveyor_belt_angled"
     );
 
+	public static final ResourceLocation ITEM_EXTRACTOR_MODEL = createEmptyTexture(
+        WAMUtils.MODID + ":item_extractor"
+    );
+
 	@Override
 	protected Stream<? extends Holder<Block>> getKnownBlocks() {
 		List<DeferredBlock<?>> blocks = new ArrayList<>();
@@ -87,6 +91,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		blocks.add(ModInit.CONVEYOR_BELT_BLOCK);
 		blocks.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::block).toList());
 		blocks.add(ModInit.CREATIVE_STOCKER_ITEM_BLOCK);
+		blocks.add(ModInit.ITEM_EXTRACTOR_BLOCK);
 		return blocks.stream()
 				.map(DeferredBlock::get)
 				.map(Holder::direct);
@@ -100,6 +105,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		items.add(ModInit.CONVEYOR_BELT_BLOCK_ITEM);
 		items.addAll(ModInit.MOB_SIGN_TYPE_OBJECTS.values().stream().map(MobSignTypeObjects::item).toList());
 		items.add(ModInit.CREATIVE_STOCKER_ITEM_BLOCK_ITEM);
+		items.add(ModInit.ITEM_EXTRACTOR_BLOCK_ITEM);
 		return items.stream()
 				.map(DeferredItem::get)
 				.map(Holder::direct);
@@ -144,7 +150,24 @@ public class WAMUtilsModelProvider extends ModelProvider {
                     .with(
                         PropertyDispatch.initial(BlockStateProperties.FACING)
                             .select(Direction.DOWN, multivariant.with(BlockModelGenerators.X_ROT_180))
-                            .select(Direction.UP, multivariant)
+                            .select(Direction.UP, multivariant.with(BlockModelGenerators.X_ROT_270))
+                            .select(Direction.NORTH, multivariant)
+                            .select(Direction.EAST, multivariant.with(BlockModelGenerators.Y_ROT_90))
+                            .select(Direction.SOUTH, multivariant.with(BlockModelGenerators.Y_ROT_180))
+                            .select(Direction.WEST, multivariant.with(BlockModelGenerators.Y_ROT_270))
+                    )
+            );
+    }
+
+	public void createItemExtractor(BlockModelGenerators blockModels, Block itemExtractorBlock) {
+        MultiVariant multivariant = BlockModelGenerators.plainVariant(ITEM_EXTRACTOR_MODEL);
+        blockModels.blockStateOutput
+            .accept(
+                MultiVariantGenerator.dispatch(itemExtractorBlock)
+                    .with(
+                        PropertyDispatch.initial(BlockStateProperties.FACING)
+                            .select(Direction.DOWN, multivariant.with(BlockModelGenerators.X_ROT_90))
+                            .select(Direction.UP, multivariant.with(BlockModelGenerators.X_ROT_270))
                             .select(Direction.NORTH, multivariant)
                             .select(Direction.EAST, multivariant.with(BlockModelGenerators.Y_ROT_90))
                             .select(Direction.SOUTH, multivariant.with(BlockModelGenerators.Y_ROT_180))
@@ -186,6 +209,7 @@ public class WAMUtilsModelProvider extends ModelProvider {
 		});
 
 		createDispenserStyleBlock(blockModels, ModInit.CREATIVE_STOCKER_ITEM_BLOCK.get());
+		createItemExtractor(blockModels, ModInit.ITEM_EXTRACTOR_BLOCK.get());
 
 		Block block = ModInit.CONVEYOR_BELT_BLOCK.get();
 		MultiVariant multivariant_normal = BlockModelGenerators.plainVariant(CONVEYOR_BELT_MODEL);
