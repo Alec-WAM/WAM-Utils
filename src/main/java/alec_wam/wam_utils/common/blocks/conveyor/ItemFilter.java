@@ -20,7 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemFilter {
-    private static final ItemFilter EMPTY = new ItemFilter(FilterType.ITEM, true, Optional.empty(), Optional.empty());
+    private static final ItemFilter EMPTY = new ItemFilter(FilterType.ITEM, true, Optional.empty(), false, Optional.empty());
 
     public static enum FilterType implements StringRepresentable {
         ITEM, TAG;
@@ -39,6 +39,7 @@ public class ItemFilter {
             FilterType.CODEC.fieldOf("type").forGetter((ItemFilter filter) -> filter.type),
             Codec.BOOL.fieldOf("whiteList").forGetter((ItemFilter filter) -> filter.whiteList),
             ItemStack.CODEC.optionalFieldOf("itemstack").forGetter((ItemFilter filter) -> filter.stack),
+            Codec.BOOL.fieldOf("exactItem").forGetter((ItemFilter filter) -> filter.exactItem),
             Codec.STRING.optionalFieldOf("itemtag").forGetter((ItemFilter filter) -> filter.itemTag))
             .apply(instance, ItemFilter::new));
 
@@ -46,6 +47,7 @@ public class ItemFilter {
             FilterType.STREAM_CODEC, (ItemFilter filter) -> filter.type,
             ByteBufCodecs.BOOL, (ItemFilter filter) -> filter.whiteList,
             ByteBufCodecs.optional(ItemStack.STREAM_CODEC), (ItemFilter filter) -> filter.stack,
+            ByteBufCodecs.BOOL, (ItemFilter filter) -> filter.exactItem,
             ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(50)), (ItemFilter filter) -> filter.itemTag,
             ItemFilter::new
     );
@@ -53,9 +55,10 @@ public class ItemFilter {
 	private FilterType type;
     private boolean whiteList;
     private Optional<ItemStack> stack;
+    private boolean exactItem;
     private Optional<String> itemTag;
 
-    private ItemFilter(FilterType type, boolean whiteList, Optional<ItemStack> stack, Optional<String> itemTag) {
+    private ItemFilter(FilterType type, boolean whiteList, Optional<ItemStack> stack, boolean exactItem, Optional<String> itemTag) {
         this.type = type;
         this.whiteList = whiteList;
         this.stack = stack;
@@ -64,18 +67,18 @@ public class ItemFilter {
 
     public static ItemFilter empty() { return EMPTY.copy(); }
 
-    public static ItemFilter itemStackFilter(ItemStack stack, boolean whiteList) {
-        return new ItemFilter(FilterType.ITEM, whiteList, Optional.of(stack), Optional.empty());
+    public static ItemFilter itemStackFilter(ItemStack stack, boolean whiteList, boolean exactItem) {
+        return new ItemFilter(FilterType.ITEM, whiteList, Optional.of(stack), exactItem, Optional.empty());
     }
 
     public static ItemFilter itemTagFilter(String tag, boolean whiteList) {
-        return new ItemFilter(FilterType.TAG, whiteList, Optional.empty(), Optional.of(tag));
+        return new ItemFilter(FilterType.TAG, whiteList, Optional.empty(), false, Optional.of(tag));
     }
 
 	public ItemFilter copy() {
 		Optional<ItemStack> stackCopy = stack.isPresent() ? Optional.of(stack.get().copy()) : Optional.empty(); // copy the stack if present
         Optional<String> tagCopy = itemTag.isPresent() ? Optional.of(itemTag.get()) : Optional.empty();
-        return new ItemFilter(type, whiteList, stackCopy, tagCopy);
+        return new ItemFilter(type, whiteList, stackCopy, exactItem, tagCopy);
 	}
     
     public void setType(FilterType type) { 
@@ -98,6 +101,14 @@ public class ItemFilter {
 		return stack;
 	}
 
+    public boolean isExactItem() {
+		return exactItem;
+	}
+
+    public void setExactItem(boolean exactItem) {
+        this.exactItem = exactItem;
+    }
+
     public void setStack(Optional<ItemStack> stack) {
         this.stack = stack;
     }
@@ -116,9 +127,8 @@ public class ItemFilter {
 
     public boolean rawMatches(ItemStack filterStack) {
         if (type == FilterType.ITEM) {
-            // TODO Make this able to be "fuzzy" instead of exact
             if (filterStack.isEmpty() || this.stack.isEmpty()) return false;
-            return ItemStack.isSameItemSameComponents(this.stack.get(), filterStack);
+            return exactItem ? ItemStack.isSameItemSameComponents(this.stack.get(), filterStack) : ItemStack.isSameItem(this.stack.get(), filterStack);
         } else if (type == FilterType.TAG) {
             return filterStack.getTags().anyMatch(this::tagMatches);
         }
@@ -135,7 +145,7 @@ public class ItemFilter {
 
     @Override
     public int hashCode(){
-        return Objects.hash(type, whiteList, stack, itemTag);
+        return Objects.hash(type, whiteList, stack, exactItem, itemTag);
     }
 
     @Override
@@ -144,7 +154,7 @@ public class ItemFilter {
             ItemFilter other = (ItemFilter) obj;
             ItemStack thisStack = this.stack.orElse(ItemStack.EMPTY);
             ItemStack otherStack = other.stack.orElse(ItemStack.EMPTY);
-            return type == other.type && whiteList == other.whiteList && ItemStack.isSameItemSameComponents(thisStack, otherStack) && itemTag.equals(other.itemTag);
+            return type == other.type && whiteList == other.whiteList && ItemStack.isSameItemSameComponents(thisStack, otherStack) && exactItem == other.exactItem && itemTag.equals(other.itemTag);
         }
         return false;
     }
@@ -155,6 +165,7 @@ public class ItemFilter {
             .add("type", type)
             .add("whiteList", whiteList)
             .add("stack", stack)
+            .add("exactItem", exactItem)
             .add("itemTag", itemTag)
             .toString();
     }

@@ -109,7 +109,7 @@ public class ItemExtractorBE extends BaseBE implements MenuProvider{
     }
 
     public boolean isStackAllowed(ItemStack stack) {
-        return this.filterList.isEmpty() || this.filterList.passesAllFilters(stack);
+        return !this.filterList.isEmpty() && this.filterList.passesAllFilters(stack);
     }
 
     public boolean updateFilter(int index, ItemFilter filter) {

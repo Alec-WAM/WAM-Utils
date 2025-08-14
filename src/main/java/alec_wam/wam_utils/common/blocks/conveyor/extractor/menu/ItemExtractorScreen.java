@@ -67,7 +67,8 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
     private int editFilterIndex = -1;
     private ItemFilter editFilter = null;
     private GuiIconButton filterWhitelistButton;
-    private CycleButton<FilterType> filterModeButton;
+    private CycleButton<FilterType> filterModeButton;    
+    private CycleButton<Boolean> filterExactButton;
     private EditBox filterTagBox;
     private Button filterCancelButton;
     private Button filterSaveButton;
@@ -131,6 +132,24 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         );
         this.filterModeButton.visible = false;
 
+
+        int filterExactWidth = 60;
+        int filterExactBoxX = i + OVERLAY_X + 80;
+        int filterExactBoxY = j + OVERLAY_Y + (OVERLAY_HEIGHT / 2) - (20 / 2);
+        this.filterExactButton = CycleButton.booleanBuilder(Component.literal("Exact"), Component.literal("Only Item"))
+            .displayOnlyValue()
+            .create(
+                    filterExactBoxX,
+                    filterExactBoxY,
+                    filterExactWidth,
+                    20,
+                    Component.literal("Item Filter Type"), 
+                    (cycleButton, enabled) -> ItemExtractorScreen.this.setItemExact(enabled)
+                );
+        this.filterExactButton = this.addRenderableWidget(
+            this.filterExactButton
+        );
+        this.filterExactButton.visible = false;
 
         int filterTagBoxX = i + OVERLAY_X + 40;
         int filterTagBoxY = j + OVERLAY_Y + (OVERLAY_HEIGHT / 2) - (20 / 2);
@@ -215,6 +234,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         this.editFilter = this.getFilterList().get(index).copy();
         if(this.getEditFilter() != null){
             this.filterModeButton.setValue(this.getEditFilter().getType());
+            this.filterExactButton.setValue(this.getEditFilter().isExactItem());
             this.filterTagBox.setValue(this.getEditFilter().getItemTag().orElse(""));
             ItemStack currentStack = this.getEditFilter().getStack().orElse(ItemStack.EMPTY);            
             this.menu.fakeItemSlotEnabled = this.getEditFilter().getType() == FilterType.ITEM;
@@ -251,6 +271,13 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         if(selectedFilter != null){
             selectedFilter.setType(type);
             this.menu.fakeItemSlotEnabled = selectedFilter.getType() == FilterType.ITEM;
+        }
+    }
+
+    public void setItemExact(boolean exact) {
+        ItemFilter selectedFilter = this.getEditFilter();
+        if(selectedFilter != null){
+            selectedFilter.setExactItem(exact);
         }
     }
 
@@ -368,7 +395,8 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
                     else if(itemFilter.getType() == ItemFilter.FilterType.ITEM){
                         if(itemFilter.getStack().isPresent()){
                             guiGraphics.renderFakeItem(itemFilter.getStack().get(), listX + 5, j1);
-                            guiGraphics.drawString(this.font, Component.literal("Exact Match"), listX + 24, j1 + 4, -16777216, false);
+                            Component label = itemFilter.isExactItem() ? Component.literal("Exact Match") : Component.literal("Match Same Item");
+                            guiGraphics.drawString(this.font, label, listX + 24, j1 + 4, -16777216, false);
                         }                        
                     }
                     else if(itemFilter.getType() == ItemFilter.FilterType.TAG){
@@ -406,14 +434,13 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         this.filterModeButton.visible = this.filterWhitelistButton.visible = this.overlayOpen;
         this.filterCancelButton.visible = this.filterSaveButton.visible = this.overlayOpen;
         this.filterTagBox.visible = this.overlayOpen && this.getEditFilter() != null && this.getEditFilter().getType() == ItemFilter.FilterType.TAG;
+        this.filterExactButton.visible = this.overlayOpen && this.getEditFilter() != null && this.getEditFilter().getType() == ItemFilter.FilterType.ITEM;
 
         this.renderTooltip(guiGraphics, p_98876_, p_98877_);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        
-        //TODO Fix "E" button not closing overlay
         if(!this.filterTagBox.keyPressed(keyCode, scanCode, modifiers) && !this.filterTagBox.canConsumeInput()){
             //Close Overlay on ESC
             if (keyCode == 256 && this.overlayOpen) {

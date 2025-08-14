@@ -65,8 +65,8 @@ public class ItemFilterList extends ArrayList<ItemFilter> {
         return tagFilter;
     }
 
-    public ItemFilter addItemStackFilter(ItemStack stack, boolean whiteList) {
-        ItemFilter tagFilter = ItemFilter.itemStackFilter(stack, whiteList);
+    public ItemFilter addItemStackFilter(ItemStack stack, boolean whiteList, boolean exactItem) {
+        ItemFilter tagFilter = ItemFilter.itemStackFilter(stack, whiteList, exactItem);
         this.add(tagFilter);
         return tagFilter;
     }

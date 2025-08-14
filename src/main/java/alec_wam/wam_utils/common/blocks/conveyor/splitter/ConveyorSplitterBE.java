@@ -194,7 +194,7 @@ public class ConveyorSplitterBE extends BaseBE {
 				}
 				else {
 					ItemStack copyStack = stack.copyWithCount(1);
-					ItemFilter filter = ItemFilter.itemStackFilter(copyStack, true);
+					ItemFilter filter = ItemFilter.itemStackFilter(copyStack, true, true);
 		        	this.itemFilters.put(dir, filter);
 					this.clearRouteCache();
 		        	this.markDirtyClient();
