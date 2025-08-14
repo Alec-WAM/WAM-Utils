@@ -1,7 +1,6 @@
 package alec_wam.wam_utils.common.blocks.conveyor.extractor.menu;
 
 import alec_wam.wam_utils.common.ModInit;
-import alec_wam.wam_utils.common.blocks.conveyor.ItemFilter;
 import alec_wam.wam_utils.common.blocks.conveyor.ItemFilterList;
 import alec_wam.wam_utils.common.blocks.conveyor.extractor.ItemExtractorBE;
 import alec_wam.wam_utils.common.menu.AbstractBaseBEMenu;
@@ -18,8 +17,7 @@ public class ItemExtractorMenu extends AbstractBaseBEMenu<ItemExtractorBE>{
 
     public SimpleContainer fakeSlotContainer;
     private ItemFilterList filterList;
-    private ItemFilter editFilter;
-    private int editFilterIndex = -1;
+    public boolean fakeItemSlotEnabled = false;
 
     public ItemExtractorMenu(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
         super(ModInit.ITEM_EXTRACTOR_MENU_TYPE.get(), containerId, playerInv, extraData);
@@ -34,39 +32,6 @@ public class ItemExtractorMenu extends AbstractBaseBEMenu<ItemExtractorBE>{
 
     public ItemFilterList getFilterList() {
         return this.filterList;
-    }
-
-    public void startEditing(int index) {
-        this.editFilterIndex = index;
-        if(index >= 0 && index < this.filterList.size()){
-            this.editFilter = this.filterList.get(index).copy();
-            System.out.println(this.getEditFilter());
-            System.out.println("Start Editing");
-            System.out.println(this.editFilter.isWhiteList());
-            System.out.println(this.editFilter.getStack());
-            System.out.println(this.slots.get(0).getItem());
-            System.out.println(this.blockEntity.getLevel().isClientSide);
-            // this.slots.get(0).setByPlayer(this.editFilter.getStack().orElse(ItemStack.EMPTY.copy()));
-            this.fakeSlotContainer.setItem(0, this.editFilter.getStack().orElse(ItemStack.EMPTY.copy()));
-            System.out.println(this.editFilter.isWhiteList());
-            System.out.println(this.editFilter.getStack());
-        }
-        else {
-            this.editFilter = null;
-        }
-    }
-
-    public void saveFilter(){
-        if(this.editFilter != null && this.editFilterIndex >= 0 && this.editFilterIndex < this.filterList.size()){
-            this.filterList.set(this.editFilterIndex, this.editFilter);
-            //TODO Sync to server
-            this.editFilter = null;
-            this.editFilterIndex = -1;
-        }
-    }
-
-    public ItemFilter getEditFilter() {
-        return this.editFilter;
     }
 
 	@Override
@@ -119,7 +84,7 @@ public class ItemExtractorMenu extends AbstractBaseBEMenu<ItemExtractorBE>{
             
             @Override
             public boolean isActive() {
-                return ItemExtractorMenu.this.editFilter != null && ItemExtractorMenu.this.editFilter.getType() == ItemFilter.FilterType.ITEM;
+                return ItemExtractorMenu.this.fakeItemSlotEnabled;
             }
         });
 
@@ -139,19 +104,7 @@ public class ItemExtractorMenu extends AbstractBaseBEMenu<ItemExtractorBE>{
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            //TODO Disable shift click if overlay is not open
-            if (index < 1) {
-                Slot fakeSlot = this.slots.get(0);
-                fakeSlot.setByPlayer(ItemStack.EMPTY);
-                // if (!this.moveItemStackTo(itemstack1, 1, this.slots.size(), true)) {
-                return ItemStack.EMPTY;
-                // }
-            } else {                
-                Slot fakeSlot = this.slots.get(0);
-                if(!fakeSlot.hasItem()){
-                    fakeSlot.setByPlayer(itemstack1.copyWithCount(1));
-                    return ItemStack.EMPTY;
-                }
+            if(index > 0) {   
                 
                 int j = 1 + 27;
                 int k = j + 9;

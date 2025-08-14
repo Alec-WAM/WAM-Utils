@@ -64,6 +64,8 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
     private boolean isDragging;
     private int selectedFilterIndex = -1;
     private boolean overlayOpen = false;
+    private int editFilterIndex = -1;
+    private ItemFilter editFilter = null;
     private GuiIconButton filterWhitelistButton;
     private CycleButton<FilterType> filterModeButton;
     private EditBox filterTagBox;
@@ -145,8 +147,8 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         this.filterWhitelistButton = this.addRenderableWidget(new GuiIconButton(filterWhitelistButtonX, filterWhitelistButtonY, buttonSize, buttonSize, GuiIcons.ICON_WHITELIST, (button) -> ItemExtractorScreen.this.toggleWhitelist(), null) {
             @Override
             public GuiIcons getIcon() {
-                ItemFilter editFilter = ItemExtractorScreen.this.menu.getEditFilter();
-                if (editFilter != null && !editFilter.isWhiteList()) {
+                ItemFilter selectedFilter = ItemExtractorScreen.this.getEditFilter();
+                if (selectedFilter != null && !selectedFilter.isWhiteList()) {
                     return GuiIcons.ICON_BLACKLIST;
                 }
                 return GuiIcons.ICON_WHITELIST;
@@ -186,7 +188,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
 
     public void onAddFilterClicked() {
         ItemFilter filter = ItemFilter.empty();
-        this.menu.getFilterList().add(filter);
+        this.getFilterList().add(filter);
         this.sendAddFilterPacket(filter);
         this.selectedFilterIndex = -1;
         //TODO Scroll and auto select filter
@@ -209,59 +211,69 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
 
     public void openOverlay(int index) {
         this.overlayOpen = true;
-        this.menu.startEditing(index);
-        if(this.menu.getEditFilter() != null){
-            System.out.println(this.menu.getEditFilter());
-            this.filterModeButton.setValue(this.menu.getEditFilter().getType());
-            this.filterTagBox.setValue(this.menu.getEditFilter().getItemTag().orElse(""));
-            ItemStack currentStack = this.menu.getEditFilter().getStack().orElse(ItemStack.EMPTY);
-            // this.menu.slots.get(0).setByPlayer(currentStack);
+        this.editFilterIndex = index;
+        this.editFilter = this.getFilterList().get(index).copy();
+        if(this.getEditFilter() != null){
+            this.filterModeButton.setValue(this.getEditFilter().getType());
+            this.filterTagBox.setValue(this.getEditFilter().getItemTag().orElse(""));
+            ItemStack currentStack = this.getEditFilter().getStack().orElse(ItemStack.EMPTY);            
+            this.menu.fakeItemSlotEnabled = this.getEditFilter().getType() == FilterType.ITEM;
+            this.menu.fakeSlotContainer.setItem(0, currentStack);
             ClientPacketDistributor.sendToServer(new FilterSlotPayload(0, currentStack, currentStack.getCount()));
         }
     }
 
+    public ItemFilter getEditFilter() {
+        return this.editFilter;
+    }
+
+    public ItemFilterList getFilterList() {
+        return this.blockEntity.getFilterList();
+    }
+
     public void closeOverlay() {
         this.overlayOpen = false;
-        this.menu.startEditing(-1);
+        this.menu.fakeItemSlotEnabled = false;
+        this.editFilter = null;
+        this.editFilterIndex = -1;
     }
     
     public void toggleWhitelist(){
-        ItemFilter selectedFilter = this.menu.getEditFilter();
+        ItemFilter selectedFilter = this.getEditFilter();
         if(selectedFilter != null){
-            System.out.println(selectedFilter);
             final boolean oldWhitelist = selectedFilter.isWhiteList();
             selectedFilter.setWhiteList(!oldWhitelist);
-            System.out.println(selectedFilter);
         }
     }
 
     public void setFilterMode(FilterType type){
-        ItemFilter selectedFilter = this.menu.getEditFilter();
+        ItemFilter selectedFilter = this.getEditFilter();
         if(selectedFilter != null){
             selectedFilter.setType(type);
+            this.menu.fakeItemSlotEnabled = selectedFilter.getType() == FilterType.ITEM;
         }
     }
 
     public void itemTagBoxChanged(String tag) {
-        ItemFilter selectedFilter = this.menu.getEditFilter();
+        ItemFilter selectedFilter = this.getEditFilter();
         if(selectedFilter != null){
             selectedFilter.setItemTag(tag.isEmpty() ? Optional.empty() : Optional.of(tag));
         }
     }
 
     public void saveFilter(){
+        if(this.getEditFilter() != null && this.editFilterIndex >= 0 && this.editFilterIndex < this.getFilterList().size()){
+            this.getFilterList().set(this.editFilterIndex, this.editFilter);
+        }
         this.sendSavePacket();
-        this.menu.saveFilter();
         this.closeOverlay();
     }    
 
     public void sendSavePacket() {
-        if(this.menu.getEditFilter() != null && this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.menu.getFilterList().size()){
-            ItemFilter selectedFilter = this.menu.getEditFilter();
-            System.out.println(selectedFilter.isWhiteList());
-            System.out.println(selectedFilter.getStack());
+        if(this.getEditFilter() != null && this.editFilterIndex >= 0 && this.editFilterIndex < this.getFilterList().size()){
+            ItemFilter selectedFilter = this.getEditFilter();
             CompoundTag tag = new CompoundTag();
-            tag.putInt("index", this.selectedFilterIndex);
+            tag.putInt("index", this.editFilterIndex);
             tag.put("Filter", ItemFilter.CODEC.encodeStart(NbtOps.INSTANCE, selectedFilter).result().get());
             BaseBEMessagePayload message = new BaseBEMessagePayload(
                 this.menu.blockEntity.getBlockPos(),
@@ -273,15 +285,15 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
     }
 
     public void deleteFilterButtonClicked() {
-        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.menu.getFilterList().size()){
+        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.getFilterList().size()){
             this.sendDeletePacket();   
-            this.menu.getFilterList().remove(this.selectedFilterIndex);
+            this.getFilterList().remove(this.selectedFilterIndex);
         }
         this.selectedFilterIndex = -1;
     }
 
     public void sendDeletePacket() {
-        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.menu.getFilterList().size()){
+        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.getFilterList().size()){
             CompoundTag tag = new CompoundTag();
             tag.putInt("index", this.selectedFilterIndex);
             BaseBEMessagePayload message = new BaseBEMessagePayload(
@@ -295,8 +307,8 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
 
     @Nullable
     public ItemFilter getSelectedFilterIndex() {
-        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.menu.getFilterList().size()){
-            return this.menu.getFilterList().get(this.selectedFilterIndex);
+        if(this.selectedFilterIndex >= 0 && this.selectedFilterIndex < this.getFilterList().size()){
+            return this.getFilterList().get(this.selectedFilterIndex);
         }
         return null;
     }
@@ -332,7 +344,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
     public void render(GuiGraphics guiGraphics, int p_98876_, int p_98877_, float p_98878_) {
         super.render(guiGraphics, p_98876_, p_98877_, p_98878_);
         
-        ItemFilterList itemFilterList = this.menu.getFilterList();
+        ItemFilterList itemFilterList = this.getFilterList();
         boolean emptyList = itemFilterList.isEmpty();
         
         int i = (this.width - this.imageWidth) / 2;
@@ -393,7 +405,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         this.addFilterButton.visible = this.editFilterButton.visible = this.deleteFilterButton.visible = !this.overlayOpen;
         this.filterModeButton.visible = this.filterWhitelistButton.visible = this.overlayOpen;
         this.filterCancelButton.visible = this.filterSaveButton.visible = this.overlayOpen;
-        this.filterTagBox.visible = this.overlayOpen && this.menu.getEditFilter() != null && this.menu.getEditFilter().getType() == ItemFilter.FilterType.TAG;
+        this.filterTagBox.visible = this.overlayOpen && this.getEditFilter() != null && this.getEditFilter().getType() == ItemFilter.FilterType.TAG;
 
         this.renderTooltip(guiGraphics, p_98876_, p_98877_);
     }
@@ -422,7 +434,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         if (super.mouseScrolled(p_99127_, p_99128_, p_99129_, p_295610_)) {
             return true;
         } else {
-            int i = this.menu.getFilterList().size();
+            int i = this.getFilterList().size();
             if (this.canScroll(i)) {
                 int j = i - LIST_SIZE;
                 this.scrollOffset = Mth.clamp((int)(this.scrollOffset - p_295610_), 0, j);
@@ -434,7 +446,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        int i = this.menu.getFilterList().size();
+        int i = this.getFilterList().size();
         if (this.isDragging) {
             int j = this.topPos + SCROLL_Y;
             int k = j + SCROLL_X;
@@ -456,18 +468,17 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
             ItemStack stack = this.menu.getCarried();// getMinecraft().player.inventoryMenu.getCarried();
             stack = stack.copy().split(hoveredSlot.getMaxStackSize()); // Limit to slot limit
             if (ItemStack.isSameItemSameComponents(stack, hoveredSlot.getItem())) return true;
-            hoveredSlot.setByPlayer(stack); // Temporarily update the client for continuity purposes
-            if(this.menu.getEditFilter() != null) {
-                System.out.println(this.menu.getEditFilter().isWhiteList());
-                System.out.println(this.menu.getEditFilter().getStack());
+            if(this.getEditFilter() != null) {
+                this.getEditFilter().setStack(stack.isEmpty() ? Optional.empty() : Optional.of(stack));
             }
+            hoveredSlot.setByPlayer(stack); // Temporarily update the client for continuity purposes            
             ClientPacketDistributor.sendToServer(new FilterSlotPayload(hoveredSlot.index, stack, stack.getCount()));
             return true;
         }
         
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        if (this.canScroll(this.menu.getFilterList().size()) && mouseX > i + SCROLL_X && mouseX < i + SCROLL_X + SCROLL_WIDTH && mouseY > j + SCROLL_Y && mouseY <= j + SCROLL_Y + SCROLL_HEIGHT + 1) {
+        if (this.canScroll(this.getFilterList().size()) && mouseX > i + SCROLL_X && mouseX < i + SCROLL_X + SCROLL_WIDTH && mouseY > j + SCROLL_Y && mouseY <= j + SCROLL_Y + SCROLL_HEIGHT + 1) {
             this.isDragging = true;
         }
 
@@ -486,7 +497,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
             p_281500_.blit(RenderPipelines.GUI_TEXTURED, OVERLAY_TEXTURE, i + OVERLAY_X, j + OVERLAY_Y, 0.0F, 0.0F, OVERLAY_WIDTH, OVERLAY_HEIGHT, 248, 166, 256, 256);
             
             //Render Fake Slot
-            if(this.menu.getEditFilter() != null && this.menu.getEditFilter().getType() == FilterType.ITEM){                
+            if(this.getEditFilter() != null && this.getEditFilter().getType() == FilterType.ITEM){                
                 int fakeSlotX = i + OVERLAY_X + 60;
                 int fakeSlotY = j + OVERLAY_Y + (OVERLAY_HEIGHT / 2) - (18 / 2);
                 p_281500_.blit(RenderPipelines.GUI_TEXTURED, INVENTORY_TEXTURE, fakeSlotX, fakeSlotY, 18.0F, 126.0F, 18, 18, 256, 256);
@@ -495,7 +506,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
     }
 
     private void renderScroller(GuiGraphics guiGraphics, int posX, int posY) {
-        int i = this.menu.getFilterList().size() + 1 - LIST_SIZE;
+        int i = this.getFilterList().size() + 1 - LIST_SIZE;
         final int scrollBarHandleHeight = 15;
         if (i > 1) {
             int j = SCROLL_HEIGHT - (scrollBarHandleHeight + (i - 1) * SCROLL_HEIGHT / i);
@@ -525,7 +536,7 @@ public class ItemExtractorScreen extends AbstractContainerScreen<ItemExtractorMe
         }
 
         public void renderToolTip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-            ItemFilterList itemFilterList = ItemExtractorScreen.this.menu.getFilterList();
+            ItemFilterList itemFilterList = ItemExtractorScreen.this.getFilterList();
             if (this.isHovered && itemFilterList.size() > this.index + ItemExtractorScreen.this.scrollOffset) {
                 ItemFilter itemFilter = itemFilterList.get(this.index + ItemExtractorScreen.this.scrollOffset);
                 if (mouseX < this.getX() + 20) {

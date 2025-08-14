@@ -80,12 +80,6 @@ public class ItemFilter {
     
     public void setType(FilterType type) { 
         this.type = type;
-        if(type == FilterType.TAG) {
-            this.stack = Optional.empty();
-        }
-        else if(type == FilterType.ITEM) {
-            this.itemTag = Optional.empty();
-        }
     }
 
     public FilterType getType() {
@@ -97,11 +91,7 @@ public class ItemFilter {
 	}
 
     public void setWhiteList(boolean whiteList) {
-        System.out.println(this.whiteList);
-        System.out.println(this.getStack());
         this.whiteList = whiteList;
-        System.out.println(this.whiteList);
-        System.out.println(this.getStack());
     }
 
 	public Optional<ItemStack> getStack() {
@@ -110,7 +100,6 @@ public class ItemFilter {
 
     public void setStack(Optional<ItemStack> stack) {
         this.stack = stack;
-        this.itemTag = Optional.empty();
     }
 
 	public Optional<String> getItemTag() {
@@ -119,7 +108,6 @@ public class ItemFilter {
 
     public void setItemTag(Optional<String> itemTag) {
         this.itemTag = itemTag;
-        this.stack = Optional.empty();
     }
 
     public boolean passesFilter(ItemStack filterStack) {
